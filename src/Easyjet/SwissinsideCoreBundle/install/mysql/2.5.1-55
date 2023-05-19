@@ -1,0 +1,2 @@
+ALTER TABLE  `users` ADD  `nb_consecutive_login_failures` TINYINT NOT NULL DEFAULT  '0',
+ADD  `locked_until` DATETIME NULL DEFAULT NULL;

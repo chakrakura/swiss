@@ -1,0 +1,116 @@
+{% extends '@EasyjetHris/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block specificJs %}{{ parent() }}
+
+<script>
+    $(function() {
+
+        swissinside.simpleDataTable($("#pay-elements_list"), {
+            "bProcessing": true,
+            "aLengthMenu": [[10, 25, 40, -1], [10, 25, 40, "All"]],
+            "aoColumns" : [
+                null, // Pay element
+                null, // mandatroy
+                null, // type
+                null, // triggers
+                {"bSortable": false} // Id
+            ]
+        });  
+
+    });  
+
+    var deletePayElement = function(url) {
+        bootbox.confirm("Do you really want to remove this pay element configuration ?", function(confirmation) {
+            if (confirmation) {
+                window.location.href = url;
+            }
+        })
+    };
+
+    var createNewPayElement = function() {
+        bootbox.prompt("New pay element name ?", function(result) { 
+            if (result) {
+                var url = "{{ url('ejint096_pay_elements_new') }}";
+                window.location.href = url + "?payElement=" + result;
+            }  
+        });
+    }
+
+    
+</script>
+{% endblock specificJs %}
+
+
+
+{% block container %}
+
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Pay elements.</h1>
+        <div id="description_help">Here you can configure the pay elements requirements. This will allow the parser to check the data integrity and generate the report.</div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="javascript:createNewPayElement();" class="btn btn-primary pull-right">Set a new pay element</a>
+        </div>
+    </div>
+
+
+    <!-- Results to show -->
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>        
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Pay elements list</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="pay-elements_list">
+                        <thead>
+                            <tr>
+                                <th>Pay element</th>
+                                <th>Mandatory</th>
+                                <th>Type</th>
+                                <th>Triggers</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for element in payElements %}
+                                <tr>
+                                    <td>{{ element.payElement }}</td>
+                                    <td>{{ element.mandatory ? "Yes" : "No" }}</td>
+                                    <td>{{ element.type }}</td>
+                                    <td>{{ element.triggers }}</td>
+                                    <td>
+                                        <a href="{{ url('ejint096_pay_elements_edit', {id: element.id}) }}" class="btn btn-primary"><i class="icon-edit"></i> Edit</a>
+                                        <a href="javascript:deletePayElement('{{ url('ejint096_pay_elements_delete', {id: element.id}) }}')" class="btn btn-danger delete-btn"><i class="icon-trash"></i> Remove</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="{{ url('ejint096_pay_elements_csv') }}" class="btn btn-success pull-right" ><i class="icon-download"></i> Download CSV</a>
+        </div>    
+    </div>
+
+
+</div>
+
+
+{% endblock container %}

@@ -1,0 +1,114 @@
+{% extends '@EasyjetWorkingSheet/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+{% block container -%}
+    <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">My working day</h1>  
+            <div id="description_help">Below, you will find details about your current working day.</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                {{ macros.wizz() }}
+            </div>
+        </div>
+        {% if listOfPatterns|length == 0 %}
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="alert alert-danger">
+                        <p>
+                            <b>Important!</b> We noticed that you don't have any working pattern setup yet. 
+                            <b>This should be your very first step</b> when using this application.<br>
+                            Once you will have setup your pattern and your line manager validated it,
+                            your working time will be automatically setup everyday. You will only have to update your daily working 
+                            time in case of important discrepencies between you pattern and your actual working day.</p>
+                        <a href="{{ url("working_sheet_pattern_new") }}" class="btn btn-danger ">Create my pattern now</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+                    
+        <div class="row">
+
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-th"></i>
+                        </span>
+                        <h5>Your working day</h5>
+                    </div>
+                    {% if edit_form %}
+                        {{ form_start(edit_form, {'attr': {'class': 'form-horizontal'}}) }}
+                    {% endif %}
+                    <div class="widget-content {{ edit_form ? "nopadding" : "center" }}">
+                        {% if edit_form %}
+                            <p class="alert alert-info"><strong>Info! </strong>Below, you can edit your current working day</p>
+                            {% if edit_form %}
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(edit_form.isBankHolliday) }}</label>
+                                    <div class="controls">
+                                        {{ form_widget(edit_form.isBankHolliday) }} (your absence was justified or it was a bank holiday, <strong>do not tick this box if you were in SP/T</strong>)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(edit_form.workingDate) }}</label>
+                                    <div class="controls">
+                                        {{ form_widget(edit_form.workingDate, {'attr': {'class': 'form-control'}}) }} 
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(edit_form.morningFrom) }}</label>
+                                    <div class="controls">
+                                        {{ form_widget(edit_form.morningFrom, {'attr': {'class': 'form-control'}}) }} 
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(edit_form.morningTo) }}</label>
+                                    <div class="controls">
+                                        {{ form_widget(edit_form.morningTo, {'attr': {'class': 'form-control'}}) }} 
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(edit_form.afternoonFrom) }}</label>
+                                    <div class="controls">
+                                        {{ form_widget(edit_form.afternoonFrom, {'attr': {'class': 'form-control'}}) }} 
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(edit_form.afternoonTo) }}</label>
+                                    <div class="controls">
+                                        {{ form_widget(edit_form.afternoonTo, {'attr': {'class': 'form-control'}}) }} 
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(edit_form.isHolliday) }}</label>
+                                    <div class="controls">
+                                        {{ form_widget(edit_form.isHolliday, {'attr': {'class': 'select2-input'}}) }} 
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                             <p>You did not setup any working time for today. Please click the "New working day" button below if you are working to setup your daily hours</p>
+                             <p><a href="{{ path('working_sheet_actual_work_new') }}" class="btn btn-primary"><i class="icon-add"></i> 
+                                New working day
+                            </a></p>
+                        {% endif %}
+                    </div>
+                    {% if edit_form %}
+                        <div class="form-actions">
+                            <input id="submit-button" type="submit" class="btn btn-primary" />
+                        </div>
+                        {{ form_end(edit_form) }}
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "@EasyjetSwissinsideCore/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block specificCss %}{{ parent() }}
+    
+{% endblock %}
+
+
+
+{% block title %} {{ title }}{% endblock %}
+{% block header %}
+    {{ parent() }}
+{% endblock header %}
+
+{% block generalMenu %}
+    <div id="header">
+        {{ macros.show_general_menu(generalMenuItems(), 'EL') }}
+        <a id="menu-trigger" href="#"><i class="icon-align-justify"></i></a>
+    </div>    
+{% endblock generalMenu %}
+
+
+{% block sidebar %}
+    <div id="sidebar">
+        <ul>
+            <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "CABIN_WISHES" or selectedSidebar =="RESOURCES_GROUP" or selectedSidebar =="OFFICE_WISH" or selectedSidebar == "HOLIDAY_GUIDE") %}open active{% endif %}"><a href="{{ url('eleave_wishes_index') }}"><i class="icon-sun"></i> <span>ELEAVE</span> <i class="arrow icon-chevron-right"></i></a>
+                <ul>
+                {% if not is_granted('ROLE_ELEAVE_CREW') and not is_granted('ROLE_ELEAVE_RESSOURCE_GROUP_ADMIN') %}
+                 
+                    {% if (myself is defined and myself.isOffice and  not myself.isThirdParty) or is_granted('ROLE_ELEAVE_OFFICE_ADMIN') or is_granted('ROLE_ELEAVE_LINE_MANAGER')  %}
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "OFFICE_WISH" %}active current-page{% endif %}"><a href="{{ url('eleave_office_wishes_index') }}">Office leave(s)</a></li>
+                    {% endif %}
+                    {% if myself is defined and not myself.isOffice or ((myself is defined and myself.isOffice and is_granted('ROLE_ELEAVE_ADMIN')))  %}
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "CABIN_WISHES" %}active current-page{% endif %}"><a href="{{ url('eleave_wishes_index') }}">Cabins/Pilots leave(s)</a></li> 
+                    {% endif %}
+
+                {% endif %}
+                    <li class="submenu {% if selectedSidebar is defined and selectedSidebar == "HOLIDAY_GUIDE" %}open active{% endif %}"><a href=""><i class="icon-cogs"></i>  <span>About the rules</span> <i class="arrow icon-chevron-right"></i></a></li>
+                        <ul>
+                            <li class="{% if selectedSidebar is defined and selectedSidebar == "HOLIDAY_GUIDE" %}active current-page{% endif %}"><a href="{{ url('eleave_holiday_guides', {'type' : 'cabin-crew'}) }}" target = "_blank">Holiday Guide for Cabin Crew</a></li>
+                            <li class="{% if selectedSidebar is defined and selectedSidebar == "HOLIDAY_GUIDE" %}active current-page{% endif %}"><a href="{{ url('eleave_holiday_guides', {'type' : 'flight-crew'}) }}" target = "_blank">Holiday Guide for Flight Crew</a></li>
+                        </ul>
+                    </li>
+                    <li class="separation_menu {% if selectedSidebar is defined and selectedSidebar == "DL_AVAILIBILITY" %}active current-page{% endif %}"><a href="{{ url('eleave_dl_availibility', {'type' : 'GVA_FA'}) }}">GVA FA availibility</a></li>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "DL_AVAILIBILITY" %}active current-page{% endif %}"><a href="{{ url('eleave_dl_availibility', {'type' : 'GVA_PU'}) }}">GVA PU availibility</a></li>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "DL_AVAILIBILITY" %}active current-page{% endif %}"><a href="{{ url('eleave_dl_availibility', {'type' : 'GVA_FO'}) }}">GVA FO availibility</a></li>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "DL_AVAILIBILITY" %}active current-page{% endif %}"><a href="{{ url('eleave_dl_availibility', {'type' : 'GVA_CP'}) }}">GVA CP availibility</a></li>
+                    <li class="separation_menu {% if selectedSidebar is defined and selectedSidebar == "DL_AVAILIBILITY" %}active current-page{% endif %}"><a href="{{ url('eleave_dl_availibility', {'type' : 'BSL_FA'}) }}">BSL FA availibility</a></li>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "DL_AVAILIBILITY" %}active current-page{% endif %}"><a href="{{ url('eleave_dl_availibility', {'type' : 'BSL_PU'}) }}">BSL PU availibility</a></li>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "DL_AVAILIBILITY" %}active current-page{% endif %}"><a href="{{ url('eleave_dl_availibility', {'type' : 'BSL_FO'}) }}">BSL FO availibility</a></li>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "DL_AVAILIBILITY" %}active current-page{% endif %}"><a href="{{ url('eleave_dl_availibility', {'type' : 'BSL_CP'}) }}">BSL CP availibility</a></li>
+                    
+                </ul>            
+            </li>
+         
+            {% if is_granted('ROLE_ELEAVE_ADMIN') or is_granted('ROLE_ELEAVE_CREW_ADMIN_+_LM') or is_granted('ROLE_ELEAVE_CREW_ADMIN') or is_granted('ROLE_ELEAVE_LINE_MANAGER') or is_granted('ROLE_ELEAVE_OFFICE_ADMIN_+_LM') %}
+                <li class="{% if selectedSidebar is defined and (selectedSidebar == "REMAINING_DAYS") %}active current-page{% endif %}"><a href="{{url('eleave_admin_remaining_days')}}"><i class="icon-download"></i>Update remain. days</a></li>
+                <li class="{% if selectedSidebar is defined and (selectedSidebar == "MULTI_LEAVE_VALIDATION") %}active current-page{% endif %}"><a href="{{url('eleave_admin_multi_leave_validation')}}"><i class="icon-download"></i>Bulk leave validation</a></li>
+            {% endif %}
+            
+            {% if  is_granted('ROLE_ELEAVE_CREW_ADMIN_+_LM') or is_granted('ROLE_ELEAVE_CREW_ADMIN') or is_granted('ROLE_ELEAVE_ADMIN') or is_granted('ROLE_ELEAVE_LINE_MANAGER') or is_granted('ROLE_ELEAVE_OFFICE_ADMIN') %}     
+                <li class="submenu {% if selectedSidebar is defined and (  selectedSidebar == "SHOW_EMAILS" or selectedSidebar == "ADMIN_RULES" or selectedSidebar == "ADMIN_REFUSE" or  selectedSidebar == "ADMIN_REPORTS" or selectedSidebar == "ADMIN_HELP_FILES") %}open active{% endif %}"><a href=""><i class="icon-cogs"></i> <span>Administration</span> <i class="arrow icon-chevron-right"></i></a>
+                    <ul>
+                        {% if is_granted('ROLE_ELEAVE_LINE_MANAGER') or is_granted('ROLE_ELEAVE_OFFICE_ADMIN') %}     
+                            <li class="{% if selectedSidebar is defined and selectedSidebar == "ADMIN_REPORTS" %}active current-page{% endif %}"><a href="{{ url('eleave_admin_reports') }}">Reports</a></li>
+                        {% endif %} 
+                        {% if is_granted('ROLE_ELEAVE_ADMIN') or is_granted('ROLE_ELEAVE_CREW_ADMIN_+_LM') or is_granted('ROLE_ELEAVE_CREW_ADMIN') %}    
+                            <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_EMAILS" %}active current-page{% endif %}"><a href="{{ url('eleave_admin_emails') }}">Emails</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_ELEAVE_ADMIN') or is_granted('ROLE_ELEAVE_OFFICE_ADMIN') or is_granted('ROLE_ELEAVE_CREW_ADMIN_+_LM') or is_granted('ROLE_ELEAVE_CREW_ADMIN') %}         
+                            <li class="{% if selectedSidebar is defined and selectedSidebar == "ADMIN_REFUSE" %}active current-page{% endif %}"><a href="{{ url('eleave_admin_refuses') }}">Refuse reason</a></li>
+                            <li class="{% if selectedSidebar is defined and selectedSidebar == "ADMIN_RULES" %}active current-page{% endif %}"><a href="{{ url('eleave_admin_rules') }}">Rules</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_ELEAVE_ADMIN') or is_granted('ROLE_ELEAVE_CREW_ADMIN_+_LM') or is_granted('ROLE_ELEAVE_CREW_ADMIN') %}     
+                            <li class="separation_menu {% if selectedSidebar is defined and selectedSidebar == "ADMIN_HELP_FILES" %}active current-page{% endif %}"><a href="{{ url('eleave_admin_help_files') }}">Visualization files upload</a></li>
+                        {% endif %}    
+                    </ul>
+                </li>
+            {% endif %}    
+        </ul>
+    </div>
+
+{% endblock sidebar %}
+
+{% block container %}    	
+<div id="content">
+    Bienvenue dans la gestion des heures de travail
+</div>            
+{% endblock container %}

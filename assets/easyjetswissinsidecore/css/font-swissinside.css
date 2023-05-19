@@ -1,0 +1,31 @@
+@font-face {
+  font-family: 'easyjet';
+  src:  url('../font/easyjet.eot?chn317');
+  src:  url('../font/easyjet.eot?chn317#iefix') format('embedded-opentype'),
+    url('../font/easyjet.ttf?chn317') format('truetype'),
+    url('../font/easyjet.woff?chn317') format('woff'),
+    url('../font/easyjet.svg?chn317#easyjet') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-extra-"], [class*=" icon-extra-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'easyjet' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-extra-workday:before {
+  content: "\e900";
+  color: #fff;
+  font-weight: bold;
+}

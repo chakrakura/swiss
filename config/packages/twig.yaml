@@ -1,0 +1,14 @@
+imports:
+    - { resource: version.php }
+twig:
+    globals:
+      swissinsde_version: '%support_form_installed%'
+      easyjetEnv: '%easyjet_env%'
+      useSupportForm: true
+    debug:            '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    default_path: '%kernel.project_dir%/templates'
+
+when@test:
+    twig:
+        strict_variables: true

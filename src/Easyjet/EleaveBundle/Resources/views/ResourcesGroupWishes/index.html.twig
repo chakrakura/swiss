@@ -1,0 +1,244 @@
+{% extends '@EasyjetEleave/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Resource Group Leaves{% endblock %}
+
+
+{% block specificJs %}{{ parent() }}
+<script>
+
+   
+
+    $(function() {
+        swissinside.menuSelected("menu-ec-wishes");
+    });
+
+    $(function() {
+        var contracts = [];
+        $("#types_eftr option:selected").each(function() {
+            contracts.push($(this).val());
+        });
+        
+        var eleaveAjaxParams = [];
+
+        eleaveAjaxParams.push({name : "id_station", value: $("#id_station").val() });
+        eleaveAjaxParams.push({name : "state", value: $("#state").val() });
+        eleaveAjaxParams.push({name : "from", value: $("#date-from").val() });
+        eleaveAjaxParams.push({name : "to", value: $("#date-to").val() });
+        eleaveAjaxParams.push({name : "contracts", value: contracts });
+            
+        
+        swissinside.simpleDataTable($("#call-types-list"), {
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "{{ url('ressources_group_wishes_search') }}",
+            "fnServerParams": function ( aoData ) {
+                for(var index in eleaveAjaxParams) {
+                    aoData.push(eleaveAjaxParams[index]);
+                }
+            },
+            "aoColumns" : [
+                null, // User
+                null, // Contract
+                null, // Request date
+                {"bSortable": false}, // Comment
+                {"bSortable": false}, // Accepted period
+                null, // State
+                null, // Type
+                {"bSortable": false}, // Action
+                {"bSortable": false, "bVisible": false} , // deletable
+                {"bSortable": false, "bVisible": false} , // selectedFrom
+                {"bSortable": false, "bVisible": false}  // selectedTo
+            ],
+            "aaSorting" : [[2, "asc"]],
+             "fnRowCallback" : function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                // Generate buttons
+                var editUrl =  "{{ url('eleave_resource_group_wishes_edit', {'id' : ':id'} )}} ";
+                editUrl = editUrl.replace(":id", aData[7]); 
+                var editLink = '<a class="btn btn-default" href='+editUrl+'><i class="icon-edit"></i> Edit</a> ';
+                var deleteLink = aData[8] ? '<a class="btn btn-danger deleteEmailId"  data-email-id="'+aData[7]+'" data-toggle="modal"  data-target="#deleteEmailModal" ><i class="icon-remove"></i> Delete</a>' : "";                
+                $("td:eq(7)", nRow).html(
+                    editLink +
+                    deleteLink
+                );
+        
+                if(aData[5] == 3) {
+                    $("td:eq(4)", nRow).html("-");
+                }
+                else {
+                    $("td:eq(4)", nRow).html(
+                        (aData[5] == 0 ? "<b>Primary choice</b><br>" : "") + aData[9] + "<br>" + aData[10]
+                    );
+                }                
+               
+               lastIndexEndBracket = aData[0].lastIndexOf(")");               
+               lastIndexStartBracket = aData[0].lastIndexOf("(");               
+               workRatio = aData[0].substr(parseInt(lastIndexStartBracket)+1,parseInt(lastIndexEndBracket)-parseInt(lastIndexStartBracket)-1);
+               empInfo = aData[0].substr(0,parseInt(lastIndexStartBracket)-1); 
+               
+                var user = "";
+                if(typeof workRatio !== 'undefined' && workRatio !== null && workRatio !== '') {
+                    if(workRatio < 100){    
+                        user = empInfo + '<span style="color: orange;"> (' + workRatio + '%)</span>'
+                    }                  
+                    else if (workRatio == 100) {           
+                        user = empInfo + ' (' + workRatio + '%)'      
+                    }
+                }
+                else
+                {
+                    user = empInfo
+                }
+                              
+                $("td:eq(0)", nRow).html(
+                   user
+                );
+        
+                var state = "";
+                switch(aData[5]) {
+                    case 0 : state = '<span class="badge badge-info">Waiting RG approbation</span>'; break;
+                    case 1 : state = '<span class="badge badge-warning">Waiting rostering team approbation</span>'; break;
+                    case 2 : state = '<span class="badge badge-success">Request accepted</span>'; break;
+                    case 3 : state = '<span class="badge badge-danger">Request refused</span>'; break;
+                }
+                $("td:eq(5)", nRow).html(
+                   state
+                );
+        
+                var $th = $(this).find("tr:first th");
+                $("td", nRow).each(function(id, field) {
+                    if($th.eq(id).hasClass("hidden-xs")) $(this).addClass('hidden-xs');
+                });
+                
+                
+            }
+        });        
+    });  
+    
+</script>
+{% endblock specificJs %}
+        
+
+
+{% block container %}
+    	
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Offices eleave requests</h1>  
+        <div id="description_help">Please enter your leave wish. Just click the "Add a leave request" button on the top of table.</div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- BEGIN SEARCH_ENGINE -->
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-search"></i>
+                    </span>
+                    <h5>Search</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" action="" method="get">
+                        
+
+                            <div class="form-group">
+                                <label class="control-label">State</label>                
+                                <div class="controls">
+                                    <select name="state" id="state">
+                                        <option value="all"{{ state == "all" ? ' selected="selected" ' : "" }}>-- All --</option>
+                                        <option value="0" {{ state is not null and state == "0" ? ' selected="selected" ' : "" }}>Waiting RG approbation (Blue)</option>
+                                        <option value="1" {{ state == "1" ? ' selected="selected" ' : "" }}>Waiting rostering team approbation (Orange)</option>
+                                        <option value="2" {{ state == "2" ? ' selected="selected" ' : "" }}>Request accepted (Green)</option>
+                                        <option value="3" {{ state == "3" ? ' selected="selected" ' : "" }}>Request refused (Red)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label">From</label>                
+                                <div class="controls">
+                                    <input class="form-control input-sm date-input" name="from" type="text" id="date-from" value="{{ from }}" placeholder="dd/mm/yyyy" data-enable-datepicker="true">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label">To</label>                
+                                <div class="controls">
+                                    <input class="form-control input-sm date-input" name="to" type="text" id="date-to" value="{{ to }}" placeholder="dd/mm/yyyy" data-enable-datepicker="true">
+                                </div>
+                            </div>
+                        
+                            {% if  adminAccess %}
+                                <div class="form-group">
+                                    <label class="control-label">Base</label>                
+                                    <div class="controls">
+                                        <select name="id_station" id="id_station">
+                                            <option value=""></option>
+                                            {% for base in stationsList %}
+                                                <option {{ base.idStation == currentBase ? ' selected="selected" ' : "" }}  value="{{ base.idStation }}">{{ base.iataCode }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                            {% endif %}
+
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary"><i class="icon-search"></i> Search</button>
+                        </div>
+                        <div id="submitted"></div>
+                    </form>
+                </div>
+            </div>
+            <!-- END SEARCH_ENGINE -->
+        </div>
+    </div>
+    
+    
+    
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>
+        
+        {% if not is_granted("ROLE_ELEAVE_CREW") %}
+        <div class="col-xs-12">
+            <a href="{{ url('eleave_resource_group_wishes_add') }}" class="btn btn-primary"><i class="icon-add"></i> Add a leave request</a>
+        </div>
+        {% endif %}
+        
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>List of leaves</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="call-types-list">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Contract</th>
+                                <th>Date of request</th>
+                                <th>Comment</th>
+                                <th>Accepted period</th>
+                                <th>State</th>
+                                <th>Type</th>
+                                <th style="width:20%;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+            
+{% endblock container %}

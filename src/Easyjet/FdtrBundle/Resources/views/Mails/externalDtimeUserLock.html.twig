@@ -1,0 +1,27 @@
+{% extends "@EasyjetSwissinsideCore/Mail/structure.html.twig" %}
+
+{% block content %}
+
+    <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">Alert</h1>         
+            <div id="description_help">Reminder to provide easyJet Switzerland with your external duties hours</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <p>Dear {{ monthlyReport }}</p>
+
+                <p>You received this automatic email as you benefit from an external employment authorisation and you did not record any hours since the last 3 months. <br>
+                As a consequence, you have been locked out for this capability. Please contact the Swiss HR
+                </p>
+
+
+
+                <p>Regards</p>
+                <p>EZS Flight Ops team</p>
+            </div>         
+        </div>
+    </div>
+
+{% endblock %}   

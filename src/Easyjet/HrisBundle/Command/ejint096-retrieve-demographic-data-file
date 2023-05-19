@@ -1,0 +1,102 @@
+#!/usr/bin/bash
+#
+# This script is launched from ../Services/Ejint096ImporterService.php
+#
+# Arguments :
+# -----------
+# $1 : Archive folder where to place the PGP file
+# $2 : Tmp folder where to put the uncrypted demographic data CSV file
+#
+# Script purpose :
+# ----------------
+# Get demographic data file, unPGP, unzip and move :
+# - Demographic data file in a temporary local folder
+# - Pay elements file to the shared HR server folder
+#
+# Code to return :
+# ----------------
+# 0 - Success (show the target of the unzipped file)
+# 1 - Demographic file
+# 2 - Other error
+
+set +e
+
+# For security reason, clean all previous csv and gpg in tmp folder
+rm -f $2/*.csv
+rm -f $2/*.gpg
+rm -f $2/*.zip
+
+tmpfolder=$(mktemp -d)
+source $(dirname "${BASH_SOURCE[0]}")/../Config/config
+
+function cleanExit {
+
+  umount $tmpfolder 2>/dev/null
+  rmdir $tmpfolder
+  exit $1
+
+}
+
+function debug {
+
+  $debug && echo " - $1"
+
+}
+
+# If no file on the FTP
+debug "Mounting FTP server on $tmpfolder"
+#debug "mount -t cifs -o username=$ejint096serverUsername,password=$ejint096serverPassword $ejint096serverPath $tmpfolder"
+#mount -t cifs -o username=$ejint096serverUsername,password=$ejint096serverPassword $ejint096serverPath $tmpfolder ; ret=$?
+chmod 700 ${ejint096serverIdentityKeyFile}
+debug "sshfs -o IdentityFile=${ejint096serverIdentityKeyFile} ${ejint096serverUsername}@${ejint096serverAddress}:${ejint096serverPath} $tmpfolder"
+sshfs -o IdentityFile=${ejint096serverIdentityKeyFile} ${ejint096serverUsername}@${ejint096serverAddress}:"${ejint096serverPath}" $tmpfolder ; ret=$?
+if [ "$ret" = 0 ] ; then
+  if [ ! "$(ls -A $tmpfolder/*.pgp 2>/dev/null)" ]; then
+    echo "No file available on the FTP"
+    cleanExit 1
+  fi
+else
+  echo "Unable to mount FTP server"
+  cleanExit 2
+fi
+
+
+# Pour n'importe quelle erreur divers, retourner le code 2 et afficher l'erreur en sortie
+# echo "Erreur X ou Y"
+# exit 2
+
+# Quand ça se passe bien on renvoie 0 avec en sortie le nom du fichier dans le dossier temporaire
+
+for file in $tmpfolder/*.pgp ; do
+  debug "Founded file $file"
+  filename=$(basename $file)
+  debug "Moving file $file to $1 (archive folder)"
+  mv $file $1 || cleanExit 2
+  debug "Decrypt	the file $1/$filename into $2/${filename%.*} (tmp folder)"
+  gpg --secret-keyring ${ejint096gpgPrivkeyfile} --recipient ${ejint096gpgPrivkeyfile} -d $1/$filename > $2/${filename%.*}  || cleanExit 2
+  debug "Unzip the file $2/${filename%.*} into $2"
+  zipfiles=$(unzip -o $2/${filename%.*} -d $2/)
+  debug "Deleting the zip file $2/${filename%.*}"
+  rm -f $2/${filename%.*}
+done
+
+for file in $2/*.csv ; do
+  demodata=$(echo "$file" | grep "$demographicFilenameFormat")
+
+  if [ -z "$demodata" ] ; then
+    continue
+  else
+    debug "Founded $demodata"
+    break
+  fi
+
+done
+
+if [ -z "$demodata" ] ; then
+	echo "Demographic data file not found"
+	cleanExit 2
+else
+	echo "$demodata"
+fi
+
+cleanExit

@@ -1,0 +1,63 @@
+{% extends "@EasyjetSwissinsideCore/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block specificCss %}{{ parent() }}
+    
+{% endblock %}
+
+
+
+{% block title %} {{ title }}{% endblock %}
+{% block header %}
+    {{ parent() }}
+{% endblock header %}
+
+{% block generalMenu %}
+    <div id="header">
+        {{ macros.show_general_menu(generalMenuItems(), 'OTP') }}
+        <a id="menu-trigger" href="#"><i class="icon-align-justify"></i></a>
+    </div>    
+{% endblock generalMenu %}
+
+
+{% block sidebar %}
+    <div id="sidebar">
+        <ul>
+            <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "OTP_REQUEST" or selectedSidebar == "OTP" or selectedSidebar == "IMPORT_OTP" or selectedSidebar == "EXPORT_OTP") %}open active{% endif %}"><a href="#"><i class="icon-briefcase"></i> <span>Claims</span> <i class="arrow icon-chevron-right"></i></a>
+                <ul>
+                    {% if is_granted('ROLE_CLAIMS_ADMIN') %} 
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "OTP" %}active current-page{% endif %}"><a href="{{ url('otp_index') }}">Detailed view</a></li>
+                    {% endif %}
+                    
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "OTP_REQUEST" %}active current-page{% endif %}"><a href="{{ url('otp_request_index') }}">Disruptions / Sectors updates</a></li>
+                    
+                    {% if  is_granted('ROLE_CLAIMS_ADMIN') %} 
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "EXPORT_OTP" %}active current-page{% endif %}"><a href="{{ url('otp_export_index') }}">Export claims</a></li>
+                    {% endif %}
+                </ul>         
+            </li>
+
+            {% if  is_granted('ROLE_CLAIMS_ADMIN') %}            
+                <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "ADMIN_COMPENSATION_GRADES" or selectedSidebar == "ADMIN_DROP_BATCH" or selectedSidebar == "ADMIN_BATCHES_MANAGEMENT"  or selectedSidebar == "ADMIN_LOGS" or selectedSidebar == "ADMIN_DISRUPTION" or   selectedSidebar == "ADMIN_FACTORISATIONS" or selectedSidebar == "ADMIN_SECTOR_PAY") %}open active{% endif %}"><a href="#"><i class="icon-cogs"></i> <span>Administration</span> <i class="arrow icon-chevron-right"></i></a>
+                    <ul>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "ADMIN_DISRUPTION" %}active current-page{% endif %}"><a href="{{ url('admin_otp_disruptions_index') }}">Disruptions</a></li>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "ADMIN_FACTORISATIONS" %}active current-page{% endif %}"><a href="{{ url('admin_otp_factorisations_index') }}">Factorisations</a></li>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "ADMIN_SECTOR_PAY" %}active current-page{% endif %}"><a href="{{ url('admin_otp_sector_pay_index') }}">Sector pay</a></li>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "ADMIN_COMPENSATION_GRADES" %}active current-page{% endif %}"><a href="{{ url('admin_otp_compensation_grades_index') }}">Compensation grades</a></li>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "ADMIN_BATCHES_MANAGEMENT" %}active current-page{% endif %}"><a href="{{ url('admin_otp_batches_index') }}">Batches management</a></li>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "ADMIN_LOGS" %}active current-page{% endif %}"><a href="{{ url('admin_otp_logs_index') }}">Logs</a></li>
+                        
+                    </ul>
+                </li>
+            {% endif %}
+            
+        </ul>
+    </div>
+
+{% endblock sidebar %}
+
+{% block container %}    	
+<div id="content">
+    Bienvenue dans la gestion des heures de travail
+</div>            
+{% endblock container %}

@@ -1,0 +1,26 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/build/runtime.725dd7e0.js",
+        "/build/503.3ae510b0.js",
+        "/build/880.ad6e385c.js",
+        "/build/app.f5acc111.js"
+      ],
+      "css": [
+        "/build/app.9d66aa64.css"
+      ]
+    },
+    "sfsu": {
+      "js": [
+        "/build/runtime.725dd7e0.js",
+        "/build/503.3ae510b0.js",
+        "/build/698.a8cae1d7.js",
+        "/build/sfsu.0e92d145.js"
+      ],
+      "css": [
+        "/build/sfsu.c0eb6e86.css"
+      ]
+    }
+  }
+}

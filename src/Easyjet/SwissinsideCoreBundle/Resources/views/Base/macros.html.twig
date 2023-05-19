@@ -1,0 +1,105 @@
+{% macro show_general_menu(menuItemsList, selectedItem) %}
+    <ul id="swissinside-applications">
+        {% for item in menuItemsList %}
+        {% set appName = item.name %}
+        {% if item.initials == "UM" and (item.transition_status == "after" or item.transition_status == "current") and item.right_level == 1 %}
+            {% set appName = "Home" %}
+        {% endif %}
+
+        {% if item.initials == "UM" and easyjetEnv != "swissinside" %}
+            {% set appName = "Home" %}
+        {% endif %}
+        
+        {% if item.initials == "BR" %}
+            {% set appName = "SWITSS" %}
+        {% endif %}
+
+        <li class="{{ item.initials == selectedItem ? "active" : "" }}"><a href="{{ item.link }}"><i class="{{ item.icon }}"></i>{{ appName }}</a></li>
+        {% endfor %}
+        {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+                <li id="logout-button"><a href="{{ url('_swissinside_logout') }}"><i class="icon-off"></i>Logout</a></li>
+        {% else %}
+                <li class="active"><a href="{{ url('index') }}"><i class="icon-home"></i>Back home</a></li>
+        {% endif %}
+    </ul>
+
+    {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+    <div class="dropdown" id="my-profile-button">
+      <a href="#" class="btn btn-danger" data-toggle="dropdown"><i class="icon-user"></i> {{ app.user.getAuthname() }} <span class="caret"></span></a>
+      <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
+          {% if app.session.get('user_switch_allowed') %}
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:swissinside.switch_user()"><i class="icon-rotate-right"></i> Switch user</a></li>
+          {% endif %}
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ url('_swissinside_logout') }}"><i class="icon-off"></i> Logout</a></li>
+      </ul>
+    </div>
+    {% endif %}
+{% endmacro %}
+
+
+{% macro wizz() %}
+    {% for flashMessage in app.session.flashbag.get('error') %}
+        <div class="alert alert-danger">
+                <button class="close" data-dismiss="alert">×</button>
+                <strong>Notice</strong> {{ flashMessage }}.
+        </div>
+    {% endfor %}
+    {% for flashMessage in app.session.flashbag.get('success') %}
+        <div class="alert alert-success">
+                <button class="close" data-dismiss="alert">×</button>
+                <strong>Success</strong> {{ flashMessage }}.
+        </div>
+    {% endfor %}
+
+    {% for flashMessage in app.session.flashbag.all() %}
+        <div class="alert alert-info">
+                <button class="close" data-dismiss="alert">×</button>
+                <strong>Info</strong> {{ flashMessage[0] }}.
+        </div>
+    {% endfor %}
+{% endmacro %}
+
+
+{% macro display_error(form) %}
+    {% import _self as forms %}
+
+    {% set nb = 0 %}
+    {% for child in form %}
+        {% if not child.vars.valid %}
+            {% set nb = nb +1 %}
+        {% endif %}
+    {% endfor %}
+
+    {% if nb > 0 %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="alert alert-danger">
+                <p>The following fileds has errors. Please check your form values before to submit it again.</p>
+                <ul>
+                    {% for child in form %}
+                        {% if not child.vars.valid %}
+                            <li>
+                                {% if child.vars.compound and not child.vars.valid %}
+                                    {{ child.vars.label|trans|capitalize }}:
+                                    {{ forms.display_error(child) }}
+                                {% else %}
+                                    <h5>
+                                        <a href="#{{ child.vars.id }}">
+                                            {{ child.vars.label|trans|capitalize }}:
+                                        </a>
+                                        <small>
+                                            {% for error in child.vars.errors %}
+                                                {{ error.message|capitalize }}
+                                            {% endfor %}
+                                        </small>
+                                    </h5>
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endmacro %}

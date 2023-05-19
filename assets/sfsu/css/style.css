@@ -1,0 +1,46 @@
+#upload-zone {
+    text-align: center;
+}
+#upload-zone.in {
+    background-color: #DDD;
+}
+
+#upload-zone.fade {
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    opacity: 1;
+}
+
+.very-big-icon {
+    font-size: 80px;
+    color: #999;
+}
+
+.message {
+    word-wrap: break-word;
+}
+
+#sfsu_file_mail_form_mailContent {
+    height: 200px;
+}
+
+.show-hide-logs:hover {
+    cursor: pointer;
+}
+
+.show-hide-logs {
+    color: #666;
+    font-size: 20px;
+    line-height: 33px;
+    margin-right: 10px;
+    transform: rotate( 0deg );            
+    transition: transform 150ms ease;
+}
+
+.show-hide-logs.inversed {
+    transform: rotate( -180deg );            
+    transition: transform 150ms ease;
+}

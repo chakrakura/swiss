@@ -1,0 +1,35 @@
+<?php //App%255CEasyjet%255COtpBundle%255CEntity%255CExportLog%2524exportDate
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Symfony\\Component\\Validator\\Constraints\\Date'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Validator\\Constraints\\Date')),
+        clone ($p['Doctrine\\ORM\\Mapping\\Column'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Mapping\\Column')),
+    ],
+    null,
+    [
+        'stdClass' => [
+            'groups' => [
+                [
+                    'Strict',
+                ],
+            ],
+            'name' => [
+                1 => 'export_date',
+            ],
+            'type' => [
+                1 => 'datetime',
+            ],
+            'precision' => [
+                1 => null,
+            ],
+            'scale' => [
+                1 => null,
+            ],
+        ],
+    ],
+    [
+        $o[0],
+        $o[1],
+    ],
+    []
+); }];

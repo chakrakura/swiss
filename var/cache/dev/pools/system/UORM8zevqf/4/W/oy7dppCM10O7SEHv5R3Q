@@ -1,0 +1,22 @@
+<?php //App%255CEasyjet%255CHrisBundle%255CController%255CCrewUserReportController%2523indexAction
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (\Symfony\Component\VarExporter\Internal\Registry::$prototypes['Symfony\\Component\\Routing\\Annotation\\Route'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Routing\\Annotation\\Route')),
+    ],
+    null,
+    [
+        'Symfony\\Component\\Routing\\Annotation\\Route' => [
+            'path' => [
+                '/crew_user_report/index',
+            ],
+            'name' => [
+                'crew_user_report_index',
+            ],
+        ],
+    ],
+    [
+        $o[0],
+    ],
+    []
+); }];

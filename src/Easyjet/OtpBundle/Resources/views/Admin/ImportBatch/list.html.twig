@@ -1,0 +1,100 @@
+{% extends '@EasyjetOtp/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %} Batches list {% endblock %}
+{% block specificJs %}{{ parent() }}
+
+{% set dropUrl = url('admin_otp_batch_drop', {"batch" : "0"} ) %}
+
+{% set csrfOtpManagement = csrf_token('admin_otp_management') %}
+
+<script type="text/javascript">
+
+    $(function() {
+
+    swissinside.simpleDataTable($("#otp-list"), {
+            pagingType: 'full_numbers',
+        });
+    });  
+
+    var otp_remove_batch = function(id) {
+        bootbox.confirm("This will remove an entire import. Are you really sure to proceed ?", function(validation) {
+            if (validation === true) {
+                var url = "{{ dropUrl }}" + id + "?_token={{ csrfOtpManagement }}";
+                window.location.href = url;
+            }
+        });
+    };
+
+    var otp_publish_status = function(id, status) {
+        var url = "/OTP/admin/batch/publish/" + id + '/' + status;
+        window.location.href = url + "?_token={{ csrfOtpManagement }}";
+    };
+
+</script>
+
+{% endblock %}
+
+
+{% block container %}
+
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Batches management</h1>  
+        <div id="description_help">
+            Here you can enable / disable batches access. Change read only mode or remove any import batch (you can remove only batches which does not have any data yet).
+        </div>
+    </div>
+
+
+    <!-- Results to show -->
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>        
+
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Batches list</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="otp-list">
+                        <thead>
+                            <tr>
+                                <th>Import date</th>
+                                <th>Cvp month</th>
+                                <th>Effective date</th>
+                                <th>Imported by</th>
+                                <th>Published</th>
+                                <th>Locked</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in batches %}
+                                <tr>
+                                    <td>{{ item.importDate|date("d M Y") }}</td>
+                                    <td>{{ item.cvpMonth|date("d M Y") }}</td>
+                                    <td>{{ item.effectiveDate|date("d M Y") }}</td>
+                                    <td>{{ item.importedBy }}</td>
+                                    <td>{{ item.published ? 'Yes' : 'No' }}</td>
+                                    <td>{{ item.locked ? 'Yes' : 'No' }}</td>
+                                    <td>
+                                        <a href="javascript:otp_publish_status('{{item.id}}', '{{ item.published ? '0' : '1'}}');" class="btn {{ item.published ? 'btn-primary' : 'btn-default'}} "><i class="icon-{{ item.published ? 'eye-close' : 'eye-open' }}"></i> {{ item.published ? 'Unpublish' : 'Publish'}}</a>
+                                        <a href="javascript:otp_remove_batch('{{ item.id }}')" class="btn btn-danger"><i class="icon-trash"></i> Remove</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+            
+{% endblock container %}

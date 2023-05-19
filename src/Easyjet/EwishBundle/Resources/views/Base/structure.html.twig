@@ -1,0 +1,50 @@
+{% extends "@EasyjetSwissinsideCore/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block specificCss %}{{ parent() }}
+    
+{% endblock %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+    {{ parent() }}
+{% endblock header %}
+
+{% block generalMenu %}
+    <div id="header">
+        {{ macros.show_general_menu(generalMenuItems(), 'EW') }}
+        <a id="menu-trigger" href="#"><i class="icon-align-justify"></i></a>
+    </div>    
+{% endblock generalMenu %}
+
+
+{% block sidebar %}
+    <div id="sidebar">
+        <ul>
+            {% if is_granted("ROLE_EWISH_SIMPLE_USER") or is_granted("ROLE_EWISH_ADMIN") %}
+                <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "EWISHCALENDAR" or  selectedSidebar == "EWISHGDO" ) %}open active{% endif %}"><a href="{{url('ewish_index')}}"><i class="icon-calendar"></i> <span>eWish</span> <i class="arrow icon-chevron-right"></i></a>
+                    <ul>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "EWISHCALENDAR" %}active current-page{% endif %}"><a href="{{url('ewish_index')}}">Calendar</a></li>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "EWISHGDO" %}active current-page{% endif %}"><a href="{{ url('ewish_gdo_list') }}">GDO list</a></li>
+                        <li class=""><a href="http://swissinside.easyjet.com/wiki/index.php/EWish">How to use eWish</a></li>
+                    </ul>            
+                </li>
+            {% endif %}
+            {% if is_granted("ROLE_EWISH_ADMIN") %}
+                <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "SHOW_EMAILS" or selectedSidebar == "ADMIN"  or selectedSidebar == "RIGHTS") %}open active{% endif %}"><a href="{{url('ewish_admin_emails')}}"><i class="icon-cogs"></i> <span>Administration</span> <i class="arrow icon-chevron-right"></i></a>
+                    <ul>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_EMAILS" %}active current-page{% endif %}"><a href="{{url('ewish_admin_emails')}}">Emails</a></li>
+                    </ul>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+
+{% endblock sidebar %}
+
+{% block container %}    	
+<div id="content">
+    Bienvenue dans la gestion des heures de travail
+</div>            
+{% endblock container %}

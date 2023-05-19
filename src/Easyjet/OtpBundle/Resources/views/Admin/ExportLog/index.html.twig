@@ -1,0 +1,81 @@
+{% extends '@EasyjetOtp/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %} Logs List {% endblock %}
+{% block specificJs %}{{ parent() }}
+
+<script type="text/javascript">
+    $(function() {
+        swissinside.simpleDataTable($("#otp-log"), {
+            "aaSorting" : [[0, "desc"]],
+            "aoColumns" : [
+                null,
+                null,
+                null,
+                null,
+                null
+            ],
+        });
+    });
+    
+</script>
+{% endblock %}
+
+
+{% block container %}
+
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Export log</h1>  
+        <div id="description_help">
+            Here you can see the export log.
+        </div>
+    </div>
+
+
+    <!-- Results to show -->
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>        
+
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Export logs</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="otp-log">
+                        <thead>
+                            <tr>
+                                <th>Export date</th>
+                                <th>Export batch</th>                                
+                                <th>Exported by</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in logs %}
+                                <tr>
+                                    <td>{{ item.exportDate|date("d M Y H:i:s") }}</td>
+                                    <td>{{ item.batch }}</td>
+                                    <td>{{ item.user }}</td>
+                                    <td><span class="badge badge-{{ item.status == "warning" ? 'warning' : ''}}{{ item.status == "success" ? 'success' : ''}}{{ item.status == "error" ? 'danger' : ''}}">{{ item.status }}</span></td>
+                                    <td>
+                                        <a href="{{ url('admin_otp_logs_view', {'log' : item.id} ) }}" class="btn btn-primary "><i class="icon icon-eye-open"></i> View log</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+            
+{% endblock container %}

@@ -1,0 +1,46 @@
+{% extends "@EasyjetSwissinsideCore/Mail/structure.html.twig" %}
+
+{% block content %}
+
+{% autoescape false %}
+    <p>Dear SD, </p>
+    <p>This is to inform you that below users have been moved from swiss pay group. It is now requested to remove all the ad groups related to swissinside from AD for these users.</p>
+    <p>The related SwissInside AD groups are starting with : (EZS swissinside xwz)</p>
+    <p>Please proceed for the following users :</p>
+    
+    <h3>List of movers who will be marked as new leavers in swissinside</h3>
+    
+        {% if content|length %}
+            <table class="table table-bordered table-striped table-hover data-table" >
+                <thead>
+                    <tr>
+                        <th>Station</th>
+                        <th>Employee ID</th>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in content %}
+                        <tr>
+                            <td>{{ user.station }}</td>
+                            <td>{{ user.employeeId }}</td>
+                            <td>{{ user.firstname }}</td>
+                            <td>{{ user.lastname }}</td>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No new employee found</p>
+        {% endif %}
+
+    <p>
+        Best regards,<br>
+        Swissinside Robot
+    </p>
+{% endautoescape %}
+
+{% endblock %}

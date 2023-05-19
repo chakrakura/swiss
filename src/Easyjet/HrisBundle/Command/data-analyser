@@ -1,0 +1,180 @@
+#!/bin/bash
+
+set -e
+
+tmpfolder=$(mktemp -d)
+tmpmnt=$(mktemp -d)
+source $(dirname "${BASH_SOURCE[0]}")/../Config/config
+
+if [ -z ${cerFilenameFormat} ] || [ -z ${ProconceptDumpFileServer} ] || [ -z ${ProconceptDumpFilenameFormat} ] ; then
+  echo "Some variables are missing from ../config/config file, please add cerFilenameFormat, ProconceptDumpFileServer, ProconceptDumpFilenameFormat"
+  exit 1
+fi
+
+if [ -z "$1" ] ; then
+  echo -e "Error: please provide at least one of the following argument:
+    --compare-cer-to-uman
+    --compare-demographic-data-and-cer
+    --compare-proconcept-and-cer
+    --check-pay-element
+    --check-demo-data"
+  exit
+fi
+
+for i in "$@"; do
+  case "$i" in
+    --compare-cer-to-uman)
+      comparecertouman=true
+    ;;
+    --compare-demographic-data-and-cer)
+      comparedemographicdataandcer=true
+    ;;
+    --compare-proconcept-and-cer)
+      compareproconceptandcer=true
+    ;;
+    --check-pay-element)
+      checkpayelement=true
+    ;;
+    --check-demo-data)
+      checkdemodata=true
+    ;;
+    *)
+      echo "Error: option not recognized: $i"
+      exit 1
+    ;;
+  esac
+  shift
+done
+
+function cleanExit {
+
+  umount ${tmpmnt} 2>/dev/null
+  rm -f ${tmpfolder}/*
+  rmdir ${tmpfolder} ${tmpmnt}
+  exit $1
+
+}
+
+function debug {
+
+  ${debug} && echo " - $1" >&2
+
+}
+
+function check-file-folder {
+
+  filePattern=$1
+  fileDisplayName=$2
+
+  count=$(ls -1 ${tmpmnt}/${filePattern}* 2>/dev/null | wc -l)
+  debug "Number of files founded: $count"
+
+  case $count in
+    0)
+      echo "ERROR: ${fileDisplayName} file not found in the folder" >&2
+      cleanExit 1
+    ;;
+    1)
+      cp ${tmpmnt}/${filePattern}* ${tmpfolder}
+      fileName="$(ls -1 ${tmpfolder}/${filePattern}*)"
+
+      if [ ! -z $(echo "${fileName}" | grep pgp) ] ; then
+        debug "Founded pgp file ${fileName}, decrypting"
+        gpg --secret-keyring ${ejint096gpgPrivkeyfile} --recipient ${ejint096gpgPrivkeyfile} -d "${fileName}" > "${fileName%.*}"  || cleanExit 2
+        rm "${fileName}"
+        fileName="${fileName%.*}"
+      fi
+
+      echo "$fileName"
+    ;;
+    *)
+      echo "ERROR: there is more than one ${fileDisplayName} file in the folder" >&2
+      ls ${tmpmnt}/${filePattern}*
+      cleanExit 1
+    ;;
+  esac
+
+}
+
+# Mount SGWI FTP server
+debug "Mounting SafeGuard FTP server on ${tmpmnt}"
+chmod 700 ${ejint096serverIdentityKeyFile}
+debug "sshfs -o IdentityFile=${ejint096serverIdentityKeyFile} ${ejint096serverUsername}@${ejint096serverAddress}:${ejint096serverPath} $tmpmnt"
+sshfs -o IdentityFile=${ejint096serverIdentityKeyFile} ${ejint096serverUsername}@${ejint096serverAddress}:"${ejint096serverPath}" $tmpmnt ; ret=$?
+if [ ! "${ret}" = 0 ] ; then
+  echo "An error has occured during the FTP mount, operation cancelled"
+  cleanExit 2
+fi
+
+# Get the CER file and decrypt it
+if [ "$comparecertouman" = true -o "$comparedemographicdataandcer" = true -o "$compareproconceptandcer" = true ] ; then
+  cerFile="$(check-file-folder "${cerFilenameFormat}" CER)"
+  debug "Founded cer file: ${cerFile}"
+fi
+
+# Get the demographic PGP file from FTP
+if [ "$comparedemographicdataandcer" = true -o "$checkpayelement" = true -o "$checkdemodata" = true ] ; then
+  demoAndElementsFile="$(check-file-folder "${gpgFilenameFormat}" DemoAndElement)"
+  debug "Founded DemoAndElement file: ${demoAndElementsFile}"
+  zipfiles=$(unzip -o ${demoAndElementsFile} -d $tmpfolder/)
+  debug "Deleting the zip file ${demoAndElementsFile}"
+  rm -f ${demoAndElementsFile}
+  demodataFile="$(ls -1 ${tmpfolder} | grep "${demographicFilenameFormat}")"
+  if [ -z "$demodataFile" ] ; then
+    echo "DemoData file not found in the zip"
+    cleanExit 1
+  else
+    debug "DemoData found: $demodataFile"
+  fi
+  payElementFile="$(ls -1 ${tmpfolder} | grep "${payelementFilenameFormat}")"
+  if [ -z "$payElementFile" ] ; then
+    echo "PayElement file not found in the zip"
+    cleanExit 1
+  else
+    debug "PayElement found: $payElementFile"
+  fi
+fi
+
+umount ${tmpmnt}
+
+# Mount HR server
+if [ "$compareproconceptandcer" == true ] ; then
+  debug "Mounting HR server on ${tmpmnt}"
+  mount -t cifs "${ProconceptDumpFileServer}" ${tmpmnt} -o username=$payelementserverUsername,password=$payelementserverPassword ; ret=$?
+  if [ ! "${ret}" = 0 ] ; then
+    echo "Unable to mount FTP server"
+    cleanExit 2
+  fi
+    proconceptFile="$(check-file-folder "${ProconceptDumpFilenameFormat}" ProconceptDump)"
+    debug "Founded ProconceptDump file: ${proconceptFile}"
+fi
+
+if [ "$comparecertouman" == true ] ; then
+  args="${args} --compare-cer-to-uman=${cerFile}"
+fi
+
+if [ "$comparedemographicdataandcer" == true ] ; then
+  args="${args} --compare-demographic-data-and-cer --demographic-file=${demodataFile} --cer-file=${cerFile}"
+fi
+
+if [ "$compareproconceptandcer" == true ] ; then
+  args="${args} --compare-proconcept-and-cer --proconcept-file=${proconceptFile} --cer-file=${cerFile}"
+fi
+
+if [ "$checkpayelement" == true ] ; then
+  args="${args} --pay-elements-file=${payElementFile}"
+fi
+
+if [ "$checkdemodata" == true ] ; then
+  args="${args} --demographic-data-file=${demodataFile}"
+fi
+
+debug "Running easyjet:data-analyzer ${args}"
+
+pushd $tmpfolder >/dev/null
+/usr/bin/php /usr/share/swissinside/app/console easyjet:data-analyzer ${args}
+popd >/dev/null
+
+chown apache -R /data02/hris/
+
+cleanExit 0

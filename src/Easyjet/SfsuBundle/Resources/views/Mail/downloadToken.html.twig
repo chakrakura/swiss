@@ -1,0 +1,16 @@
+{% extends "@EasyjetSwissinsideCore/Mail/structure.html.twig" %}
+
+{% block content %}
+
+<h4>Hello, </h4>
+
+<p>Attached you will find your link to download the file "{{ token.file.originalFilename }}".</p>
+<p>Just click the following link to start the download<br>
+<a href="{{ swissinside_prefix }}{{ path('sfsu_download_link_confirm_key', {'accessKey': token.file.accessKey, 'token': token.token, 'token_request' : token.requestId }) }}">Download "{{ token.file.originalFilename }}"</a>
+</p>
+
+<p>Kind regards,</p>
+<p>Swissinside Robot</p>
+
+
+{% endblock %}   

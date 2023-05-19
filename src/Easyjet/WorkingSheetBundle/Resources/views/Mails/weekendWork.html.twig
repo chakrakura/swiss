@@ -1,0 +1,74 @@
+{% extends "EasyjetSwissinsideCoreBundle:Mail:structure.html.twig" %}
+
+{% block content %}
+
+<h4>Dear Manager, </h4>
+
+<p><strong>{{ entity.workedByUser }}</strong> who is under your responsability reported working time over the weekend. Please find hereafter the details about his report :</p>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon">
+                    <i class="icon-th"></i>
+                </span>
+                <h5>Working day details</h5>
+            </div>
+            <div class="widget-content">
+                <div class="">
+                    <label class="control-label">Working date</label>
+                    <div class="controls">
+                        <span class="help-block-inalterable text-left">{{ entity.workingDate|date('d/m/Y') }}</span> 
+                    </div>
+                </div>
+                <div class="">
+                    <label class="control-label">Morning from</label>
+                    <div class="controls">
+                        <span class="help-block-inalterable text-left">{{ entity.morningFrom ? entity.morningFrom|date('H:i') : "-" }}</span> 
+                    </div>
+                </div>
+                <div class="">
+                    <label class="control-label">Morning to</label>
+                    <div class="controls">
+                        <span class="help-block-inalterable text-left">{{ entity.morningTo ? entity.morningTo|date('H:i') : "-" }}</span> 
+                    </div>
+                </div>
+                <div class="">
+                    <label class="control-label">Afternoon from</label>
+                    <div class="controls">
+                       <span class="help-block-inalterable text-left">{{ entity.afternoonFrom ? entity.afternoonFrom|date('H:i') : "-" }}</span>
+                    </div>
+                </div>
+                <div class="">
+                    <label class="control-label">Afternoon to</label>
+                    <div class="controls">
+                       <span class="help-block-inalterable text-left">{{ entity.afternoonTo ? entity.afternoonTo|date('H:i') : "-" }}</span>
+                    </div>
+                </div>
+                <div class="">
+                    <label class="control-label">Is day off</label>
+                    <div class="controls">
+                       <span class="help-block-inalterable text-left">
+                           {% if entity.isHolliday == 1 %}<span class="badge badge-success">Full day</span>
+                            {% elseif entity.isHolliday == 0.5 %}<span class="badge badge-success">Half a day</span>
+                           {% else %}<span class="badge badge-danger">No</span>
+                           {% endif %}</span>
+                    </div>
+                </div>
+                <div class="">
+                    <label class="control-label">Is bank holliday</label>
+                    <div class="controls">
+                       <span class="help-block-inalterable text-left">{% if entity.isBankHolliday %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-danger">No</span>{% endif %}</span>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<p>Kind regards,</p>
+<p>Swissinside Robott</p>
+
+
+{% endblock %}   

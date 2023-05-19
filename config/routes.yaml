@@ -1,0 +1,50 @@
+easyjet_swissinside_core:
+    resource: "@EasyjetSwissinsideCoreBundle/Controller/"
+    type:     annotation
+    prefix:   /
+    
+easyjet_working_sheet:
+  resource: "@EasyjetWorkingSheetBundle/Controller/"
+  type:     annotation
+  prefix:   /working-sheet/
+
+easyjet_epayslip:
+  resource: "@EasyjetEpayslipBundle/Controller/"
+  type:     annotation
+  prefix:   /EPAYSLIP/
+
+easyjet_ewish:
+  resource: "@EasyjetEwishBundle/Controller/"
+  type:     annotation
+  prefix:   /EWISH/
+  
+easyjet_uman:
+  resource: "@EasyjetUmanBundle/Controller/"
+  type:     annotation
+  prefix:   /uman/
+
+easyjet_hris:
+  resource: "@EasyjetHrisBundle/Controller/"
+  type:     annotation
+  prefix:   /HRIS/
+
+easyjet_eleave:
+  resource: "@EasyjetEleaveBundle/Controller/"
+  type:     annotation
+  prefix:   /ELEAVE/
+
+easyjet_otp:
+  resource: "@EasyjetOtpBundle/Controller/"
+  type:     annotation
+  prefix:   /OTP/
+
+easyjet_fdtr:
+  resource: "@EasyjetFdtrBundle/Controller/"
+  type:     annotation
+  prefix:   /FDTR/
+
+easyjet_sfsu:
+  resource: "@EasyjetSfsuBundle/Controller/"
+  type:     annotation
+  prefix:   /SFSU/  
+

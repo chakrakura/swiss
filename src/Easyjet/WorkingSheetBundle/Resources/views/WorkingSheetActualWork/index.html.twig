@@ -1,0 +1,224 @@
+{% extends '@EasyjetWorkingSheet/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+{% block specificJs %}{{ parent() }}
+    
+{% set actualWorkShowUrl = url('working_sheet_actual_work_show', {"id" : ":id"} ) %}
+{% set actualWorkEditUrl = url('working_sheet_actual_work_edit', {"id" : ":id"} ) %}
+    
+    
+
+<script>
+
+    $(function() {
+        var user = $("#workingsheetUser").val();
+        var workingHistoryFrom = $("#workingHistoryFrom").val();
+        var workingHistoryTo = $("#workingHistoryTo").val();
+        
+        var globalData = null;
+        
+        var actualWorkShowUrl = '{{ actualWorkShowUrl }}';
+        var actualWorkEditUrl = '{{ actualWorkEditUrl }}';
+
+        $('#workingsheet-list').on('preXhr.dt', function ( e, settings, data ) {
+            data.selectionedUser = user;
+            data.workingHistoryFrom = workingHistoryFrom;
+            data.workingHistoryTo = workingHistoryTo;
+            
+           
+            globalData = data;
+            return data;
+        });    
+
+        swissinside.simpleDataTable($("#workingsheet-list"), {
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "{{ url('workingsheet_list_search') }}",
+            "aoColumns" : [
+                null, // Empno
+                null, // First name
+                null, // Last name
+                null, // Working  date
+
+                {"bSortable": false}, // Morning From
+                {"bSortable": false}, // Morning To
+                {"bSortable": false}, // Afternoon From
+                {"bSortable": false}, // Afternoon To
+                {"bSortable": false}, // Total
+                {"bSortable": false}, // getIsHolliday
+                {"bSortable": false},// getIsBankHolliday
+                {"bSortable": false}, // id
+                {"bVisible":  false} // user id
+            ],
+            "aaSorting" : [[3, "desc"]],
+            "fnRowCallback" : function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                // Generate buttons
+                
+                
+                var isHolidayValue = aData[9];
+                switch (isHolidayValue) {
+                    case 1 :
+                        isHolidayValue = '<span class="badge badge-success">Full day</span>';
+                        break;
+                    case 0.5 :
+                        isHolidayValue = '<span class="badge badge-success">Half a day</span>';
+                        break;
+                    default :
+                        isHolidayValue = '<span class="badge badge-danger">No</span>';
+                        break;
+                }
+                
+                $("td:eq(9)", nRow).html(isHolidayValue);
+                
+                var isBankHolidayValue = aData[10];
+                isBankHolidayValue = (isBankHolidayValue)? '<span class="badge badge-success">Yes</span>' : '<span class="badge badge-danger">No</span>' ;
+                
+                $("td:eq(10)", nRow).html(isBankHolidayValue);
+                
+                var isLocked = aData[13];
+                if(isLocked){
+                    var urlShow = actualWorkShowUrl.replace(":id", aData[11]);
+                    isLocked = '<a href="' + urlShow + '"  class="btn btn-default">show</a>';
+                }
+                else{
+                    var urlEdit = actualWorkEditUrl.replace(":id", aData[11]);
+                    isLocked = '<a href="' + urlEdit + '" class="btn btn-default">Edit</a>';
+                }
+                    
+                $("td:eq(11)", nRow).html(isLocked);
+                
+                
+                var $th = $(this).find("tr:first th");
+                $("td", nRow).each(function(id, field) {
+                    if($th.eq(id).hasClass("hidden-xs")) $(this).addClass('hidden-xs');
+                });
+  
+            }
+        });  
+
+    $("#get-csv-btn").on("click", function() {
+            if (!globalData) { return ; }
+            var url = "{{ url('workingsheet_generate_csv') }}?" + $.param(globalData);
+            $(this).attr("disabled", "disabled");
+            $(this).text("Please change top filter to download new csv ...");
+            window.location.href = url;
+        });
+    });
+
+ 
+</script>
+{% endblock specificJs %}
+
+
+{% block container -%}
+    <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">Your working history list</h1>  
+            <div id="description_help">List of all you working days. Thanks to adjust the working time if they are different to the one you specified on your active pattern.</div>
+        </div>
+        
+        
+
+        <div class="row">
+            <div class="col-xs-12">
+                {{ macros.wizz() }}
+            </div>
+            <div class="col-xs-12">
+                <a href="{{ path('working_sheet_actual_work_new') }}" class="btn btn-primary"><i class="icon-add"></i> 
+                    New working day
+                </a>
+            </div>
+        </div>
+                    
+        <!-- Search form -->
+        <form method="get" action="" class="form-horizontal">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="widget-box">
+                        <div class="widget-title">
+                            <span class="icon">
+                                <i class="icon-search"></i>
+                            </span>
+                            <h5>Search form</h5>
+                        </div>
+                        <div class="widget-content nopadding">
+
+                            {% if is_granted("ROLE_WORKING_SHEET_ADMIN") %}
+                                <div class="form-group">
+                                    <label class="control-label" for="workingsheetUser">User</label>
+                                    <div class="controls">
+                                        <input type="text" id="workingsheetUser" name="workingsheetUser" value="{{ workingsheetUser }}" class="form-control">
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="form-group">
+                                <label class="control-label" for="workingHistoryFrom">From</label>
+                                <div class="controls">
+                                    <input type="text" id="workingHistoryFrom" name="workingHistoryFrom" value="{{ workingHistoryFrom }}" class="form-control" data-enable-datepicker="true">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label" for="workingHistoryTo">To</label>
+                                <div class="controls">
+                                    <input type="text" id="workingHistoryTo" name="workingHistoryTo" value="{{ workingHistoryTo }}" class="form-control" data-enable-datepicker="true">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary"><i class="icon-search"></i> Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>           
+            </div>
+
+        </form>
+                                
+         
+        <!-- Results to show -->
+        <div class="row">
+          <div class="col-xs-12">
+              {{ macros.wizz() }}
+          </div>       
+          <div class="col-xs-12">
+              <div class="widget-box">
+                  <div class="widget-title">
+                      <span class="icon">
+                          <i class="icon-th"></i>
+                      </span>
+                      <h5>List of working days</h5>
+                  </div>
+                  <div class="widget-content nopadding">
+                      <table width="100%" class="table table-bordered table-striped table-hover data-table" id="workingsheet-list">
+                          <thead>
+                              <tr>
+                                  <th>Empno</th>
+                                  <th>First name</th>
+                                  <th>Last name</th>
+                                  <th>Date</th>
+                                  <th>Morning From</th>
+                                  <th>Morning To</th>
+                                  <th>Afternoon From</th>
+                                  <th>Afternoon To</th>
+                                  <th>Total</th>
+                                  <th>Off</th>
+                                  <th>Bank holliday</th>
+                                  <th style="width:5%;">Actions</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                          
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+       </div>
+        <div class="row">
+            <div class="col-xs-12">
+            <button id="get-csv-btn" class="btn btn-success pull-right"><i class="icon-download"> Get CSV</i></button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

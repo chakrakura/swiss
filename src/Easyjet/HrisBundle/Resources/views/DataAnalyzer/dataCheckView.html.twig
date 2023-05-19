@@ -1,0 +1,102 @@
+{% extends '@EasyjetHris/Base/structure.html.twig' %}
+
+{% block specificJs %}{{ parent() }}
+
+{% endblock specificJs %}
+
+
+
+{% block container %}
+
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Data check result for the command ran {{ dataCheck.scriptTime|date('F jS Y - H:i') }}.</h1>
+        <div id="description_help">Hereafter, the details about the selected dataCheck.</div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Data check details</h5>
+                </div>
+                <div class="widget-content">
+
+                    <div class="form-group">
+                        <label class="control-label">Synchronization reference</label>
+                        <div class="controls">
+                            <span class="help-block-inalterable text-left">
+                                EJINT0096
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Script time</label>
+                        <div class="controls">
+                            <span class="help-block-inalterable text-left">
+                                {{ dataCheck.scriptTime|date('F jS Y - H:i') }}&nbsp;
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Command</label>
+                        <div class="controls">
+                            <span class="help-block-inalterable text-left">
+                                <code>{{ dataCheck.command }}</code>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Script status</label>
+                        <div class="controls">
+                            <span class="help-block-inalterable text-left">
+                                {% if dataCheck.status == "NO_FILE_TO_PARSE" %}
+                                    <span class="badge badge-success">No file to parse</span>
+                                {% elseif dataCheck.status == "FAILED" %}
+                                    <span class="badge badge-danger">Failed</span>
+                                {% elseif dataCheck.status == "WARNING" %}
+                                    <span class="badge badge-warning">Warning</span>
+                                {% elseif dataCheck.status == "SUCCESS" %}
+                                    <span class="badge badge-success">Success</span>
+                                {% else %}
+                                    <span class="badge badge-info">{{ dataCheck.status }}</span>
+                                {% endif %}
+                                &nbsp;
+                            </span>
+                        </div>
+                    </div>
+
+
+                    {% if dataCheck.xlsFile %}{% endif %}
+                    <div class="form-group">
+                        <label class="control-label">Data check xls file</label>
+                        <div class="controls">
+                            <span class="help-block-inalterable text-left">
+                                <a href="{{ url('data_analyzer_xls_dl', {dataCheck: dataCheck.id}) }}" class="btn btn-success"><i class="icon-download"></i> Download Xls</a>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Script log content</label>
+                        <div class="controls">
+                            <span class="help-block-inalterable text-left">
+                                <pre>{{ dataCheck.scriptLogContent }}</pre>&nbsp;
+                            </span>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock container %}

@@ -1,0 +1,91 @@
+{% extends '@EasyjetOtp/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Disruptions list{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+
+<script>
+    
+    $(function() {
+        swissinside.simpleDataTable($("#disruptions-list"), {
+            pagingType: 'full_numbers',
+        });
+       
+        $("body").on("click", "a[data-remove-item]",function(e) { 
+            e.preventDefault();
+            var url = $(this).attr("href");
+            bootbox.confirm("Do you really want remove this disruption ?", function(result) {
+                if (result) {
+                    window.location.href = url;
+                };
+                
+            });
+        });
+    });  
+    
+</script>
+{% endblock specificJs %}
+
+
+{% block container %}
+        
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Default values</h1>  
+        <div id="description_help">
+            Here you can specify the list of disruptions and associate them with uman contracts.
+        </div>
+    </div>
+
+
+    <!-- Results to show -->
+    <div class="row">
+
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>   
+
+        <div class="col-xs-12">
+            <a href="{{ url('admin_otp_disruption_new') }}" class="btn btn-primary">New Disruption</a>
+        </div>
+
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Disruptions list</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="disruptions-list">
+                        <thead>
+                            <tr>
+                                <th>Cabin value</th>
+                                <th>Pilot value</th>
+                                <th>Effectivity date</th>
+                                <th style="width:20%;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in tableData %}
+                                <tr>
+                                    <td>{{ row.getMontantCabin }}</td>
+                                    <td>{{ row.getMontantPilot }}</td>
+                                    <td>{{ row.getDateEffectivite | date('d/m/Y') }}</td>
+                                    <td>
+                                        <a href="{{ url('admin_otp_disruption_edit', {'disruption' : row.id}) }}" class="btn btn-default">Edit</a>
+                                        <a href="{{ url('admin_otp_disruption_del', {'disruption' : row.id}) }}" class="btn btn-danger" data-remove-item="">Remove</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+            
+{% endblock container %}

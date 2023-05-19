@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>Mail</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+.menu 
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	color:black;
+	font-size:10px; 
+}
+
+.info
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-style:italic ;
+	color:#006666 ;
+}
+
+.texte_normal
+{
+	color:#000000; 
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:12px;
+}
+	
+
+.menu a
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif; 
+	color:#000000
+}
+
+.menu a:hover
+{
+	color:#ff6600
+}
+
+.menu_tableau
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	color:white;
+	font-size:10px; 
+}
+
+.menu_tableau a
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	color:white;
+	font-size:10px; 
+	text-decoration:none;
+}
+
+.menu_tableau a:hover
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	color:black;
+	font-size:10px; 
+	text-decoration:none;
+}
+
+
+
+
+.ajouts
+{
+	color:black; 
+	text-decoration:none;
+	font-size:10px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+td.normal
+{
+	background-color:#E9E9E9;
+}
+
+td.fonce
+{
+	background-color:#CECECE;
+}
+
+
+.ajouts a
+{
+	color:black; 
+	text-decoration:none;
+	font-size:10px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+.ajouts a:hover 
+{
+	color:#ff6600;
+}
+
+
+
+</style>
+</head>
+
+<body>
+
+<p>%nom_prenom% has made the following request. We are sorry to inform you that none of his/her choices were granted. The crew has been informed by email</p>
+
+<p>You will find the holidays details below</p>
+
+<p>If you have any query on this email, please respond to Swiss Rostering : <a href="mailto:swissrostering@easyjet.com.">swissrostering@easyjet.com.</a>. Thank you</p>
+
+<p>Best regards<br />
+The rostering team</p>
+
+<div  style="text-align:center">
+  <table width="480"  border="1" cellpadding="0" cellspacing="0" bordercolor="#ff6600" style="border-collapse:collapse ">
+    <tr>
+      <td><table width="100%" border="0" cellspacing="1" cellpadding="0">
+          <tr bgcolor="#ff6600">
+            <td colspan="2" align="left" valign="top" class="menu_tableau">eLeave request refused {{ date }}: </td>
+          </tr>
+          <tr class="ajouts">
+            <td align="left" valign="top" class="fonce">Refuse reason : </td>
+            <td class="normal">{{ refuse }}</td>
+          </tr>
+          <tr class="ajouts">
+            <td width="200" align="left" valign="top" class="fonce">Total leave days due : </td>
+            <td class="normal">{{ totalLeaveDayDue }}</td>
+          </tr>
+		  <tr class="ajouts">
+            <td width="200" align="left" valign="top" class="fonce">Leave request period : </td>
+            <td class="normal">{{ choice1 }}<br />
+              {{ choice2 }}<br />
+              {{ choice3 }}</td>
+          </tr>
+          <tr class="ajouts">
+            <td align="left" valign="top" class="fonce">Total leave days confirmed : </td>
+            <td class="normal">{{ totalLeaveDayConfirmed }}</td>
+          </tr>
+          <tr class="ajouts">
+            <td align="left" valign="top" class="fonce">Total leave days taken : </td>
+            <td class="normal">{{ totalLeaveDayTaken }}</td>
+          </tr>
+          <tr class="ajouts">
+            <td align="left" valign="top" class="fonce">Remaining leave : </td>
+            <td class="normal">{{ remainingLeave }}</td>
+          </tr>
+          <tr class="ajouts">
+            <td align="left" valign="top" class="fonce">Remaining request : </td>
+            <td class="normal">{{ remainingRequest }}</td>
+          </tr>
+      </table></td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

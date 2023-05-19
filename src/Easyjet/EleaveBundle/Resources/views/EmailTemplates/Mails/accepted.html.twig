@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Mail</title>
+<style type="text/css">
+.menu 
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	color:black;
+	font-size:10px; 
+}
+
+.info
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-style:italic ;
+	color:#006666 ;
+}
+
+.texte_normal
+{
+	color:#000000; 
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:12px;
+}
+	
+
+.menu a
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif; 
+	color:#000000
+}
+
+.menu a:hover
+{
+	color:#ff6600
+}
+
+.menu_tableau
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	color:white;
+	font-size:10px; 
+}
+
+.menu_tableau a
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	color:white;
+	font-size:10px; 
+	text-decoration:none;
+}
+
+.menu_tableau a:hover
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	color:black;
+	font-size:10px; 
+	text-decoration:none;
+}
+
+
+
+
+.ajouts
+{
+	color:black; 
+	text-decoration:none;
+	font-size:10px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+td.normal
+{
+	background-color:#E9E9E9;
+}
+
+td.fonce
+{
+	background-color:#CECECE;
+}
+
+
+.ajouts a
+{
+	color:black; 
+	text-decoration:none;
+	font-size:10px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+.ajouts a:hover 
+{
+	color:#ff6600;
+}
+
+
+
+</style>
+</head>
+
+<body>
+
+<p>Dear {{ wishResult.prenomUser }} {{wishResult.nomUser }}</p>
+<p>You have requested the following holidays requests :</p>
+<p>{{ wishResult.choice1 }}<br/>
+{{ wishResult.choice2 }}<br/>
+{{ wishResult.choice3 }}
+</p>
+<p>We are glad to inform you that the following choice has been granted :{{ wishResult.acceptedPeriod }}</p>
+<p>You will find your holidays details below</p>
+
+<p>If you have any query on this email, please respond to Swiss Rostering : <a href="mailto:swissrostering@easyjet.com.">swissrostering@easyjet.com.</a>. Thank you</p>
+
+<p>Best regards<br />
+The rostering team</p>
+<br />
+<br />
+
+<div style="text-align:center">
+  <table width="480"  border="1" cellpadding="0" cellspacing="0" bordercolor="#ff6600" style="border-collapse:collapse ">
+    <tr>
+      <td><table width="100%" border="0" cellspacing="1" cellpadding="0">
+         
+          <tr class="ajouts">
+            <td width="200" align="left" valign="top" class="fonce">Total leave days due : </td>
+            <td class="normal">{{ wishResult.totalLeaveDayDue }}</td>
+          </tr>
+          <tr class="ajouts">
+            <td align="left" valign="top" class="fonce">Total leave days confirmed : </td>
+            <td class="normal">{{ wishResult.totalLeaveDayConfirmed }}</td>
+          </tr>
+          <tr class="ajouts">
+            <td align="left" valign="top" class="fonce">Total leave days taken this year : </td>
+            <td class="normal">{{ wishResult.totalLeaveDayTaken }}</td>
+          </tr>
+          <tr class="ajouts">
+            <td align="left" valign="top" class="fonce">Remaining leave : </td>
+            <td class="normal">{{ wishResult.remainingLeave }}</td>
+          </tr>
+		  <tr class="ajouts">
+		    <td align="left" valign="top" class="fonce">Selected choice   : </td>
+		    <td class="normal"><p>{{ wishResult.acceptedPeriod }}</p></td>
+	      </tr>
+      </table></td>
+    </tr>
+  </table>
+</div>
+
+</body>
+</html>

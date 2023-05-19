@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# This script is launched from ../ServicesHrisImporterService.php
+#
+# Move gross to net file to the temporary folder (1st argument)
+# Return the error / or success message directly in the console and return
+#
+#
+# Code to return :
+# 0 - Success
+# 1 - Gross to file not present
+# 2 - Other error
+
+set -e
+
+source $(dirname "${BASH_SOURCE[0]}")/../Config/config
+
+tmpFolder=$(mktemp -d)
+
+echo "Mounting picofs folder in $tmpfolder..."
+echo "mount -t cifs $picofsPath $tmpFolder -o username=$picofsUsername,password=$picofsPassword ; ret=$?"
+#mount -t cifs "$picofsPath" "$tmpFolder" -o username="$picofsUsername",password="$picofsPassword" ; ret=$?
+mount -t cifs -o username=$picofsUsername,password=$picofsPassword "$picofsPath" $tmpFolder ; ret=$?
+
+
+echo "Starting swissinside command"
+php /usr/share/swissinside/app/console easyjet:import-picofs --overwrite $tmpFolder
+
+
+echo "Unmounting $tmpFolder"
+umount $tmpFolder
+
+echo "Deleting $tmpFolder"
+rmdir $tmpFolder

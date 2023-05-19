@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Swissinside{% endblock %}</title>
+		<meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {% block forceIe9Rendering %}
+            <meta http-equiv="X-UA-Compatible" content="IE=9,chrome=1" />
+        {% endblock forceIe9Rendering %}
+        
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block specificCss %}
+        {% endblock specificCss %}
+
+        {% block header%}
+           {# Block to include any other header directives #}
+        {% endblock header %}
+
+
+    </head>
+
+    <body class="not-ie {{ easyjetEnv == "swissinside" ? "theme-swissinside" : "theme-group" }}">
+        <div id="swissinside-header">
+            <div class="row">
+                <div class="col-xs-3 header-left hidden-xs">
+                    
+                    {% if easyjetEnv == "swissinside" %}
+                        <div class="logo-swissinside">Swissinside</div>
+                    {% else %}
+                        <div class="logo-swissinside"><img src="/image/logo-easyjet.png" /></div>
+                    {% endif %}
+                </div>
+                <div class="col-xs-9" id="external-apps-div">
+                    <ul id="external-apps">
+                        <li><a href="http://inside/infosafehub/Pages/index.html"><i class="icon-shield"></i>InfoSafe<br />&nbsp;</a></li>
+                        <li><a href="/wiki"><i class="icon-pushpin"></i>Wiki<br />&nbsp;</a></li>
+                        <li><a href="/external/inside"><i class="icon-briefcase"></i>Inside<br />&nbsp;</a></li>
+                        <li><a href="http://stafftravel.easyjet.com/asp/en/book/index.asp?lang=en"><i class="icon-plane"></i>Staff<br />travel</a></li>
+                        <li><a href="http://office.easyjet.com/"><i class="icon-envelope"></i>Crews<br />Emails</a></li>
+                        <li><a href="/external/crew-portal"><i class="icon-group"></i>Crew<br />portal</a></li>
+                        <li><a href="https://wd3.myworkday.com/easyjet/d/home.htmld"><i class="icon-extra-workday"></i>Human<br />resources</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        {% block generalMenu %}
+
+        {% endblock %}
+
+        {% block sidebar %}{% endblock sidebar %}
+        {% block container%}{% endblock container %}
+
+
+        <div class="row">
+			<div id="footer" class="col-xs-12">
+                
+				{{ "now"|date("Y") }} &copy; Designed and developed by <a href="https://www.soprasteria.com/">Sopra Steria</a>
+			</div>
+		</div>
+
+
+    </body>
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+
+    {% block specificJs %}
+    {% endblock specificJs %}
+
+</html>

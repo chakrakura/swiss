@@ -1,0 +1,11 @@
+parameters:
+
+    sfsu.storage_folder: /data02/sfsu/storage
+    sfsu.public_swissinside_prefix: "http://127.0.0.1:86"
+ 
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+

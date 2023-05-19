@@ -1,0 +1,44 @@
+{% extends 'EasyjetWorkingSheetBundle:Base:structure.html.twig' %}
+
+{% block container -%}
+    <h1>WorkingSheetUsers</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Occupation</th>
+                <td>{{ entity.occupation }}</td>
+            </tr>
+            <tr>
+                <th>Loguser</th>
+                <td>{{ entity.logUser }}</td>
+            </tr>
+            <tr>
+                <th>Prenomuser</th>
+                <td>{{ entity.prenomUser }}</td>
+            </tr>
+            <tr>
+                <th>Nomuser</th>
+                <td>{{ entity.nomUser }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('working_sheet_users') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('working_sheet_users_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

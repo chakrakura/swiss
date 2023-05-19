@@ -1,0 +1,3 @@
+<?php //App%255CEasyjet%255COtpBundle%255CEntity%255COtpRequest%2523getSectorAdjustment
+
+return [PHP_INT_MAX, []];

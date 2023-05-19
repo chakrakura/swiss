@@ -1,0 +1,22 @@
+<?php //App%255CEasyjet%255CSwissinsideCoreBundle%255CController%255CExternalController%2523crewPortalAction
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (\Symfony\Component\VarExporter\Internal\Registry::$prototypes['Symfony\\Component\\Routing\\Annotation\\Route'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Routing\\Annotation\\Route')),
+    ],
+    null,
+    [
+        'Symfony\\Component\\Routing\\Annotation\\Route' => [
+            'path' => [
+                '/external/crew-portal',
+            ],
+            'name' => [
+                'crew_portal',
+            ],
+        ],
+    ],
+    [
+        $o[0],
+    ],
+    []
+); }];

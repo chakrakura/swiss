@@ -1,0 +1,8 @@
+Hello,
+
+Attached you will find your link to download the file "{{ token.file.originalFilename }}".
+Use the following link in your browser to start the download :
+{{ swissinside_prefix}}{{ path('sfsu_download_link_confirm_key', {'accessKey': token.file.accessKey, 'token': token.token, 'token_request' : token.requestId }) }}
+
+Kind regards,
+Swissinside Robot

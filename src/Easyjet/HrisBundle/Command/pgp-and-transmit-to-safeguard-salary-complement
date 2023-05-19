@@ -1,0 +1,76 @@
+#!/bin/bash 
+#
+# This script is launched from ../ServicesHrisImporterService.php
+#
+#
+# First parameter represent the temporary folder where to retrieve the payslip and the grosstonet file
+# Second parameter represent the payslip month
+# Third parameter represent the payslip year
+# Fourth parameter represent the archive folder where the file has to be copied after being transmitted to proconcept
+#
+#
+# THIS SCRIPT SHOULDN'T RETURN CODE 0 IF ANYTHING GOES WRONG !
+
+set +e
+
+source $(dirname "${BASH_SOURCE[0]}")/../Config/config
+
+pstmpfolder=$1
+psmonth=$2
+psyear=$3
+archive=$4
+tmpfolder=$(mktemp -d)
+
+[ ! -z $archive ] || { echo "This command must have at least 4 arguments."; exit 1; }
+
+function cleanExit {
+
+  umount $tmpfolder 2>/dev/null
+  rmdir $tmpfolder
+  rm -f ${pstmpfolder}/*
+  rmdir ${pstmpfolder}
+  exit $1
+
+}
+
+function debug {
+
+  $debug && echo " - $1"
+
+}
+
+# Generate global filename
+currentTime=$(date +'%Y%m%d_%H.%M.%S')
+payslip="$archive/Pilots_sup_pay_employee-number_$2_$3_easyjetSwitzerland.zip"
+#grossNet="$archive/ProConceptglobal_$2_$3_$currentTime.zip"
+
+# Initial folder creation
+mkdir -p $archive
+
+echo "Creating zip of the salary compensation"
+( zip -j -q -r $payslip $pstmpfolder/*.pdf && rm -f $pstmpfolder/*.pdf ) || {
+  echo "Unable to make zip payslip file"
+  cleanExit 1
+}
+
+# Copy the archived file to the safeguard folder
+#mount -t cifs -o username=$safeguardserverUsername,password=$safeguardserverPassword $safeguardserverPath $tmpfolder ; ret=$?
+#chmod 700 ${ejint097BserverIdentityKeyFile}
+#debug "sshfs -o IdentityFile=${ejint097BserverIdentityKeyFile} ${ejint097BserverUsername}@${ejint097BserverAddress}:${ejint097BserverPath} $tmpfolder"
+#sshfs -o IdentityFile=${ejint097BserverIdentityKeyFile} ${ejint097BserverUsername}@${ejint097BserverAddress}:"${ejint097BserverPath}" $tmpfolder ; ret=$?
+debug "mount -t cifs -o username=${ejint097BserverUsername},password=${ejint097BserverPassword} //${ejint097BserverAddress}/${ejint097BserverPath} $tmpfolder"
+mount -t cifs -o username=$ejint097BserverUsername,password=$ejint097BserverPassword //$ejint097BserverAddress/$ejint097BserverPath $tmpfolder ; ret=$?
+if [ "$ret" = 0 ] ; then
+  echo "Uploading zip file to the shared folder ..."
+  cp $payslip $tmpfolder ; ret=$? || {
+    echo "Unable to copy zip files"
+    cleanExit 1
+  }
+else
+  echo "Unable to access to Safeguard server"
+  cleanExit 1
+fi
+
+# TEST IF FILE IS CORRECTLY COPIED AND RETURN A NON 0 EXIT CODE IF NOT.
+echo "Copying the file named 'ilots_sup_pay_employee-number_$2_$3_easyjetSwitzerland.zip' to the ftp"
+cleanExit 0

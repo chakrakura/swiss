@@ -1,0 +1,128 @@
+#sidebar {
+    > ul > li > a {
+        color: #555;
+        .EasyjetRoundedHeadline;
+    }
+
+    > ul > li.active a {
+        background-color: #2f2d31 !important;
+        color: #999 !important;
+    }
+}
+
+#header {
+    height: 100px;
+    z-index: auto;
+    position: static;
+}
+
+#content-header {
+    height: auto;
+    padding-bottom: 20px;
+}
+
+@media (max-width: @screen-phone) {
+    #header {
+        margin: auto;
+    }
+}
+
+@media (min-width: @screen-tablet-min) and (max-width: @screen-tablet) {
+    #header {
+        height: auto !important;
+        margin-top: 0 !important;
+    }
+}
+
+
+#menu-trigger {
+    color: white;
+    text-shadow: 0 0 0;
+    top: 25px !important;
+}
+
+.fixed #header {
+    background-color: @general-grey;
+    top: 36px;
+    li a {
+        color: @general-grey ;
+    }
+    li.active a {
+        color: #fff;
+    }
+}
+
+.fixed #menu-trigger {
+    top: 0 !important;
+    bottom: 0;
+    left: 1px;
+    padding: 11px 7px 9px 6px;
+    border-right: 1px solid #bbb;
+    box-shadow: 1px 0 0 0 #eee;
+    color: #666;
+}
+
+
+
+#sidebar > ul ul, #jPanelMenu-menu > ul ul {
+    display: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: 0 0 3px rgba(0,0,0,0.2) inset;
+    position: relative;
+    background-color: #efefef !important;
+}
+
+@media (max-width: @screen-sm) and (min-width: @screen-xs) {
+    #sidebar > ul ul, #jPanelMenu-menu > ul ul {
+        position: absolute;
+    }
+
+    #sidebar > ul ul {
+        position: initial;
+    }
+
+    #sidebar > ul li.submenu > ul {
+        display: none;
+        width: 250px;
+        position: absolute;
+        left: 50px;
+    }
+}
+
+
+
+#jPanelMenu-menu > ul > li > a {
+    color: #333  !important;
+}
+
+#jPanelMenu-menu > ul > li.active > a {
+    color: #ccc !important;
+    background-color: #333 !important;
+}
+
+
+
+#sidebar > ul > li.open ul, #jPanelMenu-menu > ul > li.open ul {
+    background-color: @general-grey;
+}
+
+#sidebar > ul li.active.current-page a {
+    color:@brand-info !important;
+}
+
+#footer {
+    color: #333;
+    text-shadow: 0 1px 0 #eee;
+    a {
+        color: #ff6600;
+    }
+}
+
+table.dataTable + div.fg-toolbar {
+    height: auto !important;
+}
+
+.select2-result-label {
+  white-space: normal;
+}

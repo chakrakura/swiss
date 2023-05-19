@@ -1,0 +1,10 @@
+.font-face (@fontname, @fontfile) {
+    @font-face {
+        font-family: @fontname;
+        src: url('../font/@{fontfile}-webfont.eot');
+        src: url('../font/@{fontfile}-webfont.eot?#iefix') format('embedded-opentype'),
+             url('../font/@{fontfile}-webfont.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+}

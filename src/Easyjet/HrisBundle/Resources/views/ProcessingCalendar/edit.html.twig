@@ -1,0 +1,47 @@
+{% extends '@EasyjetHris/Base/structure.html.twig' %}
+
+{% block title %}Edit the processing calendar{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+
+{% endblock specificJs %}
+        
+
+
+{% block container %}
+        
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Integrations execution dates</h1>         
+        <div id="description_help">Please fill the following form in order to update the processing calendar for the corresponding month</div>
+    </div>
+    
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}} ) }}
+    {{ form_errors(form) }}
+        
+    <div class="row">
+        
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>New processing calendar</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    {{ form_row(form.paymentMonth, {'date_pattern': '<span style="display: none;">{{ day }}</span> <span style="display: block;">{{ month }} <span class="delim">&#47;</span><span style="display: block;"> {{ year }}'}) }}
+                    {{ form_widget(form) }}
+                    
+                    <div class="form-actions">
+                        <input type="submit" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>           
+    </div>
+
+    {{ form_end(form) }}
+</div>
+   
+{% endblock container %}

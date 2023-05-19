@@ -1,0 +1,75 @@
+{% extends '@EasyjetHris/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Generate Cosmic Radiation XML Report{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+
+<script type="text/javascript">
+    
+ $('form').submit(function () {
+        if (!confirm("You are about to generate AIMS's  monthly Radiation XML Report. Do you confirm that you are OK with these values ?")) { 
+            return false;
+        }             
+  });
+    
+</script>
+{% endblock specificJs %}
+
+{% block container %}
+        
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Generate Cosmic Radiation XML Report</h1>         
+        <div id="description_help">&nbsp;</div>
+    </div>
+    
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}, 'id' : 'dutyForm'} ) }}
+    {{ form_errors(form) }}
+        
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>
+         <div class="col-xs-12">
+            
+{% if successFlag == 1 %}
+     <a href="{{path('download_xml_file')}}">Download XML File</a>
+{% endif %}
+          {% if errorFileFlag == 1 %}
+   | <a href="{{path('download_error_file')}}">Download Error File</a>
+{% endif %}  
+        </div>
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Please validate your File </h5>
+                   
+                </div>
+                <div class="widget-content nopadding">
+                    
+                    <div class="form-group">
+                        <label class="control-label">{{ form_label(form.tmpFile) }}</label>
+                        <div class="controls">
+                            {{ form_widget(form.tmpFile) }}
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        
+                            <input type="submit" class="btn btn-success" name="validate" id ="validateButton"  value="Validate"/>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>           
+    </div>
+
+    {{ form_end(form) }}
+</div>
+   
+{% endblock container %}

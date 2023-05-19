@@ -1,0 +1,54 @@
+{% extends '@EasyjetHris/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Add a processing calendar entry{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+
+{% endblock specificJs %}
+
+
+
+
+
+{% block container %}
+
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Import the users from the workday excel file</h1>
+        <div id="description_help">Please select the workday file to be imported.</div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>
+    </div>
+
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}} ) }}
+
+    <div class="row">
+
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Import users</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    {{ form_widget(form) }}
+
+                    <div class="form-actions">
+                        <input type="submit" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+
+{% endblock container %}

@@ -1,0 +1,175 @@
+{% extends "@EasyjetSwissinsideCore/Base/swissinsideStructure.html.twig" %} 
+
+{% block title %}
+    {% if easyjetEnv == "swissinside" %}
+    Swissinside dashboard
+    {% else %}
+        Dashboard
+    {% endif %}
+{% endblock %}
+
+
+{% block specificJs %}
+    {{ parent() }}
+    {% if supportConfirmation is null and easyjetEnv == "swissinside" %}
+    <script>
+        $(function() { 
+            bootbox.dialog({
+            message: "Please note that any <b>IT issues</b> must be reported to the easyJet IT Service Desk by <b>calling +44 (0) 1582 525247</b>. To open a <b>service request</b>, you can use the online support form by clicking the <b>\"IT SSP\" link on top right of Swissinside extranet main page</b>.<br /><br />" +
+                        "Thank you for your understanding.<br /><br />" +
+                        "IT support team.<br /><br />" +
+                        "<input value='hide' type='checkbox' name='support_message_hide' id='support_message_hide' /> Don't show again",
+            title: "Reminder",
+            buttons: {
+              main: {
+                label: "I understand",
+                className: "btn-primary",
+                callback: function() {
+                    if($('#support_message_hide').is(":checked")) {
+                        swissinside.SupportMessageConfirmation('{{ url('dashboard_confirm_support_message') }}');
+                    }
+                }
+              }
+            }
+          });
+        });
+    </script>
+    {% endif %}
+{% endblock specificJs %}
+
+
+
+{% block container %}
+
+{% if easyjetEnv == "swissinside" %}
+    <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">Dashboard</h1>
+            <div id="description_help">Welcome to SwissInside. {% if myself.manuel == 0 %}Please find your personal data below and ensure that everything is up to date.{% endif %}</div>
+        </div>
+
+
+        {# No longer needed
+        {% if transitionStatus == "current" and myself.manuel == 0 %}
+            {% include '@EasyjetSwissinsideCore/Default/dashboardTransition.html.twig' %}
+        {% elseif transitionStatus == "after" and myself.manuel == 0 %}
+            {% include '@EasyjetSwissinsideCore/Default/dashboardFinal.html.twig' %}
+        #}
+
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title"><span class="icon"><i class="icon-home"></i></span><h5>Information security</h5></div>
+                    <div class="widget-content">
+                        <p>Dear {{ myself }},</p>
+                        <p>
+                            Information security is a <strong>major concern at easyJet</strong>.
+                        </p>
+                        <p>
+                            How to be infoSafe ?
+                        </p>
+                        <p>
+                            Please have a look to the infoSafe documentation.
+                            You can reach it from the shield icon in the top right of the screen.
+                        </p>
+                        <p>
+                            Or you can click <a href="http://inside/infosafehub/Pages/index.html">here</a>.
+                        </p>
+                        <p>
+                            Best regards,<br>
+                            The IT depts.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if true %}
+            {% if myself.manuel != 0 %}
+                <div class="row">
+                    <div class="col-xs-12">
+
+                        {% if myself.external == 1 %}
+                            <div class="alert alert-info">
+                                <h4 class="alert-heading">Non swissinside user access detected</h4>
+                                should you be an easyJet Switzerland employee, you should not get this message at your login.
+                                Please open a Request to the IT service desk, You will have to use the "support" tab located just above.
+                            </div>
+                        {% endif %}
+
+                        <div class="widget-box">
+                            <div class="widget-title"><span class="icon"><i class="icon-file"></i></span><h5>News</h5></div>
+                            <div class="widget-content nopadding">
+                                <ul class="recent-posts">
+                                    {% for currentNews in news %}
+                                        <li>
+                                            <div class="">
+                                                <span class="user-info"> By: easyjet on {{ currentNews.date|date("d/m/Y") }} </span>
+                                                <p>
+                                                    {% if currentNews.lien %}
+                                                        <a href="#">{{ currentNews.titre }}</a>
+                                                    {% else %}
+                                                        {{ currentNews.titre }}
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+        </div>
+
+    </div>
+{% else %}
+     <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">Dashboard</h1>
+            <div id="description_help">Welcome to OrangeFile. </div>
+        </div>
+
+
+        {# No longer needed
+        {% if transitionStatus == "current" and myself.manuel == 0 %}
+            {% include 'EasyjetSwissinsideCoreBundle:Default:dashboardTransition.html.twig' %}
+        {% elseif transitionStatus == "after" and myself.manuel == 0 %}
+            {% include 'EasyjetSwissinsideCoreBundle:Default:dashboardFinal.html.twig' %}
+        #}
+
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title"><span class="icon"><i class="icon-home"></i></span><h5>Information security</h5></div>
+                    <div class="widget-content">
+                       <p>
+                                Welcome to the easyJet <strong>OrangeFile</strong>. Use this to safely and securely transfer
+                                data to your colleagues within easyJet, or to external 3 rd parties.
+                            </p>
+                            <p>
+                                Once you’ve uploaded your file, you’ll need to add the email addresses of the
+                                recipients. The recipient will then receive an email with a link to the file which they
+                                can download. First time 3 rd party users will receive an additional email to register
+                                their details before they can download.
+                            </p>
+                            <p>
+                                The file is held in the <strong>OrangeFile</strong> for 7 days, after which it’s deleted.
+                                GDPR compliant and ideally used for sending large files containing personal or
+                                sensitive data, <strong>OrangeFile</strong> helps to reduce your data footprint by avoiding having
+                                emails with confidential attachments in your sent items or inbox.
+                            </p>
+                            <p>
+                                If you have an issue please email <a href="mailto:easyjetITservicedesk@easyjet.com">easyjetITservicedesk@easyjet.com</a>, if you have questions related to the functionalities, you can email <a href="mailto:ezs-it@easyjet.com">ezs-it@easyjet.com</a>
+                            </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock container %}

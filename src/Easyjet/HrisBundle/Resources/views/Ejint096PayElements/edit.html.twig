@@ -1,0 +1,208 @@
+{% extends '@EasyjetHris/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Edit pay element{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+
+<script type="text/javascript">
+
+    jQuery.fn.outerHTML = function(s) {
+    return (s)
+      ? this.before(s).remove()
+      : jQuery("<p>").append(this.eq(0).clone()).html();
+    }
+
+    var updateTypesOfValues = function() {
+        $("option[value=type_of_value]:selected").parents('tr').find('.rule-value').hide();
+        $("option[value=type_of_value]:selected").parents('tr').find('.type-of-value').show();
+
+        $("option[value=type_of_value]:not(:selected)").parents('tr').find('.rule-value').show();
+        $("option[value=type_of_value]:not(:selected)").parents('tr').find('.type-of-value').hide();
+    }
+
+    var addSoftRule = function() {
+        var count = $("#pay-elements-tbody").data('count');
+        $("#pay-elements-tbody").data('count', count+1);
+
+        var typeOfRule = $("{{ form_widget(form.softRules.vars.prototype.typeOfRule)|e('js') }}".replace(/__name__/g, count));
+        typeOfRule.addClass('type-of-rule').css({ width: "100%"});
+        var typeOfValue = $("{{ form_widget(form.softRules.vars.prototype.typeOfValue)|e('js') }}".replace(/__name__/g, count));
+        typeOfValue.addClass('type-of-value');
+        var value = $("{{ form_widget(form.softRules.vars.prototype.value)|e('js') }}".replace(/__name__/g, count));
+        value.addClass('rule-value');
+
+        var $tr = $('<tr>');
+        $tr.append('<td>' + typeOfRule.outerHTML() + '</td>');
+        $tr.append('<td>' + typeOfValue.outerHTML() + value.outerHTML() + '</td>');
+        $tr.append('<td><a class="btn btn-danger delete-soft-rule" href="javascript:;">Remove</a></td>');
+        $("#pay-elements-tbody").append($tr);
+
+        $tr.find("select").select2();
+        updateTypesOfValues();
+
+    }
+
+    $(function() {
+
+        $("body").on('change', ".type-of-rule", function(e) {
+            updateTypesOfValues();
+        });
+
+        $("body").on('click', ".delete-soft-rule", function(e) {
+            $(this).parents('tr').remove();
+        });
+
+        updateTypesOfValues();
+    })
+
+    
+</script>
+
+{% endblock specificJs %}
+        
+
+
+{% block container %}
+        
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Edit pay element</h1>         
+        <div id="description_help">Please describe your pay element as accurately as possible.</div>
+    </div>
+    
+    {% if payElement.hasHardCodedRules() %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="alert alert-info">This pay element cannot be removed because it has some hard coded rules.</div>
+            </div>
+        </div>
+    {% endif %}
+    
+    
+    {{ form_start(form, {'attr': {'class': 'form-horizontal', 'novalidate' : 'true', 'id' : "new-pay element-form"}} ) }}
+    {{ form_errors(form) }}
+    
+    <div class="row">
+        
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Your pay element</h5>
+                </div>
+                <div class="widget-content nopadding">
+
+                    <div class="form-group">
+                        <label class="control-label">{{ form_label(form.payElement) }}</label>
+                        <div class="controls">
+                            {{ form_widget(form.payElement) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">{{ form_label(form.mandatory) }}</label>
+                        <div class="controls">
+                            {{ form_widget(form.mandatory) }}
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>           
+    </div>
+    
+    <div class="row">
+        
+        <div class="col-xs-12">
+            <a class="btn btn-primary pull-right" href="javascript:addSoftRule()">Add a trigger</a>
+        </div>
+    </div>
+    <div class="row">
+        
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Soft triggers</h5>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="pay-elements_list">
+                        <thead>
+                            <tr>
+                                <th>Type of trigger</th>
+                                <th>Value</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="pay-elements-tbody" data-count="{{ form.softRules|length|default(0) }}">
+                        
+                            {% for rule in form.softRules %}
+                                <tr>
+                                    <td>{{ form_widget(rule.typeOfRule, { 'attr': {'class': 'type-of-rule'} }) }}</td>
+                                    <td>
+                                        {{ form_widget(rule.typeOfValue, { 'attr': {'class': 'type-of-value'} }) }}
+                                        {{ form_widget(rule.value, { 'attr': {'class': 'rule-value'} }) }}
+                                    </td>
+                                    <td><a class="btn btn-danger delete-soft-rule" href="javascript:;">Remove</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="alert alert-info">You can find some help regarding regexp by clicking the following link : <a target="_blank" href="https://www.icewarp.com/support/online_help/203030104.htm">https://www.icewarp.com/support/online_help/203030104.htm</a></div>
+                </div>
+            </div>
+        </div>           
+    </div>
+
+    <div class="row">
+        
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Hard coded triggers</h5>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="pay-elements_list">
+                        <thead>
+                            <tr>
+                                <th>Trigger</th>
+                                <th>Code</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        
+                            {% for rule in payElement.hardRules %}
+                                <tr>
+                                    <td>Trigger {{ rule.id }} :</td>
+                                    <td><pre><code class="language-php">{{ rule.algorithm }}</code></pre></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>           
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <input type="submit" class="btn btn-primary" />
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+   
+{% endblock container %}

@@ -1,0 +1,30 @@
+CREATE TABLE IF NOT EXISTS `dashboard_last_view` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_user` mediumint(9) NOT NULL,
+  `date` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `dashboard_yourself_data_confirmed` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_user` mediumint(9) NOT NULL,
+  `date` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+ALTER TABLE  `dashboard_last_view` CHANGE  `date`  `date` DATETIME NULL DEFAULT NULL ;
+ALTER TABLE  `dashboard_yourself_data_confirmed` CHANGE  `date`  `date` DATETIME NULL DEFAULT NULL ;
+
+ALTER TABLE  `dashboard_last_view` ADD INDEX (  `id_user` ) ;
+ALTER TABLE  `dashboard_last_view` CHANGE  `id_user`  `id_user` INT( 10 ) UNSIGNED NOT NULL ;
+ALTER TABLE  `dashboard_last_view` ADD FOREIGN KEY (  `id_user` ) REFERENCES  `users` (
+`id_user`
+) ON DELETE CASCADE ON UPDATE CASCADE ;
+
+ALTER TABLE  `dashboard_yourself_data_confirmed` ADD INDEX (  `id_user` ) ;
+ALTER TABLE  `dashboard_yourself_data_confirmed` CHANGE  `id_user`  `id_user` INT( 10 ) UNSIGNED NOT NULL ;
+ALTER TABLE  `dashboard_yourself_data_confirmed` ADD FOREIGN KEY (  `id_user` ) REFERENCES  `users` (
+`id_user`
+) ON DELETE CASCADE ON UPDATE CASCADE ;
+
+UPDATE users SET pays=32 WHERE log_user='gillesh';

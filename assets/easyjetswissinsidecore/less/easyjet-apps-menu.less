@@ -1,0 +1,104 @@
+#swissinside-applications {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin-left: 210px;
+
+    li {
+        display: inline-block;
+        .EasyjetRoundedHeadlineBook;
+        font-size: 12px;
+        a {
+            color: #666;
+            display: block;
+            padding: 15px;
+            margin: 0;
+            text-align: center;
+
+            i {
+                font-size: 20px;
+                display: block;
+            }
+        }
+    }
+    li.active {
+        background-color: #fff;
+    }
+
+    @media (max-width: @screen-phone) {
+        & {
+            margin: auto !important;
+        }
+        & li a {
+            font-size: 1px;
+            color: @general-grey;
+            i { color: #666; }
+        }
+        li.active a {
+            color: #fff;
+            i { color: #666; }
+        }
+    }
+
+    @media (min-width: @screen-tablet-min) and (max-width: @screen-tablet) {
+        & {
+            margin: 10px auto 50px auto !important;
+            text-align: center;
+        }
+        & li a {
+            font-size: 1px;
+            color: @general-grey;
+            i { color: #666; }
+        }
+        li.active a {
+            color: #fff;
+            i { color: #666; }
+        }
+    }
+
+}
+
+#my-profile-button {
+    display: none;
+    @media(min-width: @screen-md) {
+        & {
+            display: block;
+        }
+    }
+}
+
+#swissinside-applications li#logout-button {
+    display: inline-block;
+    @media(min-width: @screen-md) {
+        & {
+            display: none;
+        }
+    }
+}
+
+#swissinside-applications .overlap {
+    display: none;
+}
+
+#overlaped-apps .overlap {
+    display: block;
+    &.active a {
+        color: white;
+    }
+        
+    &, & a {
+        text-align: left;
+       
+    }
+    
+    i {
+        display: inline-block;
+        margin-right: 10px;
+    }
+}
+
+#overlaped-apps {
+    position: absolute;
+    top: 0;
+    left: 0;
+}

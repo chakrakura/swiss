@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Document sans titre</title>
+        <style>
+            a:link, a:visited {
+                text-decoration: none;
+                color: #cc0000;
+            }
+            a:hover {
+                color: #000;
+            }
+            html, body, form, fieldset, h1, h2, h3, h4, h5, h6, p, pre, blockquote, ul, ol, li, dl, dt, dd, address {
+                margin:0;
+                padding:0;
+            }
+            ul,li {
+                list-style-type:none;
+            }
+            .hide {
+                display: none;
+            }
+            img {
+                border: none;
+            }
+            a img {
+                border: none;
+            }
+
+            #help {
+                padding: 10px;
+                margin: 5px 10px 10px 10px;
+            }
+            #help h1 {
+                font-family: "Lucida Sans Unicode", Tahoma, Geneva, sans-serif;
+                font-size:1em;
+                color:#262626;
+                font-weight:normal;
+                padding:0;
+                margin:0 0 10px 0;
+            }
+
+            #contenu_page {
+                margin:0 10px 10px 10px;
+                padding:0;
+                background-color:#f9f9f9;
+                text-align:center;
+                border-top: 1px solid #999;
+                border-bottom: 1px solid #999;
+                overflow:hidden;
+            }
+            table.normal_table {
+                border:none;
+                width: 95%;
+                border-collapse:collapse;
+                margin-left:20px;
+                margin-bottom:40px;
+            }
+            .normal_table th {
+                border-bottom: 1px solid #333333;
+                font-family:Verdana, Arial, Helvetica, sans-serif;
+                color:#333333;
+                font-size:.94em;
+                vertical-align:bottom;
+                height:25px;
+                text-align:right;
+            }
+            .normal_table td {
+                color:#333333;
+                padding:3px 0 2px 0;
+                text-align:right;
+                border-bottom: 1px dashed #b3b3b3;
+                font-size:1em;
+            }
+            .normal_table tr.survol:hover {
+                background-color:#E5E5E5;
+                cursor:pointer;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+        <div id="rightcol">
+            <!-- Champ d'aide pour expliquer la page  l'utilisateur -->
+            <div id="help">
+
+                <h1>Dear {{ user_firstname }} {{ user_lastname }}</h1>
+                <div id="description_help">
+                    <p>
+                        You have submitted a disruption claim on the {{ submission_date }} 
+                        After investigation, you claim has been rejected.
+                        The reason for this is :
+                    </p>
+                    <p><strong>{{ refuse_reason }}</strong></p>
+                    <p>
+                        We hope that this is acceptable for you<br>
+                        Many thanks.<br><br>
+
+                        On behalf of the swiss HR team<br>
+                        {{ admin_user }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

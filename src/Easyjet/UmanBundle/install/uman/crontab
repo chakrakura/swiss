@@ -1,0 +1,1 @@
+0 4 * * *	apache	/usr/bin/php /usr/share/swissinside/bin/console easyjet:sfsu-remove-expired-files

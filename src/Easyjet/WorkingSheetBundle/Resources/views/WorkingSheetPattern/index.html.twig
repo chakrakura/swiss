@@ -1,0 +1,80 @@
+{% extends '@EasyjetWorkingSheet/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+{% block specificJs %}{{ parent() }}
+    <script>
+        $(function() {
+            swissinside.simpleDataTable($("#results-table"));
+        });
+    </script>
+{% endblock specificJs %}
+
+
+
+{% block container -%}
+    <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">Your patterns</h1>  
+            <div id="description_help">List of pattern you have submitted.</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                {{ macros.wizz() }}
+            </div>
+            <div class="col-xs-12">
+                                <a href="{{ path('working_sheet_pattern_new') }}" class="btn btn-primary"><i class="icon-add"></i> 
+                    New pattern
+                </a>
+                            </div>
+        </div>
+            
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>List of pattern</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="results-table">
+                        <thead>
+                            <tr>
+                                <th>Date of submission</th>
+                                <th>Status</th>
+                                <th>Active</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for entity in entities %}
+                            <tr>
+                                <td>{{ entity.createdAt ? entity.createdAt|date("d/m/Y H:i") : "-" }}</td>
+                                <td>
+                                    {% if entity.status == "PENDING" %}
+                                        <span class="badge badge-info">Waiting approval</span>
+                                    {% elseif entity.status == "VALIDATED" %}
+                                        <span class="badge badge-success">Validated</span>
+                                    {% elseif entity.status == "REFUSED" %}
+                                        <span class="badge badge-danger">Refused</span>
+                                    {% endif %}
+                                </td>
+                                <td>{% if entity.active %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-danger">No</span>{% endif %}</td>
+                        
+                                <td>
+                                    {% if entity.status == "PENDING" %}
+                                        <a href="{{ path('working_sheet_pattern_edit', { 'id': entity.id }) }}" class="btn btn-default">edit</a>
+                                    {% else %}
+                                        <a href="{{ path('working_sheet_pattern_show', { 'id': entity.id }) }}" class="btn btn-default">show</a>
+                                    {% endif %}
+                                    
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

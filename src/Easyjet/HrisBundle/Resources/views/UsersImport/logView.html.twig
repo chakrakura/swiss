@@ -1,0 +1,63 @@
+{% extends '@EasyjetHris/Base/structure.html.twig' %}
+
+{% block specificJs %}{{ parent() }}
+
+{% endblock specificJs %}
+
+
+
+{% block container %}
+
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Synchronization log for the {{ log.scriptTime|date('F jS Y - H:i') }}.</h1>
+        <div id="description_help">Hereafter, the details about the selected log.</div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            {% autoescape false %}
+                {% for flashMessage in app.session.flashbag.get('error') %}
+                    <div class="alert alert-danger">
+                            <button class="close" data-dismiss="alert">×</button>
+                            <strong>Notice</strong> {{ flashMessage }}.
+                    </div>
+                {% endfor %}
+                {% for flashMessage in app.session.flashbag.get('success') %}
+                    <div class="alert alert-success">
+                            <button class="close" data-dismiss="alert">×</button>
+                            <strong>Success</strong> {{ flashMessage }}.
+                    </div>
+                {% endfor %}
+
+                {% for flashMessage in app.session.flashbag.all() %}
+                    <div class="alert alert-info">
+                            <button class="close" data-dismiss="alert">×</button>
+                            <strong>Info</strong> {{ flashMessage[0] }}.
+                    </div>
+                {% endfor %}
+            {% endautoescape %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Html report sent to the responsibles</h5>
+                </div>
+                <div class="widget-content">
+                    {% autoescape false %}
+                        {{ log.htmlReport }}
+                    {% endautoescape %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock container %}

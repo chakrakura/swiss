@@ -1,0 +1,20 @@
+@font-face {
+  font-family: 'swissinside-font';
+  src:  url('../font/easyjet/swissinside-font.eot?vcevjl');
+  src:  url('../font/easyjet/swissinside-font.eot?vcevjl#iefix') format('embedded-opentype'),
+    url('../font/easyjet/swissinside-font.ttf?vcevjl') format('truetype'),
+    url('../font/easyjet/swissinside-font.woff?vcevjl') format('woff'),
+    url('../font/easyjet/swissinside-font.svg?vcevjl#swissinside-font') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+
+.icon-train{
+    font-family: 'swissinside-font' !important;
+}
+
+.icon-train:before {
+  content: "\e900";
+}

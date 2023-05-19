@@ -1,0 +1,65 @@
+{% extends "@EasyjetSwissinsideCore/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Synchronisations between HR systems{% endblock %}
+{% block header%}
+    {{ parent() }}
+{% endblock header %}
+
+{% block generalMenu %}
+    <div id="header">
+        {{ macros.show_general_menu(generalMenuItems(), 'HRIS') }}
+
+        <a id="menu-trigger" href="#"><i class="icon-align-justify"></i></a>
+    </div>
+{% endblock generalMenu %}
+
+
+{% block sidebar %}
+    <div id="sidebar">
+        <ul>
+            {% if is_granted("ROLE_HRIS_ADMIN") %}
+            <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "SHOW_PICOFS_LOGS" or selectedSidebar == "SHOW_USERS_IMPORT_LOGS" or selectedSidebar == "SHOW_EJINT096_DATA_CHECK_LOGS" or selectedSidebar == "SHOW_EJINT096_LOGS" or selectedSidebar == "SHOW_EJINT097_LOGS") %}open active{% endif %}"><a href="#"><i class="icon-time"></i> <span>Logs</span> <i class="arrow icon-chevron-right"></i></a>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_EJINT096_LOGS" %}active current-page{% endif %}"><a href="{{ url('ejint096_logs_index') }}">EJINT096 - SGWI -> ProConcept</a></li>
+                </ul>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_EJINT096_DATA_CHECK_LOGS" %}active current-page{% endif %}"><a href="{{ url('data_analyzer_logs_index') }}">Data analyzer</a></li>
+                </ul>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_EJINT097_LOGS" %}active current-page{% endif %}"><a href="{{ url('ejint097_logs_index') }}">EJINT097 - ProConcept -> SafeGuard</a></li>
+                </ul>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_USERS_IMPORT_LOGS" %}active current-page{% endif %}"><a href="{{ url('hris_users_import_logs_index') }}">Users WD -> Swissinside</a></li>
+                </ul>
+                
+            </li>
+            <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "SHOW_EJINT096_PAY_ELEMENTS" or selectedSidebar == "SHOW_EJINT096_DEMOGRAPHIC_DATA" or selectedSidebar == "SHOW_PROCESSING_CALENDAR" or selectedSidebar == "SHOW_COSMIC_RADIATION" or selectedSidebar == "SHOW_CREW_USER") %}open active{% endif %}"><a href="#"><i class="icon-time"></i> <span>Administration</span> <i class="arrow icon-chevron-right"></i></a>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_EJINT096_DEMOGRAPHIC_DATA" %}active current-page{% endif %}"><a href="{{ url('ejint096_demographic_data_index') }}">Demographic data</a></li>
+                </ul>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_EJINT096_PAY_ELEMENTS" %}active current-page{% endif %}"><a href="{{ url('ejint096_pay_elements_index') }}">Pay elements</a></li>
+                </ul>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_PROCESSING_CALENDAR" %}active current-page{% endif %}"><a href="{{ url('processing_calendar_index') }}">Processing calendar</a></li>
+                </ul>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_COSMIC_RADIATION" %}active current-page{% endif %}"><a href="{{ url('cosmic_radiation_report_new') }}">Generate Cosmic Radiation Report </a></li>
+                </ul>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_CREW_USER" %}active current-page{% endif %}"><a href="{{ url('crew_user_report_index') }}">Export Crew User Report </a></li>
+                </ul>
+                
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
+{% endblock sidebar %}
+
+{% block container %}
+<div id="content">
+    Bienvenue dans la gestion des formulaires de support
+</div>
+{% endblock container %}

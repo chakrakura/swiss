@@ -1,0 +1,85 @@
+{% extends '@EasyjetOtp/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Export claim excel file{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+    <script type="text/javascript">
+    $(function() {
+        $("#otp-finalize-export").on("click", function(e) {
+            e.preventDefault();
+            bootbox.confirm("This will send the excel file to the Workday team. Do you confirm ?", function(validation) {
+                if (validation === true) {
+                    $("#export-otp-file-form button").attr('disabled', 'disabled');
+                    $("#export-otp-file-form").submit();
+                }
+            });
+        });
+    });
+    </script>
+
+{% endblock specificJs %}
+        
+
+
+{% block container %}
+        
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Generate the excel sheet</h1>         
+        <div id="description_help">This will initiate the export process. Please select the batch you want to export anc create a preview in order to check calculations before to send it to the final destination</div>
+    </div>
+
+    {% for flashMessage in app.session.flashbag.get('otp-export-error') %}
+        {% autoescape false %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="alert alert-danger">
+                        <button class="close" data-dismiss="alert">×</button>
+                        <strong>Notice</strong> {{ flashMessage }}
+                </div>
+            </div>
+        </div>
+        
+        {% endautoescape %}
+    {% endfor %}
+
+    <div class="col-xs-12">
+        {{ macros.wizz() }}
+    </div>  
+    
+    {{ form_start(form, {'attr': {'class': 'form-horizontal', 'id': 'export-otp-file-form'}} ) }}
+    {{ form_errors(form) }}
+        
+    <div class="row">
+        
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Batch to export</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <div class="form-group">
+                        <label class="control-label">{{ form_label(form.batch) }} :</label>
+                        <div class="controls">
+                            {{ form_widget(form.batch) }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" name="preview" class="btn btn-primary"><i class="icon-eye-open"></i> Preview</button>
+                        <button type="submit" name="send-share" class="btn btn-success" id="otp-finalize-export"><i class="icon-cloud-upload"></i> Send to share folder</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>           
+    </div>
+
+    {{ form_end(form) }}
+</div>
+   
+{% endblock container %}

@@ -1,0 +1,29 @@
+<?php //App%255CEasyjet%255CEleaveBundle%255CController%255CWishesController%2523wishesEdit
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Symfony\\Component\\Routing\\Annotation\\Route'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Routing\\Annotation\\Route')),
+        clone ($p['Sensio\\Bundle\\FrameworkExtraBundle\\Configuration\\Security'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Sensio\\Bundle\\FrameworkExtraBundle\\Configuration\\Security')),
+    ],
+    null,
+    [
+        'Symfony\\Component\\Routing\\Annotation\\Route' => [
+            'path' => [
+                'wishes/edit/{id}',
+            ],
+            'name' => [
+                'eleave_wishes_edit',
+            ],
+        ],
+        'Sensio\\Bundle\\FrameworkExtraBundle\\Configuration\\Security' => [
+            'expression' => [
+                1 => 'is_granted(\'ROLE_ELEAVE_SIMPLE_USER\') or is_granted(\'ROLE_ELEAVE_CREW_ADMIN\') or is_granted(\'ROLE_ELEAVE_LINE_MANAGER\') or is_granted(\'ROLE_ELEAVE_OFFICE_ADMIN\') or is_granted(\'ROLE_ELEAVE_CREW_ADMIN_+_LM\') or is_granted(\'ROLE_ELEAVE_OFFICE_ADMIN_+_LM\')',
+            ],
+        ],
+    ],
+    [
+        $o[0],
+        $o[1],
+    ],
+    []
+); }];

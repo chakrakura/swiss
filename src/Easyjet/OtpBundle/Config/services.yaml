@@ -1,0 +1,31 @@
+parameters:
+    #This is the shared samba folder where data will have to be exported (replace by the proper one)
+    otp.export_folder: "smb://-hrisservice-swiss:AudioMovie1234@ejnas1/Departments/HRIS/SwissCompData/test_server"
+    #otp.ptt_email_address: "itpeopletechnologyteam@easyjet.com"
+    otp.ptt_email_address: "ITSwissInsideSupport@easyjet.com"
+    otp.archive_folder: /data02/otp/archive
+
+   
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    
+    otp_fix_assignation: 
+        class: App\Easyjet\OtpBundle\Services\FixRequestAssignation
+        arguments: ["@mailer", "@doctrine.orm.entity_manager"]
+    otp_import:
+        class: App\Easyjet\OtpBundle\Services\ImportWorkdayFileService
+        arguments: ["@doctrine.orm.entity_manager"]
+        public: true    
+    otp_export_xls:
+        class: App\Easyjet\OtpBundle\Services\ExportOtpFileService
+        arguments:  ["@mailer", "@doctrine.orm.entity_manager"]
+        public: true 
+    otp_mailer:
+        class: App\Easyjet\OtpBundle\Services\OtpMailerService
+        arguments:  ["@mailer"]
+        public: true        
+           
+        

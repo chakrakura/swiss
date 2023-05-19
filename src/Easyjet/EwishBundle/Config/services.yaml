@@ -1,0 +1,15 @@
+parameters:
+   
+   
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+   
+    ewish_mailer:
+        class: App\Easyjet\EwishBundle\Services\EwishMailerService
+        arguments:  ["@mailer"]
+        public: true        
+           
+        

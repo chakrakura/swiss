@@ -1,0 +1,655 @@
+{% extends '@EasyjetEleave/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %} {{ title }}{% endblock %}
+
+
+{% block specificJs %}{{ parent() }}
+
+<script>
+
+	$(".date-picker").datepicker({
+	format: 'dd/mm/yyyy',
+	autoclose: true,
+	}).on('changeDate', function(selected) {
+		updateDate($(this).closest('.form-group').next().find('.date-picker').attr('id'), selected);
+    });
+
+    function updateDate(input, selected) {
+        var minDate = new Date(selected.date.valueOf());
+        $('#'+input).datepicker('setStartDate', minDate);
+    }
+
+	var today = "{{today}}";
+	var dateMin = "{{dateMin}}";
+	var dateMax = "{{dateMax}}";
+	var isPilot = "{{isPilot}}" ;
+	var isAdmin = "{{isAdmin}}";
+	var autoDisplay =  "{{autoDisplay}}";
+    var holidaysMaxDays = isPilot ? 17: 16;
+
+	function hideShow() {
+		if( autoDisplay == 0 )
+			document.getElementById("choice1_leave_preference").remove(1);    
+		}
+    window.onload = hideShow;
+
+	function gapInDays(date1, date2)
+	{
+		var nbDays1 = 0;
+		var nbDays2 = 0;
+		var firstDayEarly = "";
+		var lastDayEarly = "";
+
+		if (date2 == "") date2 = date1;
+
+		if (date1 < date2)
+		{
+			firstDayEarly = date1;
+			lastDayEarly = date2;
+		}
+		else
+		{
+			firstDayEarly = date2;
+			lastDayEarly = date1 ;
+		}
+		var first = firstDayEarly.split("-");
+		var firstYear = convertToInt(first[0]);
+		var firstMonth = convertToInt(first[1]);
+		var firstDay = convertToInt(first[2]);
+
+		var last = lastDayEarly.split("-");
+		var LastYear = convertToInt(last[0]);
+		var LastMonth = convertToInt(last[1]);
+		var LastDay = convertToInt(last[2]);
+		// Calculation of the number of days since the beginning of year of the first date
+		for (i = 1; i < firstMonth; i++)
+		{
+			nbDays1 += parseInt(numberOfdaysInMonth(i, firstYear));
+		}
+		nbDays1 += parseInt(firstDay);
+		// Calculation of the number of days since the beginning of the second date
+		for (i = firstYear; i < LastYear; i++)
+		{
+			nbDays2 += parseInt(numberOfDaysInYear(i)) ;
+		}
+		for (i = 1; i < LastMonth; i++)
+		{
+			nbDays2 += parseInt(numberOfdaysInMonth(i, LastYear));
+		}
+		nbDays2 += parseInt(LastDay);
+		return (nbDays2 - nbDays1) + 1 ;
+	}
+
+	function convertToInt(chaine)
+	{
+		var k = 0;
+		if (chaine == "" || chaine == 0) return 0;
+		while (chaine.substring(k, k+1) == "0")
+		{
+			chaine = chaine.substring(1, chaine.length);
+			k++;
+		}
+		return parseInt(chaine);
+	}
+
+	function numberOfdaysInMonth ( month , year ) {
+		var nbDays = new Array('31','28','31','30','31','30','31','31','30','31','30','31') ;
+		if ( year % 4 == 0 ) nbDays[1] = '29' ;
+		return convertToInt(nbDays[month - 1]) ;
+	}
+
+	function numberOfDaysInYear (year)
+	{
+		var total = 0;
+		for (j=1; j<=12; j++)
+		{
+			total += numberOfdaysInMonth(j, year);
+		}
+		return total;
+	}
+
+	function isRequestLessThan16Monthts() {
+		
+		if(formatToEnglish($('#choice1_start').val()) > dateMax) {
+			alert("Choice 1 : Leaves periods can be requested no longer than 16 months in advance. You cannot do a leave request after the " + formatToFrance(dateMax) + ". Please change your wish date or wait the required time to do this request.");
+			return false;
+		}
+		if(formatToEnglish($('#choice2_start').val()) > dateMax) {
+			alert("Choice 2 : Leaves periods can be requested no longer than 16 months in advance. You cannot do a leave request after the " + formatToFrance(dateMax) + ". Please change your wish date or wait the required time to do this request.");
+			return false;
+		}
+		if(formatToEnglish($('#choice3_start').val()) > dateMax) {
+			alert("Choice 3 : Leaves periods can be requested no longer than 16 months in advance. You cannot do a leave request after the " + formatToFrance(dateMax) + ". Please change your wish date or wait the required time to do this request.");
+			return false;
+		}
+		return true;
+	}
+
+	function fromSubmit()
+	{
+		
+		var leave_preference = $('#choice1_leave_preference').find(":selected").val();
+
+		if ( leave_preference === false || leave_preference === "" ) {
+			alert("please select a choice from the leave preference !");
+			return false;
+		}
+
+		//Requests cannot be made more than 16 months in advance
+		if (!isRequestLessThan16Monthts()) return false;
+
+		var choice1Start = formatToEnglish($('#choice1_start').val());
+		var choice1End   = formatToEnglish($('#choice1_end').val());
+		var choice2Start = formatToEnglish($('#choice2_start').val());
+		var choice2End   = formatToEnglish($('#choice2_end').val());
+		var choice3Start = formatToEnglish($('#choice3_start').val());
+		var choice3End   = formatToEnglish($('#choice3_end').val());
+
+		var choice1StartVal = $('#choice1_start').val();
+		var choice1EndVal   = $('#choice1_end').val();
+		var choice2StartVal = $('#choice2_start').val();
+		var choice2EndVal   = $('#choice2_end').val();
+		var choice3StartVal = $('#choice3_start').val();
+		var choice3EndVal   = $('#choice3_end').val();
+
+		if (choice1End < choice1Start) 
+		{
+			alert ("Choice 1 : Invalid date(s) please try again.") ; 
+			return false;
+		}
+		if (choice2End < choice2Start) {
+			alert ("Choice 2 : Invalid date(s) please try again.") ; 
+			return false;
+		}
+		if (choice3End < choice3Start) {
+			alert ("Choice 3 : Invalid date(s) please try again.") ; 
+			return false;
+		}
+		
+		if (choice1Start < dateMin) {
+			alert("Choice 1 : Invalid date(s) please try again. You must choose above " + formatToFrance(dateMin)) ; 
+			return false;
+		}
+		if (choice2Start < dateMin) {
+			alert("Choice 2 : Invalid date(s) please try again. You must choose above " + formatToFrance(dateMin)) ; 
+			return false;
+		}
+		if (choice3Start < dateMin) {
+			alert("Choice 3 : Invalid date(s) please try again. You must choose above " + formatToFrance(dateMin)) ; 
+			return false;
+		}
+		
+	
+		// First date slice
+		var start = choice1Start;
+		var end   = choice1End; 
+		var bool_must_second_choice = false;
+
+		if (start == false || end == false) return emptyField();
+		
+		var tmp_start = "";
+		var tmp_end = "";
+		if (summerOrWinter(start) || summerOrWinter(end))
+		{
+			
+			tmp_start = start;
+			tmp_end = end;
+			if (summer(tmp_start) || summer(tmp_end))
+			{
+						if (tmp_start < year(tmp_start) + "-07-01") tmp_start = year(tmp_start) + "-07-01";
+						if (tmp_end > year(tmp_end) + "-08-31") tmp_end = year(tmp_end) + "-08-31";
+						if (gapInDays(tmp_start, tmp_end) > holidaysMaxDays) {
+							if(field1ToValid()) return periodTooLong();
+						}
+			}
+			if (winter(tmp_start) || winter(tmp_end))
+			{
+				if (tmp_start < year(tmp_start) + "-12-15" && tmp_start > year(tmp_start) + "-08-15") tmp_start = year(tmp_start) + "-12-15";
+				if (tmp_end > year(tmp_end) + "-01-15" && tmp_end < year(tmp_end) + "-05-15" ) tmp_end = year(tmp_end) + "-01-15";
+			}
+
+			bool_must_second_choice = true;
+			
+		}
+		
+
+		if(!isPilot && isNewYearPlusChristmass(choice1StartVal, choice1EndVal)) return newYearAndChristmassError();
+		
+		
+		// Second date slice
+
+		start = choice2Start;
+		end   = choice2End;
+		if (bool_must_second_choice == true && (start == false || end == false))
+		{
+			alert ("You must have more than one choice for the winter/summer period");
+			return false;
+		}
+		if ((start != false && end == false) || (start == false && end != false)) return emptyField();
+
+		var tmp_start = "";
+		var tmp_end = "";
+
+		if (summerOrWinter(start) || summerOrWinter(end))
+		{
+			tmp_start = start;
+			tmp_end = end;		
+			if (summer(tmp_start) || summer(tmp_end))
+			{
+						if (tmp_start < year(tmp_start) + "-07-01") tmp_start = year(tmp_start) + "-07-01";
+						if (tmp_end > year(tmp_end) + "-08-31") tmp_end = year(tmp_end) + "-08-31";
+						
+						if (gapInDays(tmp_start, tmp_end) > holidaysMaxDays) {
+							if(field2ToValid()) return periodTooLong(); 
+						}
+			}
+			if (winter(tmp_start) || winter(tmp_end))
+			{
+						if (tmp_start < year(tmp_start) + "-12-15" && tmp_start > year(tmp_start) + "-08-15") tmp_start = year(tmp_start) + "-12-15";
+						if (tmp_end > year(tmp_end) + "-01-15" && tmp_end < year(tmp_end) + "-05-15" ) tmp_end = year(tmp_end) + "-01-15";
+			}
+
+			
+		}
+		if(!isPilot && isNewYearPlusChristmass(choice2StartVal, choice2EndVal)) return newYearAndChristmassError();
+		
+		
+		// Third date slice
+
+		start =  choice3Start;
+		end   =  choice3End;
+		
+		if ((start != false && end == false) || (start == false && end != false)) return emptyField();
+
+		var tmp_start = "";
+		var tmp_end = "";
+		if (summerOrWinter(start) || summerOrWinter(end))
+		{
+			tmp_start = start;
+			tmp_end = end;
+			if (summer(tmp_start) || summer(tmp_end))
+			{
+						if (tmp_start < year(tmp_start) + "-07-01") tmp_start = year(tmp_start) + "-07-01";
+						if (tmp_end > year(tmp_end) + "-08-31") tmp_end = year(tmp_end) + "-08-31";
+						if (gapInDays(tmp_start, tmp_end) > holidaysMaxDays) {
+							if(field3ToValid()) return periodTooLong();
+						}
+			}
+			if (winter(tmp_start) || winter(tmp_end))
+			{
+						if (tmp_start < year(tmp_start) + "-12-15" && tmp_start > year(tmp_start) + "-08-15") tmp_start = year(tmp_start) + "-12-15";
+						if (tmp_end > year(tmp_end) + "-01-15" && tmp_end < year(tmp_end) + "-05-15" ) tmp_end = year(tmp_end) + "-01-15";
+			}
+
+			
+		}
+		
+		if(!isPilot && isNewYearPlusChristmass(choice3StartVal, choice1EndVal)) return newYearAndChristmassError();
+		
+		
+
+		// There must not be 2x the same entry period
+		if ((choice1StartVal == choice2StartVal && choice1EndVal == choice2EndVal && choice1StartVal != "00/00/0000" && choice1StartVal != "" && choice2EndVal != "00/00/0000" && choice2EndVal != "") ||
+			(choice1StartVal == choice3StartVal && choice1EndVal == choice3EndVal && choice1StartVal != "00/00/0000" && choice1StartVal != "" && choice3EndVal != "00/00/0000" && choice3EndVal != "") ||
+			(choice2StartVal == choice3StartVal && choice2EndVal == choice3EndVal && choice2StartVal != "00/00/0000" && choice2StartVal != "" && choice3EndVal != "00/00/0000" && choice3EndVal != "") )
+		{
+			alert ("You cannot select many times the same period!");
+			return false;
+		}
+        var ajaxResult = false;
+		var params  = {'choice1_start': choice1Start, 'choice1_end': choice1End, 'choice1_leave_preference':leave_preference, 'user_id': $('#wish-user-id').val() }
+		// Checking if user has already applied leaves for the same period
+			$.ajax({  
+				url      :   "{{ url('eleave_choice_preference_check') }}",  
+				type     :    'POST',   
+				dataType :  'json',  
+				async    :      false ,  
+				data     : params,
+				success: function(data) {  
+					if(data > 0) {
+						alert("You are trying to submit a request for a leave period which is already in the database. Please try again using a different leave period!");
+						return false;
+					} else {
+						if(isAdmin){
+							return true;
+						}
+					    ajaxResult = confirm("You are about to send your request, do you want to proceed ?");
+					}
+				},  
+				error : function(xhr, textStatus, errorThrown) {  
+					alert('Ajax request failed.'); 
+					return false; 
+				}     
+			});
+
+			if(isAdmin) {
+			    return true;
+			}  
+			if (ajaxResult == true) {
+				return true;
+			} else {
+				return false; 
+			}
+		
+	}
+
+
+	function isNewYearPlusChristmass(date1, date2)
+	{
+		// date1 and date 2 are in jj/mm/YYYY format ...
+		date1 = formatToEnglish(date1); 
+		date2 = formatToEnglish(date2);
+		var tmp = today.split("-");
+		var year = parseInt(tmp[0]);
+		if(date1 <= year + "-12-25" && date2 >= (year + 1) + "-01-01") return true;
+		return false;
+
+	}
+
+	function formatToEnglish(date)
+	{
+		
+		if (date == "" || date == "undefined") return false;
+		var tab = date.split("/");
+		return tab[2] + "-" + tab[1] + "-" + tab[0];
+	}
+
+	function formatToFrance(date)
+	{
+		if (date == "" || date == "undefined") return false;
+		var tab = date.split("-");
+		return tab[2] + "-" + tab[1] + "-" + tab[0];
+	}
+
+	function year(date)
+	{
+		var tab = date.split("-");
+		return tab[0];
+	}
+
+	function summerOrWinter(date)
+	{
+		if (!date) return false;
+		if (date >= year(date) + "-07-01" && date <= year(date) + "-08-31") return true;
+		if (date >= year(date) + "-12-15" || date <= year(date) + "-01-15") return true;
+
+		return false;
+	}
+
+	function summer(date)
+	{
+		if (!date) return false;
+		if (date >= year(date) + "-07-01" && date <= year(date) + "-08-31") return true;
+		return false;
+	}
+
+	function winter(date)
+	{
+		if (!date) return false;
+		if (date >= year(date) + "-12-15" || date <= year(date) + "-01-15") return true;
+		return false;
+	}
+
+	function emptyField ()
+	{
+		alert ("Thanks to complete the threads");
+		return false;
+	}
+
+	function periodTooLong()
+	{
+		alert ("You cannot take more than " + holidaysMaxDays + " days for summer period");
+		return false;
+	}
+
+	function must_second_choice()
+	{
+		alert ("You must have more than one choice for the winter/summer period");
+		return false;
+	}
+
+	function newYearAndChristmassError()
+	{
+		alert ("You cannot choose both periods of Christmas and New Year");
+		return false;
+	}
+
+
+
+	function choiceSelect(id) {
+		if(document.getElementById(id).checked == true) {
+			switch(id) {
+				case 'choice1' :
+					document.getElementById('choice2').checked = false;
+					document.getElementById('choice3').checked = false;
+					break;
+				case 'choice2' :
+					document.getElementById('choice1').checked = false;
+					document.getElementById('choice3').checked = false;
+					break;
+				case 'choice3' :
+					document.getElementById('choice1').checked = false;
+					document.getElementById('choice2').checked = false;
+					break;
+			}
+		}
+		
+	}
+
+	function field1ToValid() {
+		if(!isAdmin) {
+			return true;
+		}
+		else {
+			if(document.getElementById('choice1').checked) return true;
+		}
+	}
+
+	function field2ToValid() {
+		if(!isAdmin) {
+			return true;
+		}
+		else {
+			if(document.getElementById('choice2').checked) return true;
+		}
+    }
+
+	function field3ToValid() {
+		if(!isAdmin) {
+			return true;
+		}
+		else {
+			if(document.getElementById('choice3').checked) return true;
+		}
+	}
+
+</script>
+
+{% endblock specificJs %}
+
+{% block container %}
+
+<div id="content">
+    <div id="content-header">
+       <h1 id="titre_help">{{ user }}</h1>
+    </div>
+    <div class="row">
+		<div class="col-xs-12">
+				{{ macros.wizz() }}
+		</div>
+    </div>
+			
+
+    <form {% if isEdit == false %} onSubmit="return fromSubmit();" {% endif %} name="form1"  id ="form1" method="post" action="{{ formData.id ? url('eleave_wishes_edit',{'id' : formData.id}) : url('eleave_wishes_add')}}" class="form-horizontal">
+		<input name="id" type="hidden" id="id" value="{{formData.id}}">
+		<input name="wish_user" type="hidden" id="wish-user-id" value="{{ wishUser }}">
+		
+        <div class="row">
+            <div class="col-xs-12">
+				<div class="widget-box">
+					<div class="widget-title">
+							<h5>Select your leave preference</h5>
+					</div>
+					<div class="widget-content nopadding">
+					
+						<div class="form-group">
+							<label class="control-label">Leave preference :</label>    
+							<div class="controls">
+							        <select name="choice1_leave_preference" id="choice1_leave_preference" >
+									   {% for key, value in preferenceList %}
+                                            <option {{ key in selectedLeavePreference ? ' selected="selected" ' : "" }} value="{{ key }}">{{ value }}</option>
+                                       {% endfor %}
+                                    </select>
+							</div>
+						</div>    
+     	            </div>
+				</div>
+			</div>
+		</div>
+
+        <div class="row">
+            <div class="col-xs-12">
+		        <div class="widget-box">
+					<div class="widget-title {{ formData.color1 }}">
+						<h5 >Priority choice <span style="position:absolute;right: 60px;" class="float_right"><input {{ formData.checked1 }} {{ formData.disable1 }}  type="{{ formData.checkbox }}" id="choice1" onchange="javascript:choiceSelect('choice1')" name="choice1_accepted" value="{{ formData.choice1Accepted }}" /> {{ formData.textCheckbox1 }}</span></h5>
+					</div>
+					<div class="widget-content nopadding">
+						<div class="form-group">
+							<label class="control-label">First Non Working Day :</label>    
+							<div class="controls">
+								<input type='text' id="choice1_start" class="form-control date-picker" placeholder="dd/mm/yyyy" name="choice1_start" value='{{formData.choice1Start}}'  data-enable-datepicker="true" />
+							</div>
+						</div>  
+
+						<div class="form-group">
+							<label class="control-label">Last Non Working Day :</label>    
+							<div class="controls">
+								<input type='text' id="choice1_end" data-enable-datepicker="true" class="form-control date-picker" placeholder="dd/mm/yyyy" name="choice1_end" value='{{ formData.choice1End }}'  />
+							</div>
+						</div>    
+        
+		            </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+		        <div class="widget-box">
+					<div class="widget-title {{ formData.color2 }}">
+						<h5>Second choice <span style="position:absolute;right: 60px;" class="float_right"><input {{ formData.checked2 }} {{ formData.disable2 }}  type = "{{ formData.checkbox }}" id = "choice2" onchange = "javascript:choiceSelect('choice2')" name = "choice2_accepted" value="{{ formData.choice2Accepted }}" /> {{ formData.textCheckbox2 }}</span></h5>
+				
+					</div>
+					<div class="widget-content nopadding">
+						<div class="form-group">
+							<label class="control-label">First Non Working Day :</label>    
+							<div class="controls">
+							<input type="text" id="choice2_start" placeholder="dd/mm/yyyy" data-enable-datepicker="true" class="form-control date-picker" name="choice2_start" value='{{ formData.choice2Start }}' />
+						</div>
+						</div>  
+
+						<div class="form-group">
+							<label class="control-label">Last Non Working Day :</label>    
+							<div class="controls">
+								<input type="text" id="choice2_end" placeholder="dd/mm/yyyy" data-enable-datepicker="true" class="form-control date-picker" name="choice2_end" value="{{ formData.choice2End }}" />
+						    </div>
+						</div>    
+        
+		            </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+		        <div class="widget-box">
+					<div class="widget-title {{ formData.color3 }}">
+						<h5>Third choice <span style="position:absolute;right: 60px;" class="float_right"><input {{ formData.checked3 }} {{ formData.disable3 }}  type="{{ formData.checkbox }}" id="choice3" onchange="javascript:choiceSelect('choice3')" name="choice3_accepted" value="{{ formData.choice3Accepted }}" /> {{ formData.textCheckbox3 }}</span></h5>
+					</div>
+					<div class="widget-content nopadding">
+						<div class="form-group">
+							<label class="control-label">First Non Working Day :</label>    
+							<div class="controls">
+								<input type="text" id="choice3_start" placeholder="dd/mm/yyyy" data-enable-datepicker="true" class="form-control date-picker" name="choice3_start" value='{{ formData.choice3Start }}'  />
+							</div>
+						</div>  
+						<div class="form-group">
+							<label class="control-label">Last Non Working Day :</label>    
+							<div class="controls">
+								<input type="text" id="choice3_end" placeholder="dd/mm/yyyy"  data-enable-datepicker="true" class="form-control date-picker" name="choice3_end" value="{{ formData.choice3End }}" />
+							</div>
+						</div>   
+
+		            </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+		        <div class="widget-box">
+					<div class="widget-title">
+						<h5>Thanks to describe your wish</h5>
+					</div>
+					 <div class="widget-content nopadding">
+					    {% if isEdit and isAdmin %}
+							<div class="form-group">
+								<label class="control-label">Refused reason :</label>    
+								<div class="controls">
+										<select name="motif_refus" id="motif_refus" >
+										<option  value="">-- select --</option>
+										{% for key, value in refus %}
+												<option {{ value.id == selectedRefus ? ' selected="selected" ' : "" }} value="{{ value.id }}">{{ value.label }}</option>
+										{% endfor %}
+										</select>
+								</div>
+							</div> 
+							<div class="form-group">
+								<label class="control-label">Total leave days due :</label>    
+								<div class="controls">
+									<input type="text"  class="form-control" name="total_leave_day_due" value='{{ wishData.totalLeaveDayDue }}'  />
+								</div>
+							</div>  
+							<div class="form-group">
+								<label class="control-label">Total Leave days booked and confirmed :</label>    
+								<div class="controls">
+									<input type="text"  class="form-control" name="total_leave_day_confirmed" value='{{ wishData.totalLeaveDayConfirmed }}'  />
+								</div>
+							</div>  
+							<div class="form-group">
+								<label class="control-label">Total Leave days taken this Year :</label>    
+								<div class="controls">
+									<input type="text"  class="form-control" name="total_leave_day_taken" value='{{ wishData.totalLeaveDayTaken }}'  />
+								</div>
+							</div>  
+							<div class="form-group">
+								<label class="control-label">Remaining Leave not taken or confirmed :</label>    
+								<div class="controls">
+									<input type="text"  class="form-control" name="remaining_leave" value='{{ wishData.remainingLeave }}'  />
+								</div>
+							</div> 
+						{% endif %}		
+						<div class="form-group">
+							<label class="control-label">Comment :</label>    
+							<div class="controls">
+							<textarea name="comment_user" class="form-control" cols="50" rows="6">{{ wishData.commentUser }}</textarea>
+							</div>
+						</div> 
+						{% if isSubmit %}
+						 <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" name="btn-to-display"><i class="icon-submit"></i> submit</button>
+                        </div>   
+				        {% endif %}		
+		            </div>
+                </div>
+            </div>
+        </div>
+   </form>
+
+</div>
+
+
+{% endblock container %}

@@ -1,0 +1,22 @@
+<?php //App%255CEasyjet%255CHrisBundle%255CController%255CCosmicRadiationReportController%2523downloadErrorFileAction
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (\Symfony\Component\VarExporter\Internal\Registry::$prototypes['Symfony\\Component\\Routing\\Annotation\\Route'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Routing\\Annotation\\Route')),
+    ],
+    null,
+    [
+        'Symfony\\Component\\Routing\\Annotation\\Route' => [
+            'path' => [
+                '/cosmic_radiation_report/new/errordownload',
+            ],
+            'name' => [
+                'download_error_file',
+            ],
+        ],
+    ],
+    [
+        $o[0],
+    ],
+    []
+); }];

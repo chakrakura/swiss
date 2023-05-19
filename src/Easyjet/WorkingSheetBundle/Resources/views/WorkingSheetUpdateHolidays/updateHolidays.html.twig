@@ -1,0 +1,43 @@
+{% extends 'EasyjetWorkingSheetBundle:Base:structure.html.twig' %}
+
+{% block container -%}
+
+    <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">Update holidays</h1>
+            <div id="description_help">Below, you can import the excel sheet from Workday which is listing the leave days</div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-12">
+                {{ macros.wizz() }}
+            </div>
+        </div>
+        
+        <div class="row">
+
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-th"></i>
+                        </span>
+                        <h5>Your excel sheet</h5>
+                    </div>
+                    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+                    <div class="widget-content nopadding">
+
+                        {{ form_widget(form) }}
+
+                        <div class="form-actions">
+                            <input id="submit-button" type="submit" class="btn btn-primary" />
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+       
+{% endblock %}

@@ -1,0 +1,82 @@
+#!/bin/bash 
+#
+# This script is launched from ../ServicesHrisImporterService.php
+#
+#
+# First parameter represent the temporary folder where to retrieve the payslip and the grosstonet file
+# Second parameter represent the payslip month
+# Third parameter represent the payslip year
+# Fourth parameter represent the archive folder where the file has to be copied after being transmitted to proconcept
+#
+#
+# THIS SCRIPT SHOULDN'T RETURN CODE 0 IF ANYTHING GOES WRONG !
+
+set +e
+
+source $(dirname "${BASH_SOURCE[0]}")/../Config/config
+
+pstmpfolder=$1
+psmonth=$2
+psyear=$3
+archive=$4
+tmpfolder=$(mktemp -d)
+
+[ ! -z $archive ] || { echo "This command must have at least 4 arguments."; exit 1; }
+
+function cleanExit {
+
+  umount $tmpfolder 2>/dev/null
+  rmdir $tmpfolder
+  rm -f ${pstmpfolder}/*
+  rmdir ${pstmpfolder}
+  exit $1
+
+}
+
+function debug {
+
+  echo " - $1"
+
+}
+
+
+# Generate global filename
+currentTime=$(date +'%Y%m%d_%H.%M.%S')
+payslip="$archive/ProConceptSalaryCertificate_$2_$3_$currentTime.zip"
+#grossNet="$archive/ProConceptglobal_$2_$3_$currentTime.zip"
+
+# Initial folder creation
+mkdir -p $archive
+
+echo "Creating zip of the salary certificate"
+( zip -j -q -r $payslip $pstmpfolder/*.pdf && rm -f $pstmpfolder/*.pdf ) || {
+  echo "Unable to make zip payslip file"
+  cleanExit 1
+}
+
+# Copy the archived file to the easyjet ftp folder
+debug "THIS IS A DEBUG"
+
+echo "Crypting file '${payslip}.pgp' to the '$4' archive folder"
+gpg --yes --no-tty --trust-model always --keyring "${ejint097BgpgPubkeyfile}" --output "${payslip}.pgp" --encrypt --recipient "${ejint097Bgpgid}" $payslip 
+rm -f $payslip
+
+lftp -u  "${ejint097BserverUsername},${ejint097BserverPassword}" "${ejint097BserverAddress}" -p 22 -e "set ftp:ssl-protect-data true;" << EOL
+cd "${ejint097BserverPath}"
+put "${payslip}.pgp"
+bye
+EOL
+
+ret=$?
+
+if [ "$ret" = 0 ] ; then
+  echo "Uploaded pgp file to the shared folder ..."
+else
+  echo "Unable to access to Safeguard server to send the salary certificate"
+  cleanExit 1
+fi
+
+
+# TEST IF FILE IS CORRECTLY COPIED AND RETURN A NON 0 EXIT CODE IF NOT.
+echo "Copying the PGP file named 'ProConceptSalaryCertificate_$2_$3_$currentTime.zip' to the ftp"
+cleanExit 0

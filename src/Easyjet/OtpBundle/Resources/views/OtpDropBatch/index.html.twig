@@ -1,0 +1,76 @@
+{% extends "EasyjetOtpBundle:Base:structure.html.twig" %}
+{% block title %}Drop import batch{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+    <script type="text/javascript">
+    $(function() {
+        $("#otp-finalize-drop").on("click", function(e) {
+            e.preventDefault();
+            bootbox.confirm("This will remove an entire import. Are you really sure to proceed ?", function(validation) {
+                if (validation === true) {
+                    $("#drop-otp-file-form button").attr('disabled', 'disabled');
+                    $("#drop-otp-file-form").submit();
+                }
+            });
+        });
+    });
+    </script>
+
+{% endblock specificJs %}
+        
+
+
+{% block container %}
+        
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Drop batch</h1>         
+        <div id="description_help">This is the section where you can remove entire batch. Please be very carefull with this section. In case of mistake you could contact an administrator for a data recovery</div>
+    </div>
+
+    {% for flashMessage in app.session.flashbag.get('otp-drop-error') %}
+        {% autoescape false %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="alert alert-danger">
+                        <button class="close" data-dismiss="alert">×</button>
+                        <strong>Notice</strong> {{ flashMessage }}
+                </div>
+            </div>
+        </div>
+        
+        {% endautoescape %}
+    {% endfor %}
+
+    <div class="col-xs-12">
+        {{ macros.wizz() }}
+    </div>  
+    
+    {{ form_start(form, {'attr': {'class': 'form-horizontal', 'id': 'drop-otp-file-form'}} ) }}
+    {{ form_errors(form) }}
+        
+    <div class="row">
+        
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Drop a batch</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    {{ form_widget(form) }}
+                    
+                    <div class="form-actions">
+                        <button type="submit" name="send-share" class="btn btn-danger" id="otp-finalize-drop"><i class="icon-remove"></i> Drop batch</button>
+                    </div>
+                </div>
+            </div>
+        </div>           
+    </div>
+
+    {{ form_end(form) }}
+</div>
+   
+{% endblock container %}

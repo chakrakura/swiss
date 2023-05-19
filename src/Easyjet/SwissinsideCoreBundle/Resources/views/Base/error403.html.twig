@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Not authorized</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/css/global.css">
+        <!--[if lte IE 8]><link rel="stylesheet" href="/bundles/easyjetswissinsidecore/css/ie8.css" /><![endif]-->
+    </head>
+    <body style="" data-menu-position="closed">
+        <div id="swissinside-header">
+            <div class="row">
+                <div class="col-xs-3 header-left hidden-xs">
+                    <div class="logo-swissinside">Swissinside</div>
+                </div>
+                <div class="col-xs-9" id="external-apps-div">
+                    <ul id="external-apps">
+                        {% if easyjetEnv == "swissinside" %}
+                            <li><a href="https://swissinside.easyjet.com/support-form/calls/new"><i class="icon-comments-alt"></i>Support<br />&nbsp;</a></li>
+                        {% endif %}
+                        <li><a href="http://inside/infosafehub/Pages/index.html"><i class="icon-shield"></i>InfoSafe<br />&nbsp;</a></li>
+                        <li><a href="/wiki"><i class="icon-pushpin"></i>Wiki<br />&nbsp;</a></li>
+                        <li><a href="/external/inside"><i class="icon-briefcase"></i>Inside<br />&nbsp;</a></li>
+                        <li><a href="http://stafftravel.easyjet.com/asp/en/book/index.asp?lang=en"><i class="icon-plane"></i>Staff<br />travel</a></li>
+                        <li><a href="http://office.easyjet.com/"><i class="icon-envelope"></i>Crews<br />Emails</a></li>
+                        <li><a href="/external/crew-portal"><i class="icon-group"></i>Crew<br />portal</a></li>
+                        <li><a href="https://wd3.myworkday.com/easyjet/d/home.htmld"><i class="icon-extra-workday"></i>Human<br />resources</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="header">
+            <ul id="swissinside-applications">
+                <li class="active"><a href="/"><i class="icon-home"></i>Back to home</a></li>
+            </ul>
+        </div>
+
+        <div id="content">
+            <div id="content-header">
+                <h1 id="titre_help">&nbsp;</h1>
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-offset-4 col-lg-4">
+                    <div class="widget-box">
+                        <div class="widget-title">
+                            <span class="icon">
+                                <i class="icon-bell"></i>
+                            </span>
+                            <h5>Error 403 : Not authorized</h5>
+                        </div>
+                        <div class="widget-content">
+                            <p><b>EN </b> : You have no access to this resource. If you think you should have access to this resource, try to logout from swissinside and log in again.</p>
+                            <p><b>FR </b> : Vous n'avez pas accès à cette ressource. Si vous pensez que vous devriez avoir accès à celle-ci, essayez de vous déconnecter et de ré-essayer.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div id="footer" class="col-xs-12">
+                {{ appName() }} v{{ appVersion() }}<br />
+                {{ "now"|date("Y") }} © Designed and developed by <a href="http://iabsis.com/">Iabsis</a>
+            </div>
+        </div>
+
+
+    </body>
+</html>

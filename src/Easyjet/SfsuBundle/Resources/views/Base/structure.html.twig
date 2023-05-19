@@ -1,0 +1,67 @@
+{% extends "@EasyjetSwissinsideCore/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+
+{% block specificCss %} {{ parent() }}
+
+  {{ encore_entry_link_tags('sfsu') }}
+{% endblock %}
+
+{% block forceIe9Rendering %}
+{% endblock forceIe9Rendering %}
+
+
+{% block specificJs %}
+{{ parent() }}
+{{ encore_entry_script_tags('sfsu') }}
+ 
+   
+    <script src="{{ asset('bundles/sfsu/js/clipboard.js')  }}"></script>
+ 
+
+
+  
+{% endblock specificJs %}
+
+{% block title %}Secure file sharing utility{% endblock %}
+
+{% block header %}
+    {{ parent() }}
+{% endblock header %}
+
+{% block generalMenu %}
+    <div id="header">
+        {{ macros.show_general_menu(generalMenuItems(), 'SFSU') }}
+
+        <a id="menu-trigger" href="#"><i class="icon-align-justify"></i></a>
+    </div>    
+{% endblock generalMenu %}
+
+
+{% block sidebar %}
+    <div id="sidebar">
+        <ul>
+            <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "SHOW_FILES") %}open active{% endif %}">
+                <a href="#"><i class="icon-time"></i> <span>Files</span> <i class="arrow icon-chevron-right"></i></a>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_FILES" %}active current-page{% endif %}"><a href="{{ url('sfsu_files_index') }}">View files</a></li>
+                </ul>
+            </li>
+            
+            {% if is_granted("ROLE_SFSU_ADMIN") %}
+            <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "SHOW_ADMIN_MAX_SIZE" or selectedSidebar == "SHOW_ADMIN_RETENTION") %}open active{% endif %}"><a href="#"><i class="icon-time"></i> <span>Admin</span> <i class="arrow icon-chevron-right"></i></a>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_ADMIN_MAX_SIZE" %}active current-page{% endif %}"><a href="{{ url('sfsu_admin_max_file_size') }}">Max file size upload</a></li>
+                </ul>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
+{% endblock sidebar %}
+
+{% block container %}    	
+<div id="content">
+    Bienvenue dans la gestion des formulaires de support
+</div>            
+{% endblock container %}

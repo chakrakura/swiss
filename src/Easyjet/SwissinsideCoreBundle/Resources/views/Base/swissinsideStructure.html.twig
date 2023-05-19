@@ -1,0 +1,42 @@
+{% extends "@EasyjetSwissinsideCore/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+{% block title %}Uman{% endblock %}
+{% block header%}
+    {{ parent() }}
+{% endblock header %}
+{#
+{% block specificJs %}
+    {% if easyjetEnv == "swissinside" %}
+    <script type="text/javascript">
+        if (!/staff-travel/.test(window.location.href)) {
+            jQuery(function() {
+                jQuery.getJSON( "/get-uman-status", function( data ) {
+                  if (data.status == "readonly" || data.status == "readonly-extended") {
+                    showReadonlyMessage(data.status);
+                  }
+                });
+            });
+        }
+    </script>
+    {% endif %}
+{% endblock %}
+#}
+
+{% block generalMenu %}
+    <div id="header">
+        {{ macros.show_general_menu(generalMenuItems(), 'UM') }}
+
+        <a id="menu-trigger" href="#"><i class="icon-align-justify"></i></a>
+    </div>    
+{% endblock generalMenu %}
+
+
+{% block sidebar %}
+    {% autoescape false %}{{ swissinsideSidebar('uman') }}{% endautoescape %}
+{% endblock sidebar %}
+
+{% block container %}    	
+<div id="content">
+    Page de test de uman !
+</div>            
+{% endblock container %}

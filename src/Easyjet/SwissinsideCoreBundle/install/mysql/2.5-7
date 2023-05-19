@@ -1,0 +1,19 @@
+USE uman;
+
+CREATE TABLE IF NOT EXISTS `dashboard_support_form` (
+  `user_id` int(10) unsigned NOT NULL,
+  `confirmation_date` date NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Contraintes pour les tables exportées
+--
+
+--
+-- Contraintes pour la table `dashboard_support_form`
+--
+ALTER TABLE `dashboard_support_form`
+  ADD CONSTRAINT `dashboard_support_form_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE  `dashboard_support_form` CHANGE  `confirmation_date`  `confirmation_date` DATETIME NOT NULL;

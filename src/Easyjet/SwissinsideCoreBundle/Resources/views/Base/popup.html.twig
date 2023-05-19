@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% import "EasyjetSwissinsideCoreBundle:Base:macros.html.twig" as macros %}
+        <title>{% block title %}Swissinside{% endblock %}</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />     
+        <link rel="stylesheet" href="{{ asset("css/global.css") ~ "?" ~ swissinsde_version }}" />
+            
+        {% block specificCss %}
+        {% endblock specificCss %}
+            
+        {% block header%}
+           {# Block to include any other header directives #}
+        {% endblock header %}
+
+
+    </head>
+    <body>        
+
+        {% block container%}{% endblock container %}
+        <script src="{{ asset('js/global.js') ~ "?" ~ swissinsde_version }}"></script>
+            
+        {% block specificJs %}
+        {% endblock specificJs %}
+
+            
+    </body>
+</html>

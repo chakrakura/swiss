@@ -1,0 +1,107 @@
+#!/bin/sh
+
+sentData=$(cat GlobalClaims.csv)
+receivedData=$(cat GlobalSGWI.csv)
+
+month[1]=Jan
+month[2]=Feb
+month[3]=Mar
+month[4]=Apr
+month[5]=May
+month[6]=Jun
+month[7]=Jul
+month[8]=Aug
+month[9]=Sep
+month[10]=Oct
+month[11]=Nov
+month[12]=Dec
+
+round()
+{
+	value=$1
+	value=$(bc <<< "scale=2; $value * 200")
+	rest=$(bc <<< "scale=0; $value % 10")
+	value=$(bc <<< "scale=0; $value - $rest")
+	if [ "$(echo $rest | cut -d. -f1)" -ge 5 ] ; then
+		value=$(scale=2; bc <<< "$value + 10")
+	fi
+	value=$(bc <<< "scale=2; $value / 200")
+	echo $value
+}
+
+echo "#### Sector Adjustement non-taxable  ####"
+# Backpay non-tax = ONE-TIME_PAYMENT_AMOUNT_PLAN_SWITZERLAND_SECTORS_NON_TAXABLE
+echo "$sentData" | grep "ONE-TIME_PAYMENT_AMOUNT_PLAN_SWITZERLAND_SECTORS_NON_TAXABLE" | while read i ; do
+	empID=$(echo $i | cut -d, -f 2)
+	sentAmount=$(echo $i | cut -d, -f 5)
+	sentAmountRounded=$(round $sentAmount)
+	sentDate=$(echo $i | cut -d, -f 3)
+
+	if [ "$sentAmount" = "0.00" ] ; then
+		continue
+	fi
+
+	count1=$(echo "$sentData" | grep $empID | grep $sentAmount | grep "ONE-TIME_PAYMENT_AMOUNT_PLAN_SWITZERLAND_SECTORS_NON_TAXABLE" | grep -v "0\.00" | wc -l)
+	count2=$(echo "$receivedData" | grep $empID | grep $sentAmountRounded | grep "\"Sector Related Backpay non-tax\"" | wc -l)
+	if [ "$count2" = 0 ] ; then
+		count2=$(echo "$receivedData" | grep $empID | grep $sentAmount | grep "\"Sector Related Backpay non-tax\"" | wc -l)
+	fi
+
+	if [ ! "$count1" = "$count2" ] ; then
+			echo $empID, $sentAmountRounded, $sentDate: $count1 $count2 $comment
+	fi
+done
+
+
+
+echo "#### Sector Adjustement taxable  ####"
+# Backpay non-tax = ONE-TIME_PAYMENT_AMOUNT_PLAN_SWITZERLAND_SECTORS_TAXABLE
+echo "$sentData" | grep "TIME_PAYMENT_AMOUNT_PLAN_SWITZERLAND_SECTORS_TAXABLE" | while read i ; do
+	empID=$(echo $i | cut -d, -f 2)
+	sentAmount=$(echo $i | cut -d, -f 5)
+	sentDate=$(echo $i | cut -d, -f 3)
+
+  sentAmountRounded=$(round $sentAmount)
+
+	if [ "$sentAmount" = "0.00" ] ; then
+		continue
+	fi
+
+	count1=$(echo "$sentData" | grep $empID | grep $sentAmount | grep "TIME_PAYMENT_AMOUNT_PLAN_SWITZERLAND_SECTORS_TAXABLE" | grep -v "0\.00" | wc -l)
+	count2=$(echo "$receivedData" | grep $empID | grep $sentAmountRounded | grep "\"Sector Related Backpay\"" | wc -l)
+	if [ "$count2" = 0 ] ; then
+		count2=$(echo "$receivedData" | grep $empID | grep $sentAmount | grep "\"Sector Related Backpay\"" | wc -l)
+	fi
+
+
+	if [ ! "$count1" = "$count2" ] ; then
+			echo $empID, $sentAmountRounded, $sentDate: $count1 $count2
+	fi
+done
+
+echo "#### Disruption ####"
+# Short Notice Disruption = ONE-TIME_PAYMENT_AMOUNT_PLAN_SHORT_NOTICE_CHANGE
+echo "$sentData" | grep SHORT | while read i ; do
+  empID=$(echo $i | cut -d, -f 2)
+	sentAmount=$(echo $i | cut -d, -f 5)
+	sentDate=$(echo $i | cut -d, -f 3)
+	sentMonth=$(echo $i | cut -d, -f 3 | cut -d- -f 2)
+	sentYear=$(echo $i | cut -d, -f 3 | cut -d- -f 1)
+
+	sentAmountRounded=$(round $sentAmount)
+
+	if [ "$sentAmount" = "0.00" ] ; then
+		continue
+	fi
+
+	count1=$(echo "$sentData" | grep $empID | grep SHORT | grep -v "0\.00" | wc -l)
+	count2=$(echo "$receivedData" | grep $empID | grep Short | wc -l)
+
+	if [ ! "$count1" = "$count2" ] ; then
+		count1=$(echo "$sentData" | grep $empID | grep SHORT | grep $sentDate | grep -v "0\.00" | wc -l)
+		count2=$(echo "$receivedData" | grep $empID | grep Short | grep $month[$sentMonth]-$sentYear | wc -l)
+		if [ ! "$count1" = "$count2" ] ; then
+			echo $empID, $sentAmountRounded, $sentDate: $count1 $count2 $Duplicate
+		fi
+	fi
+done

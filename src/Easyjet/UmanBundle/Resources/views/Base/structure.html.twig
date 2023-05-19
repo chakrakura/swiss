@@ -1,0 +1,54 @@
+{% extends "@EasyjetSwissinsideCore/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block specificCss %}{{ parent() }}
+    
+{% endblock %}
+
+
+
+{% block title %}{{ title }}{% endblock %}
+{% block header %}
+    {{ parent() }}
+{% endblock header %}
+
+{% block generalMenu %}
+    <div id="header">
+	{{ macros.show_general_menu(generalMenuItems(), 'UM') }}
+        <a id="menu-trigger" href="#"><i class="icon-align-justify"></i></a>
+    </div>    
+{% endblock generalMenu %}
+
+
+{% block sidebar %}
+    <div id="sidebar">
+        <ul>
+            {% if is_granted("ROLE_UMANAGER_ADMIN") or is_granted("ROLE_UMANAGER_IT")  %}
+                <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "UMAN_EXTERNAL_USERS" or  selectedSidebar == "UMAN_THIRDPARTY_USERS" or selectedSidebar == "UMAN_EMPLOYEE_USERS" ) %}open active{% endif %}"><a href="{{url('uman_external_users_show_all')}}"><i class="icon-signal"></i> <span>IT Data</span> <i class="arrow icon-chevron-right"></i></a>
+                    <ul>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "UMAN_EMPLOYEE_USERS" %}active current-page{% endif %}"><a href="{{url('uman_employee_users_show_all')}}">Employees</a></li>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "UMAN_THIRDPARTY_USERS" %}active current-page{% endif %}"><a href="{{url('uman_third_party_users_show_all')}}">Third party</a></li>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "UMAN_EXTERNAL_USERS" %}active current-page{% endif %}"><a href="{{url('uman_external_users_show_all')}}">External users</a></li>
+                    </ul>            
+                </li>
+            {% endif %}
+
+            {% if is_granted("ROLE_UMANAGER_ADMIN")  %}
+                <li class="submenu {% if selectedSidebar is defined and (  selectedSidebar == "UMAN_ADMIN_ROSTERING_TEAM" or selectedSidebar == "UMAN_ADMIN_STATIONS" or selectedSidebar == "UMAN_ADMIN_APPLICATIONS") %}open active{% endif %}"><a href="{{ url('uman_admin_rostering_all') }}"><i class="icon-cogs"></i> <span>Administration</span> <i class="arrow icon-chevron-right"></i></a>
+                    <ul>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "UMAN_ADMIN_ROSTERING_TEAM" %}active current-page{% endif %}"><a href="{{ url('uman_admin_rostering_all') }}">Rostering team</a></li>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "UMAN_ADMIN_APPLICATIONS" %}active current-page{% endif %}"><a href="{{ url('uman_admin_applications_all') }}">Applications</a></li>
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "UMAN_ADMIN_STATIONS" %}active current-page{% endif %}"><a href="{{ url('uman_admin_stations_all') }}">Stations</a></li>
+                    </ul>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+
+{% endblock sidebar %}
+
+{% block container %}    	
+<div id="content">
+    Bienvenue dans la gestion des heures de travail
+</div>            
+{% endblock container %}

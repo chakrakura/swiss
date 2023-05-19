@@ -1,0 +1,119 @@
+{% extends "@EasyjetSfsu/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Uploaded file{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+<script type="text/javascript">
+    $(function() {
+        $("#copy-to-clipboard").bind("click", function() {
+            window.getSelection().removeAllRanges
+        });
+        
+        $(".show-hide-logs").on("click", function() {
+           $(this).toggleClass("inversed"); 
+           if ($(this).hasClass("inversed")) {
+               $("#logs-section").stop().slideDown();
+           } else {
+               $("#logs-section").stop().slideUp();
+           }
+        });
+        
+        $("#logs-section").slideUp();
+        
+        new Clipboard('#copy-to-clipboard');
+
+        
+        $("#sfsu_file_mail_form_recipient").multiple_emails();
+    });
+    
+</script>
+{% endblock specificJs %}
+
+
+
+{% block container %}
+        
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Sending multiple files</h1>
+        <div id="description_help">You have selected multiple files. When you will click "Send file link by email", an archive file will be automatically created and a sharing link will be sent to your recipients.<br>
+        Once the zip file is created, you'll be able to see it in your file list as well as each single file you uploaded.
+        </div>     
+    </div>
+    
+   
+        
+        <div class="row">
+            <div class="col-xs-12">
+                {{ macros.wizz() }}
+            </div>
+
+        {% if fileExists %}
+            {{ form_start(emailForm, {'attr': {'class': 'form-horizontal'}} ) }}
+            {{ form_errors(emailForm) }}
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="widget-box">
+                        <div class="widget-title">
+                            <span class="icon">
+                                <i class="icon-envelope"></i>
+                            </span>
+
+                            <h5>Send the file by mail</h5>
+                        </div>
+                        <div class="widget-content nopadding">
+                                <div class="alert alert-info">The link will be automatically included in the bottom of the mail</div>
+                              
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(emailForm.subject) }} :</label>
+                                    <div class="controls">
+                                        {{ form_widget(emailForm.subject, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div> 
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(emailForm.recipient) }} :</label>
+                                    <div class="controls">
+                                        {{ form_widget(emailForm.recipient, { 'attr': {'class': 'form-control'} }) }}
+                                        <div class="form-error">
+                                            {{ form_errors(emailForm.recipient) }}
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(emailForm.mailContent) }} :</label>
+                                    <div class="controls">
+                                        {{ form_widget(emailForm.mailContent, { 'attr': {'class': 'form-control'} }) }}
+                                        <div class="form-error">
+                                            {{ form_errors(emailForm.mailContent) }}
+                                        </div>
+                                    </div>
+                                </div> 
+                                {% if showZipFilename %}
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(emailForm.zipFilename) }} :</label>
+                                    <div class="controls">
+                                        {{ form_widget(emailForm.zipFilename, { 'attr': {'class': 'form-control'} }) }}
+                                        <div class="form-error">
+                                            {{ form_errors(emailForm.zipFilename) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Send file link by email</button>
+                                    
+                                </div>
+                            </div>
+                    </div>
+                </div>  
+            </div>
+            {{ form_end(emailForm) }}
+        {% endif %}
+  
+</div>
+
+
+   
+{% endblock container %}

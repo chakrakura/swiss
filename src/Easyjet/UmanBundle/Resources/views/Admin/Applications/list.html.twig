@@ -1,0 +1,120 @@
+{% extends '@EasyjetUman/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Applications{% endblock %}
+
+{% block specificJs %}
+{{ parent() }}
+
+<script>
+    $(function() {
+
+        var url = '{{ url('uman_admin_application_edit', {"id" : ":id"}) }}';
+
+         swissinside.simpleDataTable($("#applications-list"), {
+            "bProcessing": true,
+            "aoColumns" : [
+                null, // Application
+                null, // Action
+            ],
+            "aaSorting" : [[0, "ASC"]],
+            "sAjaxSource": "{{ url('uman_admin_applications_all_search') }}",
+            "columnDefs": [ {"targets": 'no-sort',"orderable": false} ],
+
+            "fnRowCallback" : function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+              
+                $("td:eq(0)", nRow).html(
+                   '<div>'+ aData[0] + ' : '+ aData[1] + '</div> <div>'+ aData[2] + '</div>'
+                );
+                $("td:eq(1)", nRow).html(
+                    '<a href='+ url.replace(":id", aData[3]) +' class="btn btn-primary"><i class="icon-edit"></i> Edit</a> <a class="btn btn-danger applicationsID" data-applications-id='+aData[3]+' data-toggle="modal" data-target="#applicationsModal"><i class="icon-remove"></i> Remove</a> '
+                );
+            },
+            
+        } );
+    });
+
+    $(document).on("click", ".applicationsID", function () {
+        var id = $(this).data('applications-id');
+        $('#applications-id').val(id);
+    });
+    
+</script>
+
+{% endblock specificJs %}
+        
+{% block container %}
+
+<!-- Modal -->
+<div id="applicationsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirm</h4>
+      </div>
+      <form action="{{ url('uman_admin_application_remove') }}" method="POST">
+          <input type="hidden" name="applicationsId" id="applications-id">
+          <div class="modal-body">
+            <p>Are you sure that you want to remove this application ?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+            <button type="submit" class="btn btn-success">Yes</button>
+          </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+<!-- End Modal -->  
+    	
+<div id="content">
+
+    <div id="content-header">
+        <h1 id="titre_help">Applications</h1>         
+        <div id="description_help">List of applications managed via uMan.</div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a class="btn btn-primary"  href="{{ url('uman_admin_application_add') }}" ><i class="icon-plus"></i> Add a application</a>
+        </div>
+    </div>
+        
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Applications List</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="applications-list">
+                        <thead>
+                        <tr>
+                        <th>Application</th>
+                        <th class="no-sort" style="width:250px">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+   
+{% endblock container %}

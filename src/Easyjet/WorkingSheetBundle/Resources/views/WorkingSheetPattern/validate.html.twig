@@ -1,0 +1,238 @@
+{% extends '@EasyjetWorkingSheet/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block container -%}
+
+    <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">Manage the pattern status</h1>
+            <div id="description_help">Here you can approve or refuse a specific pattern.</div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-12">
+                {{ macros.wizz() }}
+            </div>
+        </div>
+            
+        
+        <div class="row">
+
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-th"></i>
+                        </span>
+                        <h5>Concerned user</h5>
+                    </div>
+                    <div class="widget-content">
+                        <div class="form-group">
+                            <label class="control-label">Pattern's user</label>
+                            <div class="controls">
+                                <span class="help-block-inalterable text-left">
+                                    {{ entity.patternForUser }} -  {{ entity.patternForUser.occupation }} %
+                                </span>                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="widget-content">
+                        <div class="form-group">
+                            <label class="control-label">Pattern weekly hours</label>
+                            <div class="controls">
+                                <span class="help-block-inalterable text-left">
+                                    {{ entity.weeklyHours }}
+                                </span>                                
+                            </div>
+                        </div>
+                    </div>
+                                
+                    <div class="widget-content">
+                        <div class="form-group">
+                            <label class="control-label">Expected Weekly hours to be done for this enployee</label>
+                            <div class="controls">
+                                <span class="help-block-inalterable text-left">
+                                    {{ entity.patternForUser.weeklyHoursToBeDone }}
+                                    {% if entity.patternForUser.weeklyHoursToBeDone != entity.weeklyHours %}
+                                        <span class="badge badge-warning">Difference between  pattern and expected weekly hours</span>
+                                    {% else %}
+                                        <span class="badge badge-success">Pattern matches the expected weekly hours</span>
+                                    {% endif %}
+                                </span>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                        
+        <div class="row">
+
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-th"></i>
+                        </span>
+                        <h5>Your working sheet pattern</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <table width="100%" class="table table-bordered table-striped table-hover data-table" id="call-types-list">
+                        <thead>
+                            <tr>
+                                <th>Day of the week</th>
+                                <th colspan="2">Morning</th>
+                                <th colspan="2">Afternoon</th>
+                            </tr>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>From</th>
+                                <th>To</th>
+                            </tr>
+                        </thead>
+                        <thead>
+                            <tr>
+                                <td>Monday</td>
+                                <td>
+                                    {{ entity.mondayMorningFrom ? entity.mondayMorningFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.mondayMorningTo ? entity.mondayMorningTo|date("H:i") : "-" }}
+                                </td>
+                                <td>
+                                    {{ entity.mondayAfternoonFrom ? entity.mondayAfternoonFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.mondayAfternoonTo ? entity.mondayAfternoonTo|date("H:i") : "-" }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tuesday</td>
+                                <td>
+                                    {{ entity.tuesdayMorningFrom ? entity.tuesdayMorningFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.tuesdayMorningTo ? entity.tuesdayMorningTo|date("H:i") : "-" }}
+                                </td>
+                                <td>
+                                    {{ entity.tuesdayAfternoonFrom ? entity.tuesdayAfternoonFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.tuesdayAfternoonTo ? entity.tuesdayAfternoonTo|date("H:i") : "-" }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Wednesday</td>
+                                <td>
+                                    {{ entity.wednesdayMorningFrom ? entity.wednesdayMorningFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.wednesdayMorningTo ? entity.wednesdayMorningTo|date("H:i") : "-" }}
+                                </td>
+                                <td>
+                                    {{ entity.wednesdayAfternoonFrom ? entity.wednesdayAfternoonFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.wednesdayAfternoonTo ? entity.wednesdayAfternoonTo|date("H:i") : "-" }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Thursday</td>
+                                <td>
+                                    {{ entity.thursdayMorningFrom ? entity.thursdayMorningFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.thursdayMorningTo ? entity.thursdayMorningTo|date("H:i") : "-" }}
+                                </td>
+                                <td>
+                                    {{ entity.thursdayAfternoonFrom ? entity.thursdayAfternoonFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.thursdayAfternoonTo ? entity.thursdayAfternoonTo|date("H:i") : "-" }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Friday</td>
+                                <td>
+                                    {{ entity.fridayMorningFrom ? entity.fridayMorningFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.fridayMorningTo ? entity.fridayMorningTo|date("H:i") : "-" }}
+                                </td>
+                                <td>
+                                    {{ entity.fridayAfternoonFrom ? entity.fridayAfternoonFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.fridayAfternoonTo ? entity.fridayAfternoonTo|date("H:i") : "-" }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Saturday</td>
+                                <td>
+                                    {{ entity.saturdayMorningFrom ? entity.saturdayMorningFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.saturdayMorningTo ? entity.saturdayMorningTo|date("H:i") : "-" }}
+                                </td>
+                                <td>
+                                    {{ entity.saturdayAfternoonFrom ? entity.saturdayAfternoonFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.saturdayAfternoonTo ? entity.saturdayAfternoonTo|date("H:i") : "-" }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sunday</td>
+                                <td>
+                                    {{ entity.sundayMorningFrom ? entity.sundayMorningFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.sundayMorningTo ? entity.sundayMorningTo|date("H:i") : "-" }}
+                                </td>
+                                <td>
+                                    {{ entity.sundayAfternoonFrom ? entity.sundayAfternoonFrom|date("H:i") : "-" }}
+                                </td>
+                                <td>    
+                                    {{ entity.sundayAfternoonTo ? entity.sundayAfternoonTo|date("H:i") : "-" }}
+                                </td>
+                            </tr>
+                        </thead>
+                        </table>
+                                
+                                    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {{ form_start(edit_form, {'attr': {'class': 'form-horizontal'}} ) }}
+        {{ form_errors(edit_form) }}
+
+        <div class="row">
+
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-th"></i>
+                        </span>
+                        <h5>Validation</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        {{ form_widget(edit_form) }}
+                        <div class="form-actions">
+                            <input type="submit" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ form_end(edit_form) }}
+    </div>
+
+{% endblock %}

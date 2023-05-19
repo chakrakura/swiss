@@ -1,0 +1,27 @@
+<?php //App%255CEasyjet%255CSfsuBundle%255CController%255CFilesController%2523downloadAction
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (\Symfony\Component\VarExporter\Internal\Registry::$prototypes['Sensio\\Bundle\\FrameworkExtraBundle\\Configuration\\Route'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Sensio\\Bundle\\FrameworkExtraBundle\\Configuration\\Route')),
+    ],
+    null,
+    [
+        'Symfony\\Component\\Routing\\Annotation\\Route' => [
+            'path' => [
+                '/files/{accessKey}/download/{withEmail}',
+            ],
+            'name' => [
+                'sfsu_download_link',
+            ],
+            'defaults' => [
+                [
+                    'withEmail' => '',
+                ],
+            ],
+        ],
+    ],
+    [
+        $o[0],
+    ],
+    []
+); }];

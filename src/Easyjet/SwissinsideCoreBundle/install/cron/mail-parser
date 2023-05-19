@@ -1,0 +1,1 @@
+#*/5 * * * *   root    /usr/share/swissinside/src/Easyjet/SwissinsideCoreBundle/Command/getswissinsidemail.sh

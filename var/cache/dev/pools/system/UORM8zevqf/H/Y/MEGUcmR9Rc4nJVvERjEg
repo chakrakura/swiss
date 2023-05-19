@@ -1,0 +1,22 @@
+<?php //App%255CEasyjet%255CFdtrBundle%255CEntity%255CFdtrMonthlyReport%2524externalDuty
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (\Symfony\Component\VarExporter\Internal\Registry::$prototypes['Doctrine\\ORM\\Mapping\\OneToOne'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Mapping\\OneToOne')),
+    ],
+    null,
+    [
+        'stdClass' => [
+            'targetEntity' => [
+                'FdtrExternalDtime',
+            ],
+            'mappedBy' => [
+                'monthlyReport',
+            ],
+        ],
+    ],
+    [
+        $o[0],
+    ],
+    []
+); }];

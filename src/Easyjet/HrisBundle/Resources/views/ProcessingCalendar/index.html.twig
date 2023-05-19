@@ -1,0 +1,100 @@
+{% extends '@EasyjetHris/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block specificJs %}{{ parent() }}
+
+{% set csrf = csrf_token('processing_calendar_management') %}
+
+{% set editUrl = url('processing_calendar_edit', {"calendar" : "0"} ) %}
+
+{% set delUrl = url('processing_calendar_del', {"calendar" : "0"} ) %}
+
+
+<script>
+    $(function() {
+        $("body").on("click", "a[data-remove-item]",function(e) {
+            e.preventDefault();
+            var url = $(this).attr("href");
+            bootbox.confirm("Do you really want to remove this entry ?", function(result) {
+                if (result) {
+                    window.location.href = url + "?_token={{ csrf }}";
+                };
+
+            });
+        });
+
+
+        swissinside.simpleDataTable($("#processing-calendar-list"), {
+            "aaSorting" : [[1, "desc"]],
+        });
+    });
+
+</script>
+{% endblock specificJs %}
+
+
+{% block container %}
+
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Processing calendar</h1>
+        <div id="description_help">
+            Here you can set the processing calendar for each month
+        </div>
+    </div>
+
+
+    <!-- Results to show -->
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>
+        <div class="col-xs-12">
+            <a href="{{ url('processing_calendar_new') }}" class="btn btn-primary">New entry</a>
+        </div>
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Processing calendar dates</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="processing-calendar-list">
+                        <thead>
+                            <tr>
+                                <th>Payment month</th>
+                                <th>EJINT096</th>
+                                <th>EJINT083 Cem export</th>
+                                {# <th>EJINT200 Claims import</th> #}
+                                <th>EJINT201 Claims export</th>
+                                {# <th>EJINT099 Fdtr import</th> #}
+
+                                <th style="width:20%;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in tableData %}
+                            <tr>
+                                <td data-order="{{ row.paymentMonth|date("Y/m/d") }}">{{ row.paymentMonth|date("M Y") }}</td>
+                                <td>{{ row.ejint096IntegrationFile|date("d/m/Y") }}</td>
+                                <td>{{ row.ejint083CemExport|date("d/m/Y") }}</td>
+                                {# <td>{% row.ejint200ClaimsImport|date("d/m/Y") %}</td> #}
+                                <td>{{ row.ejint201ClaimsExport|date("d/m/Y") }}</td>
+                                {# <td>{% row.ejint099FdtrImport|date("d/m/Y") %}</td>#}
+                                <td>
+                                    <a href="{{url('processing_calendar_edit', {'calendar' : row.id} )}}" class="btn btn-default">Edit</a>
+                                    <a href="{{url('processing_calendar_del', {'calendar' : row.id} )}}" class="btn btn-danger" data-remove-item="">Remove</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock container %}

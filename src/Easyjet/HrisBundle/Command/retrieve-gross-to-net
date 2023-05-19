@@ -1,0 +1,54 @@
+#!/bin/bash
+#
+# This script is launched from ../ServicesHrisImporterService.php
+#
+# Move gross to net file to the temporary folder (1st argument)
+# Return the error / or success message directly in the console and return
+#
+#
+# Code to return :
+# 0 - Success
+# 1 - Gross to file not present
+# 2 - Other error
+
+set +e
+
+tmpfolder=$(mktemp -d)
+pstmpfolder=$1
+
+function cleanExit {
+
+  umount $tmpfolder 2>/dev/null
+  rmdir $tmpfolder
+  exit $1
+
+}
+
+function debug {
+
+  $debug && echo " - $1"
+
+}
+
+source $(dirname "${BASH_SOURCE[0]}")/../Config/config
+
+echo "Moving Gross 2 net file to" "$pstmpfolder/grosstonet.xls"
+
+# Tester si le fichier existe, s'il n'existe pas retourner 1
+debug "Mount HR server $swisshrserverPath into $tmpfolder"
+mount -t cifs -o username=$swisshrserverUsername,password=$swisshrserverPassword $swisshrserverPath $tmpfolder ; ret=$?
+if [ "$ret" = 0 ] ; then
+  if [ "$(ls -A $tmpfolder/*.csv 2>/dev/null)" ] ; then
+    debug "Move $tmpfolder/*.csv to $pstmpfolder"
+    debug "Content of the folder: $(ls $tmpfolder/*.csv)"
+    mv $tmpfolder/*.csv "$pstmpfolder"/ || cleanExit 2
+  else
+    echo "No CSV file founded"
+    cleanExit 1
+  fi
+else
+  debug "Unable to mount the HR server"
+  cleanExit 2
+fi
+
+cleanExit 0

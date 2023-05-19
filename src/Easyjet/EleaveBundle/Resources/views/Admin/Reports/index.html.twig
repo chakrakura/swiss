@@ -1,0 +1,82 @@
+{% extends '@EasyjetEleave/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %} Generate CSV reports {% endblock %}
+
+
+{% block specificJs %}{{ parent() }}
+<script src="{{ asset('bundles/eleave/js/autocomplete.js')  }}"></script>
+<script>
+    $(".date-picker").datepicker({
+        format: 'dd/mm/yyyy',
+        }).on('changeDate', function(selected){
+            updateDate($(this).closest('.form-group').next().find('.date-picker').attr('id'), selected);
+    });
+
+    function updateDate(input, selected){
+        var minDate = new Date(selected.date.valueOf());
+        $('#'+input).datepicker('setStartDate', minDate);
+    }
+
+    window.onload = function(){
+        initAutoComplete(document.getElementById('form1'),
+        document.getElementById('user'),document.getElementById('submit_button'));
+    };
+
+</script>
+
+{% endblock specificJs %}
+        
+
+
+{% block container %}
+    	
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Generate CSV reports</h1>  
+        <div id="description_help">Select the person that you want to export or leave blank to export all offices.</div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <h5>Individual monthly productivity report</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" action="{{url('eleave_admin_csv_report')}}" method="get" id ='form1'>
+                        <input type="hidden" name="token" value="{{ csrf_token('report') }}" />
+                        <div class="form-group">
+                            <label class="control-label">User :</label>                
+                            <div class="controls">
+                                <input class="form-control input-sm" id="user" autocomplete="off" name="user" type="text" value="" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">From :</label>                
+                            <div class="controls">
+                                <input class="form-control input-sm date-input date-picker" name="from" type="text" id="date-from" value=""  placeholder="dd/mm/yyyy" data-enable-datepicker="true">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">To :</label>                
+                            <div class="controls">
+                                <input class="form-control input-sm date-input date-picker" name="to" type="text" id="date-to" value=""  placeholder="dd/mm/yyyy" data-enable-datepicker="true">
+                            </div>
+                        </div>
+                   
+                        <div class="form-actions">
+                            <button type="submit" id="submit_button"  class="btn btn-primary">Send</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</div>
+            
+{% endblock container %}

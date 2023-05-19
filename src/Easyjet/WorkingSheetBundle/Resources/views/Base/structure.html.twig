@@ -1,0 +1,55 @@
+{% extends "@EasyjetSwissinsideCore/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Working sheet management{% endblock %}
+{% block header %}
+    {{ parent() }}
+{% endblock header %}
+
+{% block generalMenu %}
+    <div id="header">
+        {{ macros.show_general_menu(generalMenuItems(), 'WS') }}
+
+        <a id="menu-trigger" href="#"><i class="icon-align-justify"></i></a>
+    </div>    
+{% endblock generalMenu %}
+
+
+{% block sidebar %}
+    <div id="sidebar">
+        <ul>
+            {% if is_granted("ROLE_SWISSINSIDE_USER") %}
+            <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "WORKING_HISTORY" or selectedSidebar == "WORKING_SHEET" or selectedSidebar == "PATTERNS" or selectedSidebar == "REPORTING") %}open active{% endif %}"><a href="#"><i class="icon-comments-alt"></i> <span>Working sheet</span> <i class="arrow icon-chevron-right"></i></a>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "WORKING_SHEET" %}active current-page{% endif %}"><a href="{{ url("working_sheet_actual_work_my_day") }}">My working sheet</a></li>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "WORKING_HISTORY" %}active current-page{% endif %}"><a href="{{ url("working_sheet_actual_work") }}">Working history</a></li>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "PATTERNS" %}active current-page{% endif %}"><a href="{{ url('working_sheet_pattern') }}">My pattern</a></li>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "REPORTING" %}active current-page{% endif %}"><a href="{{ url("working_sheet_reporting") }}">Reporting</a></li>
+                </ul>            
+            </li>
+            {% endif %}
+            {% if is_granted("ROLE_WORKING_SHEET_ADMIN") or is_granted("ROLE_WORKING_SHEET_LINE_MANAGER") %}
+            <li class="submenu open {% if selectedSidebar is defined and (selectedSidebar == "USERS" or selectedSidebar == "PATTERN_VALIDATION" or selectedSidebar == "BULK_UPDATER" or selectedSidebar == "HOLIDAYS_UPDATER") %} active{% endif %}"><a href="#"><i class="icon-cogs"></i> <span>Administration</span> <i class="arrow icon-chevron-right"></i></a>
+                <ul>
+                    {% if is_granted("ROLE_WORKING_SHEET_ADMIN") %}
+                        <!--li class="{% if selectedSidebar is defined and selectedSidebar == "USERS" %}active current-page{% endif %}"><a href="{{ url('working_sheet_users') }}">Users management</a></li-->
+                        <li class="{% if selectedSidebar is defined and selectedSidebar == "BULK_UPDATER" %}active current-page{% endif %}"><a href="{{ url('working_sheet_bulk_update') }}">Bulk update</a></li>
+                        <!--li class="{% if selectedSidebar is defined and selectedSidebar == "HOLIDAYS_UPDATER" %}active current-page{% endif %}"><a href="{{ url('working_sheet_holidays_update') }}">Holidays update</a></li-->
+                    {% endif %}
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "PATTERN_VALIDATION" %}active current-page{% endif %}"><a href="{{ path('working_sheet_pattern_validation') }}">Pattern(s) validation</a></li>
+                </ul>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
+{% endblock sidebar %}
+
+{% block container %}    	
+<div id="content">
+    Bienvenue dans la gestion des heures de travail
+</div>            
+{% endblock container %}
+
+
+

@@ -1,0 +1,100 @@
+{% extends '@EasyjetOtp/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Import OTP excel file{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+    <script type="text/javascript">
+        $(function() {
+            $("#import-file-form").on('submit', function() {
+                $("#submit-btn").attr('disabled', 'disabled');
+            });
+
+            $("#ImportOtpFile_effectiveDate").on("change", function() {
+                var effectiveDateArray = $(this).val().split("/");
+
+                if (effectiveDateArray.length === 3) {
+                    var date = new Date(effectiveDateArray[2], effectiveDateArray[1], effectiveDateArray[0]);
+                    var month = parseInt(date.getMonth()) - 1;
+                    var year = parseInt(date.getFullYear());
+                    if (month == 0) {
+                        month = 12;
+                        year--;
+                    }
+                    if (month < 10) {
+                        month = "0" + month;
+                    }
+
+                    $("#ImportOtpFile_cvpMonth").datepicker('update', "01/" + month + "/" + year);
+                }
+
+                
+            });
+
+        });
+    </script>
+    
+{% endblock specificJs %}
+        
+
+
+{% block container %}
+        
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Upload worday excel sheet</h1>         
+        <div id="description_help">Please select your worday export file and upload it to start the import process.</div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="alert alert-warning">
+                <button class="close" data-dismiss="alert">×</button>
+                <strong>Important</strong> Please note that you no longer have to manually import the data from this form. An automatic script will import the new data each 1st of the month. If not, please contact an administrator.
+            </div>
+        </div>
+    </div>
+    
+    
+
+    {% for flashMessage in app.session.flashbag.get('otp-import-error') %}
+        {% autoescape false %}
+        <div class="alert alert-danger">
+                <button class="close" data-dismiss="alert">×</button>
+                <strong>Notice</strong> {{ flashMessage }}
+        </div>
+        {% endautoescape %}
+    {% endfor %}
+
+    <div class="col-xs-12">
+        {{ macros.wizz() }}
+    </div>  
+    
+    {{ form_start(form, {'attr': {'class': 'form-horizontal', 'id': 'import-file-form'}} ) }}
+    {{ form_errors(form) }}
+        
+    <div class="row">
+        
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Select you excel sheet</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    {{ form_widget(form) }}
+                    
+                    <div class="form-actions">
+                        <input type="submit" class="btn btn-primary" id="submit-btn" />
+                    </div>
+                </div>
+            </div>
+        </div>           
+    </div>
+
+    {{ form_end(form) }}
+</div>
+   
+{% endblock container %}

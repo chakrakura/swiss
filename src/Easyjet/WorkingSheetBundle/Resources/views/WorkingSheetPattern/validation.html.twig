@@ -1,0 +1,71 @@
+{% extends '@EasyjetWorkingSheet/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block container -%}
+    <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">List of pattern to be validated</h1>  
+            <div id="description_help">Below you can select a pattern in order to validate it.</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                {{ macros.wizz() }}
+            </div>
+        </div>
+            
+        <div class="row">       
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-th"></i>
+                        </span>
+                        <h5>List of patterns to be validated</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <table width="100%" class="table table-bordered table-striped table-hover data-table" id="call-types-list">
+                            <thead>
+                                <tr>
+                                    <th>Createdat</th>
+                                    <th>Validated</th>
+                                    <th>Active</th>
+                                    <th>Concerned user</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for entity in entities %}
+                                <tr>
+                                    <td>{{ entity.createdAt ? entity.createdAt|date("d/m/Y H:i") : "-" }}</td>
+                                    <td>
+                                        {% if entity.status == "PENDING" %}
+                                            <span class="badge badge-info">Waiting approval</span>
+                                        {% elseif entity.status == "VALIDATED" %}
+                                            <span class="badge badge-success">Validated</span>
+                                        {% elseif entity.status == "REFUSED" %}
+                                            <span class="badge badge-danger">Refused</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if entity.active %}
+                                            <span class="badge badge-success">Yes</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">No</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ entity.patternForUser }}</td>
+                                    <td>
+                                        <a href="{{ path('working_sheet_pattern_validate', { 'id': entity.id }) }}" class="btn btn-default">Update status</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>           
+  
+    </div>
+{% endblock %}

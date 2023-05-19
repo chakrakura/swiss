@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# Debug mode (true | false)
+debug=true
+
+# To be defined : Ejint097 Proconcept server
+swisshrserverPath='//sgvahrtest02/GrossToNet'
+#swisshrserverPath='//172.25.137.44/Share/HR'
+swisshrserverUsername='-hrisservice-swiss'
+swisshrserverPassword='akPypdoaf993'
+
+# To be defined : Ejint097 FTP server
+#safeguardserverPath='//172.25.137.44/Share/EJINT097'
+#safeguardserverUsername='-hrisservice-swiss'
+#safeguardserverPassword='akPypdoaf993'
+ejint097serverAddress='file.safeguardworld.com'
+ejint097serverUsername='proconcept'
+ejint097serverIdentityKeyFile='/var/www/html/swissinside/src/Easyjet/HrisBundle/Config/privkey.rsa'
+ejint097serverPath='easyJet airlines LTD/Switzerland/inbound/'
+
+ejint097gpgPubkeyfile='/var/www/html/swissinside/src/Easyjet/HrisBundle/Config/easySGWIProconcept.asc'
+ejint097gpgid='easySGWIProconcept@safeguardworld.com'
+
+ejint097BserverAddress='file.safeguardworld.com'
+ejint097BserverUsername='proconcept'
+ejint097BserverIdentityKeyFile='/var/www/html/swissinside/src/Easyjet/HrisBundle/Config/privkey.rsa'
+ejint097BserverPath='easyJet airlines LTD/Switzerland/inbound/'
+
+ejint097BgpgPubkeyfile='/var/www/html/swissinside/src/Easyjet/HrisBundle/Config/easySGWIProconcept.asc'
+ejint097Bgpgid='easySGWIProconcept@safeguardworld.com'
+
+# To be defined : Ejint096 FTP server
+#ejint096serverPath='//172.25.137.44/Share/EJINT096'
+#ejint096serverUsername='-hrisservice-swiss'
+#ejint096serverPassword='akPypdoaf993'
+ejint096serverAddress='file.safeguardworld.com'
+ejint096serverUsername='proconcept'
+ejint096serverIdentityKeyFile='/var/www/html/swissinside/src/Easyjet/HrisBundle/Config/privkey.rsa'
+ejint096serverPath='easyJet airlines LTD/Switzerland/outbound/'
+
+ejint096gpgPrivkeyfile='/var/www/html/swissinside/src/Easyjet/HrisBundle/Config/swissinsidePrivKey.asc'
+ejint096gpgid='swissinside@easyjet.com'
+
+# To be defined : Ejint096 Pay elements Proconcept server
+payelementserverPath='//192.168.136.100/PayElements'
+payelementserverUsername='-hrisservice-swiss'
+payelementserverPassword='akPypdoaf993'
+payelementFilenameFormat="Proconcept-Elements"
+
+# To be defined : Ejint096 Demographic information
+demographicFilenameFormat="Proconcept_Demographic_Switzerland"
+
+# To be defined : Ejint096 GPG information
+gpgFilenameFormat="Proconcept-Demoandlements*.pgp"
+
+# Data check
+cerFilenameFormat='CHE_EJET.Changes_Export_ICP_Changes_Report'
+ProconceptDumpFileServer='//sgvahrtest02/Demo_data'
+ProconceptDumpFilenameFormat='demographic'
+
+
+picofsPath='//sezlfil0005/Departments/HRIS/SwissCompData/PICOF\ Files/'
+picofsUsername='-hrisservice-swiss'
+picofsPassword='akPypdoaf993'

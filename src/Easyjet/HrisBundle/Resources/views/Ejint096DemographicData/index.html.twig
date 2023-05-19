@@ -1,0 +1,116 @@
+{% extends '@EasyjetHris/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block specificJs %}{{ parent() }}
+
+<script>
+    $(function() {
+
+        swissinside.simpleDataTable($("#demographic-data_list"), {
+            "bProcessing": true,
+            "aLengthMenu": [[10, 25, 40, -1], [10, 25, 40, "All"]],
+            "aoColumns" : [
+                null, // Demographic data
+                null, // oracle field
+                null, // Mandatory
+                null, // triggers
+                {"bSortable": false} // Id
+            ]
+        });  
+
+    });  
+
+    var deleteDemographicData = function(url) {
+        bootbox.confirm("Do you really want to remove this demographic data configuration ?", function(confirmation) {
+            if (confirmation) {
+                window.location.href = url;
+            }
+        })
+    };
+
+    var createNewDemographicData = function() {
+        bootbox.prompt("New demographic data csv column name ?", function(result) { 
+            if (result) {
+                var url = "{{ url('ejint096_demographic_data_new') }}";
+                window.location.href = url + "?demographicData=" + result;
+            }  
+        });
+    }
+
+    
+</script>
+{% endblock specificJs %}
+
+
+
+{% block container %}
+
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Demographic data.</h1>
+        <div id="description_help">Here you can configure the demographic data requirements. This will allow the parser to check the data integrity and generate the report.</div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="javascript:createNewDemographicData();" class="btn btn-primary pull-right">Set a new demographic data</a>
+        </div>
+    </div>
+
+
+    <!-- Results to show -->
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>        
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Demographic data list</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="demographic-data_list">
+                        <thead>
+                            <tr>
+                                <th>Demographic data</th>
+                                <th>Oracle field</th>
+                                <th>Mandatory</th>
+                                <th>Triggers</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dd in demographicData %}
+                                <tr>
+                                    <td>{{ dd.demographicData }}</td>
+                                    <td>{{ dd.oracleField }}</td>
+                                    <td>{{ dd.mandatory ? "Yes" : "No" }}</td>
+                                    <td>{{ dd.triggers }}</td>
+                                    <td>
+                                        <a href="{{ url('ejint096_demographic_data_edit', {id: dd.id}) }}" class="btn btn-primary"><i class="icon-edit"></i> Edit</a>
+                                        <a href="javascript:deleteDemographicData('{{ url('ejint096_demographic_data_delete', {id: dd.id}) }}')" class="btn btn-danger delete-btn"><i class="icon-trash"></i> Remove</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="{{ url('ejint096_demographic_data_csv') }}" class="btn btn-success pull-right" ><i class="icon-download"></i> Download CSV</a>
+        </div>    
+    </div>
+
+
+</div>
+
+
+{% endblock container %}

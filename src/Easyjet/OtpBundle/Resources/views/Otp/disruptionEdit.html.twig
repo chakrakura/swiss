@@ -1,0 +1,140 @@
+{% extends '@EasyjetOtp/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %} {{ row.firstName }} {{ row.LastName }} -  {{ row.batch.cvpMonth|date("M Y") }} {% endblock %}
+
+{% block specificJs %}{{ parent() }}
+
+{% set crsfToken = csrf_token('sect_adj_management') %}
+
+<script type="text/javascript">
+    $(function() {
+        var otp_remove_request = function(url) {
+            bootbox.confirm("This will remove your request. Are you really sure to proceed ?", function(validation) {
+                if (validation === true) {
+                    url += "?_token={{ crsfToken }}";
+                    window.location.href = url;
+                }
+            });
+        };
+        $("[data-url-delete]").on("click", function() {
+            otp_remove_request($(this).data('urlDelete'));
+        });
+    })
+</script>
+
+{% endblock specificJs %}
+
+
+
+{% block container %}
+
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Disruption list</h1>
+        <div id="description_help">
+            Here's the list  of disruption for <span class="badge badge-success">{{ row.firstName }} {{ row.LastName }}</span> for the period <span class="badge badge-success">{{ row.batch.cvpMonth|date("M Y") }} </span>.
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="{{ claimsListUrl }}" class="btn btn-default"><i class="icon-home"></i> Return to the list</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="{{ url('otp_disruption_adj_new', {row : row.id}) }}" class="btn btn-primary pull-right">Add disruption claim</a>
+        </div>
+    </div>
+
+   
+    <div class="row">
+
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>List of disruption</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="otp-list">
+                        <thead>
+                            <tr>
+                                <th>Initial roster duty</th>
+                                <th>Notification of change</th>
+                                <th>New rostered duty at sign-on</th>
+                                <th style="width:200px">Status</th>
+                                {% if not is_granted('ROLE_CLAIMS_ADMIN') %}
+                                    <th Action="width:200px">Action</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for currentDisruption in row.disruptions %}
+                            <tr>
+                                <td>{{ currentDisruption.initialStart | date('Y-m-d H:i') }}  - {{ currentDisruption.initialEnd | date('Y-m-d H:i') }}</td>
+                                <td>{{ currentDisruption.dateOfChange | date('Y-m-d H:i') }}</td>
+                                <td>{{ currentDisruption.newStart | date('Y-m-d H:i') }} - {{ currentDisruption.newEnd | date('Y-m-d H:i') }} </td>
+                                {% if currentDisruption.state == '0' %}
+                                    {% set state, message, val = 'In progress', 'info', ''  %}
+                                {% elseif currentDisruption.state == '1' %} 
+                                    {% set state , message, val =  'Accepted' ,'success', (currentDisruption.statusChangedAt | date('Y-m-d H:i')) %}
+                                {% else %}
+                                    {% set state, message, val = 'Refused' , 'danger',  (currentDisruption.statusChangedAt | date('Y-m-d H:i')) %} 
+                                {% endif %} 
+                                <td><span class="badge badge-{{ message }}">{{ state }} {{val}}</span> </td>
+                                {% if not is_granted('ROLE_CLAIMS_ADMIN') %}
+                                    <td> <a href="{{ url('otp_disruption_adj_edit', {disruption: currentDisruption.id}) }}" class="btn btn-primary">Edit</a> </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+	{{ form_errors(form) }}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-comment"></i>
+                    </span>
+                    <h5>Comment</h5>
+                </div>
+                <div class="widget-content nopadding">
+
+                    <div class="form-group">
+                        <label class="control-label" for="effectiveDate">{{ form_label(form.disruptionComment) }}</label>
+                        <div class="controls">
+                            {{ form_widget(form.disruptionComment, { 'attr': {'class': 'form-control'} }) }}
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary"><i class="icon-comment"></i> Save comment</button>
+                    </div>
+                </div>
+            </div>
+        </div>           
+    </div>
+
+{{ form_end(form) }}
+
+
+</div>
+
+{% endblock container %}

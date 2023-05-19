@@ -1,0 +1,45 @@
+<form class="form-horizontal" action="{{ url('uman_admin_rostering_add_member') }}" method="post" name="form_search">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Add a rostering member</h4>
+            </div>
+            <div class="modal-body">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-search"></i>
+                        </span>
+                        <h5>Select the employee to add</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+
+                            <div class="form-group">
+                                <label class="control-label">Employee</label>                
+                                <div class="controls">
+                                    <select required="required" id="userToAdd" class="select2" name="user">
+                                        <option value="">-- Select --</option>
+                                    {% for user in usersList %}
+                                        <option value="{{ user.logUser }}">{{ user }}</option>
+                                    {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="submitted"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</form>
+
+<script>
+    $(function() {
+       $("#userToAdd").select2();
+    });
+</script>

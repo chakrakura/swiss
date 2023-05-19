@@ -1,0 +1,63 @@
+{% extends '@EasyjetEleave/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Bulk leave request validation{% endblock %}
+
+
+{% block specificJs %}{{ parent() }}
+<script>
+    $(function() {
+       swissinside.menuSelected("admin-multi-leave-validation"); 
+    });
+</script>
+{% endblock specificJs %}
+        
+
+
+{% block container %}
+    	
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Bulk leave request validation</h1>  
+        <div id="description_help">Description - TO DO</div>
+    </div>
+    
+    <div class="row">
+        
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>
+        
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-download"></i>
+                    </span>
+                    <h5>Choose the excel file below</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                        
+
+                            <div class="form-group">
+                                <label class="control-label">Excel file:</label>                
+                                <div class="controls">
+                                    <input class="form-control input-sm date-input" name="files" type="file" >
+                                </div>
+                            </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary"><i class="icon-search"></i> Validate multiple request</button>
+                        </div>
+                        <div id="submitted"></div>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+</div>
+            
+{% endblock container %}

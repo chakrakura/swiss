@@ -1,0 +1,98 @@
+{% extends '@EasyjetOtp/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %} View Logs{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+
+{% endblock specificJs %}
+        
+
+
+{% block container %}
+    	
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Export log for the batch {{ log.batch }}.</h1>  
+        <div id="description_help">Hereafter, the details about the selected log.</div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Log details</h5>
+                </div>
+                <div class="widget-content">
+
+                    <div class="form-group">
+                        <label class="control-label">Log time</label>
+                        <div class="controls">
+                            <span class="help-block-inalterable text-left">
+                                {{ log.exportDate|date('F jS Y - H:i') }}&nbsp;
+                            </span>                                
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Exported by</label>
+                        <div class="controls">
+                            <span class="help-block-inalterable text-left">
+                                {{ log.user }}&nbsp;
+                            </span>                                
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Script status</label>
+                        <div class="controls">
+                            <span class="help-block-inalterable text-left">
+                                {% if log.status == "NO_FILE_TO_PARSE" %}
+                                    <span class="badge badge-success">No file to parse</span>
+                                {% elseif log.status == "failed" %}
+                                    <span class="badge badge-danger">Failed</span>
+                                {% elseif log.status == "warning" %}
+                                    <span class="badge badge-warning">Warning</span>
+                                {% elseif log.status == "success" %}
+                                    <span class="badge badge-success">Success</span>
+                                {% else %}
+                                    <span class="badge badge-info">{{ log.status }}</span>
+                                {% endif %}
+                                &nbsp;
+                            </span>                                
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="control-label">Script log content</label>
+                        <div class="controls">
+                            <span class="help-block-inalterable text-left">
+                                <pre>{{ log.content }}</pre>&nbsp;
+                            </span>                                
+                        </div>
+                    </div>
+
+                    {% if log.excelFilename %}
+                        <div class="form-group">
+                            <label class="control-label">Exported xls file</label>
+                            <div class="controls">
+                                <span class="help-block-inalterable text-left">
+                                    <a class="btn btn-success" href="{{ url('admin_otp_logs_dl', {log: log.id} ) }}">Download excelsheet</a>
+                                </span>                                
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+
+
+                </div>
+            </div>
+        </div>           
+    </div>
+</div>
+            
+{% endblock container %}

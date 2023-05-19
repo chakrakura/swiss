@@ -1,0 +1,179 @@
+<h2>Report of the import from worday to swissinside</h2>
+
+<h3>Status</h3>
+{{ status }}
+
+<h3>List of new employees created in swissinside</h3>
+
+{% if reportData.new_users|length %}
+    <table class="table table-bordered table-striped table-hover data-table" >
+        <thead>
+            <tr>
+                <th>Station</th>
+                <th>Employee ID</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Contract</th>
+                <th>Engagement date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in reportData.new_users %}
+                <tr>
+                    <td>{{ user.station }}</td>
+                    <td>{{ user.employeeId }}</td>
+                    <td>{{ user.firstname }}</td>
+                    <td>{{ user.lastname }}</td>
+                    <td>{{ user.contract }}</td>
+                    <td>{{ user.engagementDate }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+{% else %}
+    <p>No new employee found</p>
+{% endif %}
+
+<h3>List of updates</h3>
+
+{% if reportData.update_users|length %}
+    <table class="table table-bordered table-striped table-hover data-table" >
+        <thead>
+            <tr>
+                <th colspan="2">Station</th>
+                <th>Employee ID</th>
+                <th colspan="2">First name</th>
+                <th colspan="2">Last name</th>
+                <th colspan="2">Contract</th>
+            </tr>
+        </thead>
+        <thead>
+            <tr>
+                <th>Previous</th>
+                <th>New</th>
+                <th>Both</th>
+                <th>Previous</th>
+                <th>New</th>
+                <th>Previous</th>
+                <th>New</th>
+                <th>Previous</th>
+                <th>New</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in reportData.update_users %}
+                <tr>
+                    <td>{{ user.old_station }}</td>
+                    <td>{{ user.new_station }}</td>
+                    <td>{{ user.employeeId }}</td>
+                    <td>{{ user.old_firstname }}</td>
+                    <td>{{ user.new_firstname }}</td>
+                    <td>{{ user.old_lastname }}</td>
+                    <td>{{ user.new_lastname }}</td>
+                    <td>{{ user.old_contract }}</td>
+                    <td>{{ user.new_contract }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+{% else %}
+    <p>No updates found</p>
+{% endif %}
+
+<h3>List of new leavers created in swissinside</h3>
+
+{% if reportData.new_leavers|length %}
+    <table class="table table-bordered table-striped table-hover data-table" >
+        <thead>
+            <tr>
+                <th>Station</th>
+                <th>Employee ID</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Leave date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in reportData.new_leavers %}
+                <tr>
+                    <td>{{ user.station }}</td>
+                    <td>{{ user.employeeId }}</td>
+                    <td>{{ user.firstname }}</td>
+                    <td>{{ user.lastname }}</td>
+                    <td>{{ user.leaveDate }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No new employee found</p>
+{% endif %}
+
+<h3>List of movers who will be marked as new leavers in swissinside</h3>
+{% if reportData.new_movers|length %}
+    <table class="table table-bordered table-striped table-hover data-table" >
+        <thead>
+            <tr>
+                <th>Station</th>
+                <th>Employee ID</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Leave date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in reportData.new_movers %}
+                <tr>
+                    <td>{{ user.station }}</td>
+                    <td>{{ user.employeeId }}</td>
+                    <td>{{ user.firstname }}</td>
+                    <td>{{ user.lastname }}</td>
+                    <td>{{ user.leaveDate }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No new employee found</p>
+{% endif %}
+
+<h3>List of employees to be checked</h3>
+
+{% if reportData.user_to_be_checked|length %}
+    <table class="table table-bordered table-striped table-hover data-table" >
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Employee exists in Swissinside</th>
+                <th>Previous station</th>
+                <th>New station</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in reportData.user_to_be_checked %}
+                <tr>
+                    <td>{{ user.employeeId }}</td>
+                    <td>{{ user.firstname }}</td>
+                    <td>{{ user.lastname }}</td>
+                    <td>{% if user.userExist %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-danger">No</span>{% endif %}</td>
+                    <td>{{ user.previousStation }}</td>
+                    <td>{{ user.newStation }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+{% else %}
+    <p>No new employee found</p>
+{% endif %}
+
+
+<h3>Detailed report</h3>
+
+<pre>
+{{ logContent }}
+</pre>

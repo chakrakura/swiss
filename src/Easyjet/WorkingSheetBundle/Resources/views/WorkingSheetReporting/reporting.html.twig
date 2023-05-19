@@ -1,0 +1,125 @@
+{% extends '@EasyjetWorkingSheet/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+{% block specificJs %}{{ parent() }}
+    <script>
+        $(function() {
+            swissinside.simpleDataTable($("#results-table"));
+        });
+    </script>
+{% endblock specificJs %}
+{% block container -%}
+    <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">Reporting</h1>  
+            <div id="description_help">Here you can follow the evolution of your working time. Please ensure that you don't have too much overtime hours.</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                {{ macros.wizz() }}
+            </div>
+        </div>
+            
+        <div class="row">
+
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-th"></i>
+                        </span>
+                        <h5>Search for a specific period</h5>
+                    </div>
+                    {{ form_start(search_form, {'attr': {'class': 'form-horizontal'}}) }}
+                    <div class="widget-content nopadding">
+
+                        <div class="form-group">
+                            <label class="control-label">{{ form_label(search_form.dateFrom) }}</label>
+                            <div class="controls">
+                                {{ form_widget(search_form.dateFrom) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">{{ form_label(search_form.dateTo) }}</label>
+                            <div class="controls">
+                                {{ form_widget(search_form.dateTo) }}
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <input id="submit-button" type="submit" class="btn btn-primary" value="Search"/>
+                            <button type="submit" class="btn btn-warning" name="download"><i class="icon-download"></i> Download CSV</button>
+                        </div>
+                        
+                    </div>
+                    {{ form_end(search_form) }}
+                </div>
+            </div>
+        </div>
+                
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-th"></i>
+                        </span>
+                        <h5>List of working days</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <table width="100%" class="table table-bordered table-striped table-hover data-table" id="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Empno</th>
+                                    <th>First name</th>
+                                    <th>Last name</th>
+                                    <th>Working Month</th>
+                                    <th>Total Month hours</th>
+                                    <th>Total Year hours</th>
+                                    <th>Month ratio</th>
+                                    <th>Year ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for empno, employee in reporting_rows %}
+                                    {% for month in employee.months %}
+                                        {% if month.monthlyWorkedHours is defined %}
+                                            {% if month.expectedWorkingTime>0 %}
+                                                {% set monthlyRatio = month.monthlyWorkedHours * 100 / month.expectedWorkingTime %} 
+                                            {% else %}
+                                                {% set monthlyRatio = 0 %}
+                                            {% endif %}
+                                            {% if month.expectedWorkingTimeForYear>0 %}
+                                                {% set yearlyRatio = month.totalWorkedForYear * 100 / month.expectedWorkingTimeForYear %} 
+                                            {% else %}
+                                                {% set yearlyRatio = 0 %}
+                                            {% endif %} 
+                                            <tr>
+                                                <td>{{ empno }}</td>
+                                                <td>{{ employee.firstname }}</td>
+                                                <td>{{ employee.lastname }}</td>
+                                                <td>{{ month.label }}</td>
+                                                <td>{{ month.monthlyWorkedHours|minutesToTime }} / {{ month.expectedWorkingTime|minutesToTime }}</td>
+                                                <td>{{ month.totalWorkedForYear|minutesToTime }} / {{ month.expectedWorkingTimeForYear|minutesToTime }}</td>
+                                                <td>
+                                                    {% set monthlyRatioDisplay = -1 * (100 - monthlyRatio) %}
+                                                    <span class="badge {{ monthlyRatioDisplay > 0 ? "badge-danger" : "badge-success" }}">{{ monthlyRatioDisplay > 0 ? "+" : "" }} {{ monthlyRatioDisplay|number_format(2) }} %</span>
+                                                </td>
+                                                <td>
+                                                    {% set yearlyRatioDisplay = -1 * (100 - yearlyRatio) %}
+                                                    <span class="badge {{ yearlyRatioDisplay > 0 ? "badge-danger" : "badge-success" }}">{{ yearlyRatioDisplay > 0 ? "+" : "" }} {{ yearlyRatioDisplay|number_format(2) }} %</span>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                        
+                                    {% endfor %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

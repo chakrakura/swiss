@@ -1,0 +1,39 @@
+parameters:
+    hris.grosstonet_file_folder: "/root/grosstonet_file_folder"
+    hris.ejint096_archive_folder: /data02/hris/ejint096/archives
+    hris.ejint097_archive_folder: /data02/hris/ejint097/archives
+    hris.tmp_folder: /data02/hris/tmp
+    hris.cosmic_radiation: /data02/hris/cosmic_radiation
+    
+    # hris.picofs_folder: smb://-hrisservice-swiss:akPypdoaf993@sgvahr0001/EDA_REP/unknown
+    hris.picofs_folder: /mnt
+    hris.picofs_extensions:
+        - xml
+        - xml.pgp
+    
+    ##dev 
+    hris.workday.employeeRankingReport.url: "https://wd3-impl-services1.workday.com/ccx/service/customreport2/easyjet/IntCR_CH_user/EJ_-_Switzerland_Employee_Ranking_Report__Active_and_Term__-_WebService"
+    #hris.workday.employeeRankingReport.url: "https://wd3-services1.myworkday.com/ccx/service/customreport2/easyjet/IntCR_CH_user/EJ_-_Switzerland_Employee_Ranking_Report__Active_and_Term__-_WebService"
+    hris.workday.employeeRankingReport.login : "IntCR_CH_user"
+    hris.workday.employeeRankingReport.password : "Workday$2"
+    
+    # Define below the list of emails address of the people intrested to receive the import report
+    hris.users_import_email_addresses:
+        - vikant.tyagi@easyjet.com
+        - vincent.libsig@easyjet.com
+    hris.ejint097_transfer_notification:
+        - servicecentre@safeguardworld.com
+        - vincent.libsig@easyjet.com
+    hris.mover_alert_to_itsd:
+        - easyjetitservicedesk@easyjet.com
+        - vikrant.tyagi@easyjet.com
+        - vincent.libsig@easyjet.com
+        - anthony.garrelhas2@easyjet.com
+        - ezs-itdeskengineer@easyjet.com
+
+doctrine:
+    orm:
+        entity_managers:
+            default:
+                mappings:
+                    EasyjetHrisBundle: ~

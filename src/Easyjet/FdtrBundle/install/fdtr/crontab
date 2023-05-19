@@ -1,0 +1,2 @@
+0 4 28 * *  apache  php /usr/share/swissinside/bin/console easyjet:external-duty-reminder
+0 4 01 * *  apache  php /usr/share/swissinside/bin/console easyjet:external-dtime-user-blocked

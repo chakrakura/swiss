@@ -1,0 +1,25 @@
+parameters:
+    easyjet_env: swissinside
+    
+services:
+    ejint097_analyser:
+        class: Easyjet\HrisBundle\Services\Ejint097AnalyserService
+        arguments: [@mailer, "%hris.grosstonet_file_folder%", "%hris.ejint097_archive_folder%", "%hris.tmp_folder%"]
+    ejint097_importer:
+        class: Easyjet\HrisBundle\Services\Ejint097ImporterService
+        arguments: [@mailer, "%hris.grosstonet_file_folder%", "%hris.ejint097_archive_folder%", "%hris.tmp_folder%"]
+    ejint097b_importer:
+        class: Easyjet\HrisBundle\Services\Ejint097bImporterService
+        arguments: [@mailer, "%hris.grosstonet_file_folder%", "%hris.ejint097_archive_folder%", "%hris.tmp_folder%"]
+    ejint096_importer:
+        class: Easyjet\HrisBundle\Services\Ejint096ImporterService
+        arguments: ["%hris.ejint096_archive_folder%", "%hris.tmp_folder%"]
+    ejint096_tester:
+        class: Easyjet\HrisBundle\Services\Ejint096TesterService
+        arguments: ["%hris.ejint096_archive_folder%/data-check"]
+    hris_users_importer:
+        class: Easyjet\HrisBundle\Services\UsersImporterService
+        arguments: []
+    hris_users_disabler:
+        class: Easyjet\HrisBundle\Services\UsersDisablerService
+        arguments: ['%ldap_root%', '%ldap_server%', '%ldap_bind%', '%ldap_ad_user%', '%ldap_ad_password%', '%ldap_find_by_emp_id%']

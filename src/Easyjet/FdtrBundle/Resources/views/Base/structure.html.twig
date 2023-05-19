@@ -1,0 +1,54 @@
+{% extends "@EasyjetSwissinsideCore/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block specificCss %}
+{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+
+{% endblock specificJs %}
+
+{% block title %}Flight duty time report{% endblock %}
+{% block header%}
+    {{ parent() }}
+{% endblock header %}
+
+{% block generalMenu %}
+    <div id="header">
+        {{ macros.show_general_menu(generalMenuItems(), 'FDTR') }}
+
+        <a id="menu-trigger" href="#"><i class="icon-align-justify"></i></a>
+    </div>    
+{% endblock generalMenu %}
+
+
+{% block sidebar %}
+    <div id="sidebar">
+        <ul>
+            {% if is_granted("ROLE_SWISSINSIDE_USER") %}
+            <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "FDTR") %}open active{% endif %}"><a href="#"><i class="icon-time"></i> <span>EDTR list</span> <i class="arrow icon-chevron-right"></i></a>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "FDTR" %}active current-page{% endif %}"><a href="{{ url('fdtr_list_index') }}">View EDTR</a></li>
+                </ul>            
+            </li>
+            {% endif %}
+            {% if  is_granted("ROLE_FDTR_ADMIN") %}
+            <li class="submenu {% if selectedSidebar is defined and (selectedSidebar == "NOTIFICATIONS" or selectedSidebar == "SHOW_LOGS" or selectedSidebar == "ADMIN"  or selectedSidebar == "RIGHTS") %}open active{% endif %}"><a href="#"><i class="icon-cogs"></i> <span>Administration</span> <i class="arrow icon-chevron-right"></i></a>
+                <ul>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "SHOW_LOGS" %}active current-page{% endif %}"><a href="{{ url('fdtr_logs_index') }}">Show logs</a></li>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "NOTIFICATIONS" %}active current-page{% endif %}"><a href="{{ url('fdtr_admin_notifications') }}">Notifications config.</a></li>
+                    <li class="{% if selectedSidebar is defined and selectedSidebar == "RIGHTS" %}active current-page{% endif %}"><a href = "{{ url('fdtr_admin_rights_index') }}">User Rights</a></li>
+
+                </ul>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
+{% endblock sidebar %}
+
+{% block container %}    	
+<div id="content">
+    Bienvenue dans la gestion des formulaires de support
+</div>            
+{% endblock container %}

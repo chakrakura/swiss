@@ -1,0 +1,120 @@
+{% extends '@EasyjetEleave/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Refuses List{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+
+<script>
+    $(document).on("click", ".deleteRefusesID", function () {
+        var id = $(this).data('refuses-id');
+        $('#refuses-id').val(id);
+    });
+    
+    $(function() {
+
+        swissinside.simpleDataTable($("#refuses-list"), {
+            "sAjaxSource": "{{ url('eleave_admin_refuses_list') }}",
+            "aoColumns" : [
+                null, // Reason
+                null, // Action
+            ],
+            "fnRowCallback" : function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                
+                 if(aData[1]) {
+                    var editUrl =  "{{ url('eleave_admin_refuses_edit', {'id' : ':id'} )}}";
+                    editUrl = editUrl.replace(":id", aData[1]); 
+                    $('td:eq(1)', nRow).html( '<a href="' + editUrl + '"" class="btn btn-primary"><i class="icon-edit"></i> Edit</a> <a  class="btn btn-danger delete-btn deleteRefusesID" data-refuses-id="'+aData[1]+'" id="deleteRefusesID" data-toggle="modal" data-target="#deleteRefusesModal"><i class="icon-trash"></i> Remove</a> ' );
+                }
+            },
+            "columnDefs": [ {
+                "targets": 'no-sort',
+                "orderable": false,
+            } ]
+           
+        });  
+
+    });  
+    
+</script>
+{% endblock specificJs %}
+
+
+{% block container %}
+
+    <!-- Modal -->
+    <div id="deleteRefusesModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirm</h4>
+                </div>
+                <form action="{{ url('eleave_admin_refuses_delete') }}" method="PUT">
+                    <input type="hidden" name="id" id="refuses-id">
+                    <div class="modal-body">
+                        <p>Are you sure that you want to delete Refus reason?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                        <button type="submit" class="btn btn-success">Yes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<!-- End Modal -->  
+
+<div id="content">
+
+    <div id="content-header">
+        <h1 id="titre_help">Administration</h1>
+        <div id="description_help">
+           Here you are abble to manage the refuse reason(s).
+        </div>
+    </div>
+ 
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>
+    </div>
+
+    <div class="row">    
+        <div class="col-xs-12">
+            <a href="{{ url('eleave_admin_refuses_add') }}" class="btn btn-primary x">Add a refuse reason</a>  
+        </div>
+    </div>
+
+    <!-- Results to show -->
+    <div class="row">    
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Refuse reason list</h5>
+                </div>
+                <div class="widget-content nopadding">
+                
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="refuses-list">
+                        <thead>
+                            <tr>
+                                <th>Label</th>
+                                <th class="no-sort">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+
+
+{% endblock container %}

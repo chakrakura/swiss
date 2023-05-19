@@ -1,0 +1,76 @@
+{% form_theme signup _self %}
+{% block form_row %}
+    {% spaceless %}
+        <div class="form-group{% if errors|length > 0 %} has-error{% endif %}">
+            {{ form_label(form, '', { 'label_attr': {'class': 'control-label'} }) }}
+            <div class="controls">
+                
+                {% if form.vars.block_prefixes.1 == "choice" %}
+                    {{ form_widget(form) }}
+                {% else %}
+                    {{ form_widget(form, {'attr': {'class': 'form-control'}}) }}
+                {% endif %}
+                {{ form_errors(form) }}
+                {% if form.vars.help is defined %}
+                    <span class="help-block">{{ form.vars.help }}</span>
+                {% endif %}
+                {% if attr['help'] is defined %}
+                    <span class="help-block">{{ attr['help'] }}</span>
+                {% endif %}
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock form_row %}
+
+{% block form_errors %}
+    {% spaceless %}
+    {% autoescape false %}
+        {% if form.parent is empty %}
+            {% if errors|length > 0 %}
+            <div class="row">
+                    <div class="col-xs-12">
+                        <div class="alert alert-danger">
+                            {% for error in errors %}
+                                <p>{{ error.messagePluralization is null
+                                ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                                : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators') }}</p>
+                            {% endfor %}
+                        </div>                            
+                    </div>                        
+            </div>
+            {% endif %}
+        {% else %}
+            {% for error in errors %}
+                <span class="help-block">{{ error.messagePluralization is null
+                ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators') }}</span>
+            {% endfor %}
+
+        {% endif %}
+
+    {% endautoescape %}
+    {% endspaceless %}
+
+{% endblock %}
+
+{% block date_widget %}
+    {% spaceless %}
+        {% if widget == 'single_text' %}
+            {% set attr = attr|merge({'data-enable-datepicker': '1'}) %}
+                {{ block('form_widget_simple') }}
+            {% else %}
+                {{ date_pattern|replace({
+                '{{ year }}': form_widget(form.year),
+                '{{ month }}': form_widget(form.month),
+                '{{ day }}': form_widget(form.day),
+                })|raw }}
+        {% endif %}
+    {% endspaceless %}
+{% endblock date_widget %}
+
+
+{% block checkbox_widget %}
+{% spaceless %}
+    <input class="icheck" type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endspaceless %}
+{% endblock checkbox_widget %}

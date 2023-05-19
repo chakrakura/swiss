@@ -1,0 +1,15 @@
+body {
+    background-color: lightgray;
+}
+.widget-title.green {
+    background: #ABFCC6;
+  }
+.form-error {
+    color: #B94A48;
+    display: block;
+    margin-bottom: 10px;
+    margin-top: 5px;
+} 
+.form-error ul {
+    list-style-type: none;
+}

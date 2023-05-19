@@ -1,0 +1,315 @@
+{% extends '@EasyjetOtp/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %} Adding a disruption claim {% endblock %}
+
+{% block specificJs %}
+{{ parent() }}
+<script language="javascript">
+    window.onload = function(e) { 
+		var check = function(stateField) {
+			if (stateField.value == "2") {
+				messageField.style.display = "block";
+			} else {
+				messageField.style.display = "none";
+			}
+		}
+		var stateField = document.getElementById('select_etat');
+		if (stateField != null) {
+			var messageField = document.getElementById('refuse_reason_block');
+			if (messageField != null) {
+				stateField.onchange = function() {
+					check(stateField);
+				}
+				
+			}
+
+			check(stateField);
+		}
+	}
+
+    // Tests the validity of the form before sending it
+	
+    $("form").submit(function( event ) {
+		var isAdmin = "{{ isAdmin }}";
+		if(!isAdmin) {
+			// Initial rostered test 
+			if(!$("#initial_start_date").val().match(/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/))
+			{
+				alert("Unknown date format.");
+				$("#initial_start_date").focus();
+				return false;
+			}	
+			if(!$("#initial_start_time").val().match(/^[0-9]{2}\:[0-9]{2}$/))
+			{
+				alert("Unknown time format.");
+				$("#initial_start_time").focus();
+				return false;
+			}
+			if(!$("#initial_end_time").val().match(/^[0-9]{2}\:[0-9]{2}$/))
+			{
+				alert("Unknown time format.");
+				$("#initial_end_time").focus();
+				return false;
+			}
+			
+			// Date of change test : date_of_change
+			if(!$("#date_of_change").val().match(/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/))
+			{
+				alert("Unknown date format.");
+				$("#date_of_change").focus();
+				return false;
+			}	
+			if(!$("#time_of_change").val().match(/^[0-9]{2}\:[0-9]{2}$/))
+			{
+				alert("Unknown time format.");
+				$("#time_of_change").focus();
+				return false;
+			}
+		
+			// New period test 
+			if(!$("#new_start_date").val().match(/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/))
+			{
+				alert("Unknown date format.");
+				$("#new_start_date").focus();
+				return false;
+			}	
+			if(!$("#new_start_time").val().match(/^[0-9]{2}\:[0-9]{2}$/))
+			{
+				alert("Unknown time format.");
+				$("#new_start_time").focus();
+				return false;
+			}
+			if(!$("#new_end_time").val().match(/^[0-9]{2}\:[0-9]{2}$/))
+			{
+				alert("Unknown time format.");
+				$("#new_end_time").focus();
+				return false;
+			}	
+		}	
+		return true;
+	
+    });
+     
+	
+	$("#initial_start_date").on("change",function(){
+	    $("#new_start_date").val($(this).val());
+    }); 
+      
+
+    // you may need to change this code if you are not using Bootstrap Datepicker
+	$('.js-datepicker').datepicker({
+			autoclose:true
+	});
+
+
+	function  checkTimeFormat(champ)
+	{
+		if(champ.value.length >= 3)
+		{
+			var tmp1 = replace(champ.value, ".", ":");
+			var tmp2 = tmp1.split(":");
+			if(tmp2[0] && tmp2[0].length == 1) tmp2[0] = "0" + tmp2[0];
+			if(tmp2[1] && tmp2[1].length == 1) tmp2[1] = "0" + tmp2[1];		
+			champ.value = tmp2[0] + ":" + tmp2[1];
+		}
+		
+	}
+
+	function replace(expr,a,b) 
+	{
+		var i=0
+		while (i!=-1) 
+		{
+			i=expr.indexOf(a,i);
+			if (i>=0) 
+			{
+				expr=expr.substring(0,i)+b+expr.substring(i+a.length);
+				i+=b.length;
+			}
+		}
+		return expr
+	}
+
+	
+</script>
+
+{% endblock specificJs %}
+
+{% block container %}
+
+	<div id="content">
+		<div id="content-header">
+			<h1 id="titre_help">Disruption claim</h1>
+			<div id="description_help">Enter your roster information below and click Submit. The system will automatically check if your request is correct. Ultimately, an administrator must validate your claim.</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-12">
+				{{ macros.wizz() }}
+			</div>
+		</div>
+
+
+        {{ form_start(form, {'attr': {'class': 'form-horizontal'} }) }}
+		{{ form_errors(form) }}
+
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="widget-box">
+						<div class="widget-title">
+							<span class="icon">
+								<i class="icon-edit"></i>
+							</span>
+							<h5>Request</h5>
+						</div>
+						<div class="widget-content nopadding">
+
+							<div class="row">
+								<div class="col-xs-12 information-row">
+									<div class="widget-box">
+										<div class="widget-title">
+
+											<h5>1. Initial roster duty (zoulou time)</h5>
+										</div>
+										<div class="row">
+											<div class="col-xs-1">
+												<div class="form-group">
+													<div class="controls">Date</div>
+												</div>
+											</div>
+
+											<div class="col-xs-4">
+												<div class="form-group">
+													<div class="controls">
+													 	<input class ="js-datepicker" data-provide="datepicker" data-date-format="dd/mm/yyyy"  name="initial_start_date" type="text" id="initial_start_date" value = "">
+														(dd/mm/YYYY)
+													</div>
+												</div>
+											</div>
+
+											<div class="col-xs-2">
+												<div class="form-group">
+													<div class="controls">From - to</div>
+												</div>
+											</div>
+											<div class="col-xs-5">
+												<div class="form-group">
+													<div class="controls">
+													
+														<input onblur="javascript:checkTimeFormat(this)" name="initial_start_time" type="text" id="initial_start_time" value="" size="7" maxlength="5">
+														-
+														<input onblur="javascript:checkTimeFormat(this)" name="initial_end_time" type="text" id="initial_end_time" value="" size="7" maxlength="5">
+														(HH:mm)
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+								</div>
+
+								<div class="row">
+									<div class="col-xs-12 information-row">
+										<div class="widget-box">
+											<div class="widget-title">
+
+												<h5>2. Notification of change (zoulou time)</h5>
+											</div>
+											<div class="row">
+												<div class="col-xs-1">
+													<div class="form-group">
+														<div class="controls">Date</div>
+													</div>
+												</div>
+												<div class="col-xs-4">
+													<div class="form-group">
+														<div class="controls">
+															<input class = "js-datepicker" data-provide="datepicker" data-date-format="dd/mm/yyyy"   name="date_of_change" type="text" id="date_of_change" value="">
+															(dd/mm/YYYY)
+														</div>
+													</div>
+												</div>
+
+												<div class="col-xs-2">
+													<div class="form-group">
+														<div class="controls">Time</div>
+													</div>
+												</div>
+												<div class="col-xs-5">
+													<div class="form-group">
+														<div class="controls">
+															<input onblur="javascript:checkTimeFormat(this)" name="time_of_change" type="text" id="time_of_change" value="" size="7" maxlength="5">
+														</div>
+													</div>
+												</div>
+
+											</div>
+										</div>
+
+									</div>
+
+									<div class="row">
+										<div class="col-xs-12 information-row">
+											<div class="widget-box">
+												<div class="widget-title">
+
+													<h5>3. New rostered duty at sign-on (zoulou time)</h5>
+												</div>
+												<div class="row">
+													<div class="col-xs-1">
+														<div class="form-group">
+															<div class="controls">Date</div>
+														</div>
+													</div>
+													<div class="col-xs-4">
+														<div class="form-group">
+															<div class="controls">
+																<input data-provide="datepicker" class = "js-datepicker" data-date-format="dd/mm/yyyy"  name="new_start_date" type="text" id="new_start_date" value="">
+																(dd/mm/YYYY)
+															</div>
+														</div>
+													</div>
+
+													<div class="col-xs-2">
+														<div class="form-group">
+															<div class="controls">
+																From - to
+															</div>
+														</div>
+													</div>
+													<div class="col-xs-5">
+														<div class="form-group">
+															<div class="controls">
+																<input onblur="javascript:checkTimeFormat(this)"  name="new_start_time" type="text" id="new_start_time" value="" size="7" maxlength="5">
+																-
+																<input onblur="javascript:checkTimeFormat(this)"  name="new_end_time" type="text" id="new_end_time" value="" size="7" maxlength="5">
+																(HH:mm)
+															</div>
+														</div>
+													</div>
+
+												</div>
+											</div>
+
+										</div>
+
+										<div class="form-actions">
+											<button type="submit" class="btn btn-primary">
+												<i class="icon-edit"></i>
+												Send disruption claim</button>
+										</div>
+									
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		{{ form_end(form) }}
+	</div>
+
+{% endblock container %}

@@ -1,0 +1,70 @@
+#!/bin/bash
+#
+# This script is launched from ../Services/Ejint096ImporterService.php
+#
+# Arguments :
+# -----------
+# $1 : Archive folder where to place the PGP file
+# $2 : Tmp folder where to put the uncrypted demographic data CSV file
+#
+# Script purpose :
+# ----------------
+# Get demographic data file, unPGP, unzip and move :
+# - Demographic data file in a temporary local folder
+# - Pay elements file to the shared HR server folder
+#
+# Code to return :
+# ----------------
+# 0 - Success (show the target of the unzipped file)
+# 1 - Demographic file
+# 2 - Other error
+
+set +e
+
+tmpfolder=$(mktemp -d) # Location where Proconcept server will be mounted
+source $(dirname "${BASH_SOURCE[0]}")/../Config/config
+
+
+function cleanExit {
+
+  umount $tmpfolder 2>/dev/null
+  rmdir $tmpfolder
+  exit $1
+
+}
+
+function debug {
+
+  $debug && echo " - $1"
+
+}
+
+debug "Mounting HR server on $tmpfolder"
+echo "mount -t cifs -o username=$payelementserverUsername,password=$payelementserverPassword $payelementserverPath $tmpfolder ; ret=$?"
+mount -t cifs -o username=$payelementserverUsername,password=$payelementserverPassword $payelementserverPath $tmpfolder ; ret=$?
+if [ ! "$ret" = 0 ] ; then
+  echo "Unable to mount HR Server destination"
+  cleanExit 2
+fi
+
+for file in $2/*.csv ; do
+  elements=$(echo "$file" | grep "$payelementFilenameFormat" | cut -d: -f2)
+
+  if [ -z "$elements" ] ; then
+    continue
+  else
+    debug "Found $elements"
+    debug "Moving $file into $tmpfolder"
+    mv $file $tmpfolder || cleanExit 2
+  fi
+
+done
+
+if [ -z "$elements" ] ; then
+	echo "Pay element file not found"
+	cleanExit 2
+else
+	echo "$2/$elements"
+fi
+
+cleanExit

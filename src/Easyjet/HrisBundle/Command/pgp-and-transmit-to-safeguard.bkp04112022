@@ -1,0 +1,87 @@
+#!/bin/bash
+#
+# This script is launched from ../ServicesHrisImporterService.php
+#
+#
+# First parameter represent the temporary folder where to retrieve the payslip and the grosstonet file
+# Second parameter represent the payslip month
+# Third parameter represent the payslip year
+# Fourth parameter represent the archive folder where the file has to be copied after being transmitted to proconcept
+#
+#
+# THIS SCRIPT SHOULDN'T RETURN CODE 0 IF ANYTHING GOES WRONG !
+
+set +e
+
+source $(dirname "${BASH_SOURCE[0]}")/../Config/config
+
+pstmpfolder=$1
+psmonth=$2
+psyear=$3
+archive=$4
+supplemental=$5
+tmpfolder=$(mktemp -d)
+
+[ ! -z $archive ] || { echo "This command must have at least 4 arguments."; exit 1; }
+
+function cleanExit {
+
+  umount $tmpfolder 2>/dev/null
+  rmdir $tmpfolder
+  rm -f ${pstmpfolder}/*
+  rmdir ${pstmpfolder}
+  exit $1
+
+}
+
+function debug {
+
+  $debug && echo " - $1"
+
+}
+
+# Generate global filename
+currentTime=$(date +'%Y%m%d_%H.%M.%S')
+payslip="$archive/ProConceptPayslip_$2_$3_$currentTime.zip"
+grossNet="$archive/ProConceptglobal_$2_$3_$currentTime.zip"
+
+# Initial folder creation
+mkdir -p $archive
+
+echo "Creating zip of the payslip"
+( zip -j -q -r $payslip $pstmpfolder/*.pdf && rm -f $pstmpfolder/*.pdf ) || {
+  echo "Unable to make zip payslip file"
+  cleanExit 1
+}
+
+echo "Creating zip containing the zipped payslip and the gross to net file"
+( zip -j -q $grossNet $payslip $pstmpfolder/*.xls && ( rm -f $pstmpfolder/* ; rm -f $payslip ) ) || {
+echo "Unable to make zip global file"
+cleanExit 1
+}
+
+echo "Creating the PGP file"
+
+# IMPORTANT :this line must read exactly like this because the php script will parse it with a regexp
+echo "Copying the PGP file named '${grossNet}.pgp' to the '$4' archive folder"
+gpg --yes --no-tty --trust-model always --keyring ${ejint097gpgPubkeyfile} --output $grossNet.pgp --encrypt --recipient ${ejint097gpgid} $grossNet && rm -f $grossNet
+
+# Copy the archived file to the safeguard folder
+#mount -t cifs -o username=$safeguardserverUsername,password=$safeguardserverPassword $safeguardserverPath $tmpfolder ; ret=$?
+chmod 700 ${ejint097serverIdentityKeyFile}
+debug "sshfs -o IdentityFile=${ejint097serverIdentityKeyFile} ${ejint097serverUsername}@${ejint097serverAddress}:${ejint097serverPath} $tmpfolder"
+sshfs -o IdentityFile=${ejint097serverIdentityKeyFile} ${ejint097serverUsername}@${ejint097serverAddress}:"${ejint097serverPath}" $tmpfolder ; ret=$?
+if [ "$ret" = 0 ] ; then
+  echo "Uploading pgp file to the safeguard share folder ..."
+  cp $grossNet.pgp $tmpfolder ; ret=$? || {
+    echo "Unable to copy gpg files"
+    cleanExit 1
+  }
+else
+  echo "Unable to access to Safeguard server"
+  cleanExit 1
+fi
+
+# TEST IF FILE IS CORRECTLY COPIED AND RETURN A NON 0 EXIT CODE IF NOT.
+echo "Copying the PGP file named 'ProConceptglobal_$2_$3_$currentTime.zip' to the ftp"
+cleanExit 0

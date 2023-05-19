@@ -1,0 +1,63 @@
+{% extends "@EasyjetSwissinsideCore/Base/structure.html.twig" %}
+
+
+{% block specificJs %}
+{% endblock specificJs %}
+
+{% block specificCss %}
+{% endblock specificCss %}
+
+{% block generalMenu %}
+
+{% endblock %}
+
+{% block container %}
+
+<div class="row">
+    <div class="col-lg-offset-4 col-lg-4">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon">
+                    <i class="icon-key"></i>
+                </span>
+                <h5>Authentication</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <form class="form-horizontal"  action="" method="post" autocomplete="off">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+
+                        <div class="form-group">
+                            {% if error %}
+                                <div class="alert alert-danger login-error-message">
+                                    {{ error.message }}
+                                </div>
+                            {% endif %}
+                            <label for="" class="control-label hover">User</label>
+                            <div class="controls">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-addon"><i class="icon-user"></i></span>
+                                    <input class="form-control" type="text" id="username" name="_username" placeholder="Username" autocomplete="off" />
+                                </div>
+                                <span class="help-block text-left">Use your Europe credentials (like for the crew portal)</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="control-label hover">Password</label>
+                            <div class="controls">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-addon"><i class="icon-lock"></i></span>
+                                    <input class="form-control" type="password" id="password"  name="_password" placeholder="Password" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="form-actions">
+                            <input type="submit" class="btn btn-primary btn-default" value="Login" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock container %}

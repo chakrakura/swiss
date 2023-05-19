@@ -1,0 +1,305 @@
+{% extends '@EasyjetOtp/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Disruption claim and sector adjustments List{% endblock %}
+{% block specificJs %}{{ parent() }}
+
+{% set sectAdjEditUrl = url('otp_sect_adj_edit', {"sectAdj" : "0"} ) %}
+{% set sectAdjDelUrl = url('otp_sect_adj_delete', {"sectAdj" : "0"} ) %}
+{% set disrupitonEditUrl = url('otp_disruption_adj_edit', {"disruption" : "0"} ) %}
+{% set disrupitonRemoveUrl = url('otp_disruption_adj_delete', {"disruption" : "0"} ) %}
+{% set crsfToken = csrf_token('REMOVE_EXPENSE') %}
+
+<style>
+    .align-center label {
+        text-align: center !important;
+    }
+    .icheckbox_flat-blue {
+        margin: -5px 10px !important;
+    }
+</style>
+<script>
+    $(document).ready(function() {
+        // you may need to change this code if you are not using Bootstrap Datepicker
+        $('.js-datepicker').datepicker({
+            autoclose: true
+        });
+    });
+    $(function() {
+        $('input[type="checkbox"').addClass('icheckbox_flat-blue');
+       
+        var concernedUser = $("#requests_search_form_user").val();
+        var createdFrom = $("#requests_search_form_createdFrom").val();
+        var createdTo = $("#requests_search_form_createdTo").val();
+        var concernedFrom = $("#requests_search_form_concernedDateFrom").val();
+        var concernedTo = $("#requests_search_form_concernedDateTo").val();
+        var status = $("[name=\"requests_search_form[status][]\"]:checked").map(function(){
+            return $(this).val();
+        }).get();
+        var type = $("[name=\"requests_search_form[type][]\"]:checked").map(function(){
+            return $(this).val();
+        }).get();
+
+        $("body").on("click", "[data-remove-href]", function() {
+            var link = $(this);
+          
+            bootbox.confirm("Do you really want to remove this claim ?", function(confirmation) {
+                if (confirmation) {
+                    link =  link.data("removeHref");
+                    link += "?csrfToken={{ crsfToken }}";
+                    window.location.href = link;
+                }
+            });
+        });
+
+        $("body").on("click", "[data-disruption-remove-href]", function() {
+            var url = $(this).data("disruption-remove-href");
+            url += "?csrfToken={{ crsfToken }}";
+            bootbox.confirm("Do you really want to remove this claim ?", function(confirmation) {
+                if (confirmation) {
+                    window.location.href = url;
+                }
+            });
+        });
+
+        $('#otp-list').on('preXhr.dt', function ( e, settings, data ) {
+            data.concernedUser = concernedUser;
+            data.createdFrom = createdFrom;
+            data.createdTo = createdTo;
+            data.concernedFrom = concernedFrom;
+            data.concernedTo = concernedTo;
+            data.status = status;
+            data.type = type;
+
+            return data;
+        });    
+
+        $("body").on("click", "a[data-remove-item]",function(e) { 
+            e.preventDefault();
+            var url = $(this).attr("href");
+            bootbox.confirm("Do you really want remove this row ?", function(result) {
+                if (result) {
+                    window.location.href = url;
+                };
+                
+            });
+        });
+
+        swissinside.simpleDataTable($("#otp-list"), {
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "{{ url('otp_request_search') }}",
+            "aoColumns" : [
+                null, //<th>Concerned date</th>
+                null, //<th>Date of request</th>
+                null, //<th>Employee</th>
+                null, //<th>Type of request</th>
+                null, //<th>Status</th>
+                {"bSortable": false}, //<th>Month of payment</th>
+                {"bSortable": false}// id
+            ],
+            "aaSorting" : [[1, "asc"], [2, "asc"]],
+            "fnRowCallback" : function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                var link = "";
+                switch(aData[3]) {
+                    case "disruption" :
+                    if(aData[4] == "pending"){
+                        link = '<a class="btn btn-default btn-sm" href="{{ disrupitonEditUrl }}'+ aData[6] + '"><i class="icon-eye-open"></i> Edit</a> '
+                        {% if is_granted("ROLE_CLAIMS_ADMIN") %}
+                            link += '<a class="btn btn-danger btn-sm" data-id="'+aData[6]+'" href="javascript:;" data-disruption-remove-href="{{ disrupitonRemoveUrl }}'+aData[6]+'"><i class="icon-remove"></i>Remove</a>'
+                        {% endif %}           
+                    }             
+                    else{
+                        link = '<a class="btn btn-default btn-sm" href="{{ disrupitonEditUrl }}'+ aData[6] + '"><i class="icon-eye-open"></i> Edit</a> '
+                    }
+                        break;
+                    case "sect_adjustment" :
+                    if(aData[4] == "pending"){
+                        link = '<a class="btn btn-default btn-sm" href="{{ sectAdjEditUrl }}'+ aData[6] + '"><i class="icon-eye-open"></i> Edit</a> '
+                        {% if is_granted("ROLE_CLAIMS_ADMIN") %}
+                            link += '<a class="btn btn-danger" href="javascript:;" data-remove-href="{{ sectAdjDelUrl }}' + aData[6] + '"><i class="icon-remove"></i> Remove</a>'
+                        {% endif %}
+                    }
+                    else{
+                        link = '<a class="btn btn-default btn-sm" href="{{ sectAdjEditUrl }}'+ aData[6] + '"><i class="icon-eye-open"></i> Edit</a> '
+                    }
+                        break;
+                    
+                    default : btnSectorAdjClass = "btn-default"; break;
+                }                
+
+                $("td:eq(6)", nRow).html(
+                    link 
+                ); 
+            
+            }
+        }); 
+    });  
+    
+</script>
+{% endblock specificJs %}
+
+
+{% block container %}
+        
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Disruption claim and sector adjustments</h1>  
+        <div id="description_help">
+            Here you can claim you disruption and make comments regarding sectors adjustments for the previous month.
+        </div>
+    </div>
+
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}} ) }}
+    {{ form_errors(form) }}
+
+        <div class="row">
+
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-th"></i>
+                        </span>
+                        <h5>Search form</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label class="control-label"> {{ form_label(form.status) }} :</label> 
+                                     <div class="controls">
+                                        {{ form_widget(form.status) }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(form.type) }} :</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.type) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(form.createdFrom) }} :</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.createdFrom, { 'attr': {'class': 'form-control js-datepicker'} }) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-6 align-center">
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(form.createdTo) }} :</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.createdTo, { 'attr': {'class': 'form-control js-datepicker'} }) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(form.concernedDateFrom) }} :</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.concernedDateFrom, { 'attr': {'class': 'form-control js-datepicker'} }) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-6 align-center">
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(form.concernedDateTo) }} :</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.concernedDateTo, { 'attr': {'class': 'form-control js-datepicker'} }) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if  isAdmin %}
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label class="control-label">{{ form_label(form.user) }} :</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.user, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="form-actions">
+                            <input type="submit" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </div>           
+        </div>
+
+    {{ form_end(form) }}
+    
+    {% if app.request.get("d") %}
+        <div class="row">
+            <div class="alert alert-success">
+                <button class="close" data-dismiss="alert">×</button>
+                <strong>Success</strong> The disruption expense has been removed successfully.
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Results to show -->
+     <div class="row">
+        <div class="col-xs-12">            
+            <div class="btn-group">
+                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                    New request
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url('otp_disruption_adj_new') }}">Disruption</a></li>
+                    <li><a href="{{ url('otp_sect_adj_new') }}">Sector adjustment</a></li>
+                </ul>
+            </div>
+        </div>        
+     </div>
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>        
+
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Claims list</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="otp-list">
+                        <thead>
+                            <tr>
+                                <th>Concerned date</th>
+                                <th>Date of request</th>
+                                <th>Employee</th>
+                                <th>Type of request</th>
+                                <th>Status</th>
+                                <th>Month of payment</th>
+                                <th style="width:150px">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+            
+{% endblock container %}

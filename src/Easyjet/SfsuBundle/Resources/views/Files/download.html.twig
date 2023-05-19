@@ -1,0 +1,97 @@
+{% extends "@EasyjetSfsu/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Uploaded file{% endblock %}
+
+{% block specificJs %}{{ parent() }}
+
+{% endblock specificJs %}
+
+
+
+{% block container %}
+        
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Uploaded file</h1>         
+        <div id="description_help">You are on this page because you got invited to download a sensitive file. Please connect to your europr account if you have any or provide your email address to receive a token to download the file</div>
+    </div>
+
+     <div class="row">
+        <div class="col-lg-6">
+            {{ form_start(form, {'attr': {'class': 'form-horizontal'}} ) }}
+            {{ form_errors(form) }}
+                <div class="col-xs-12">
+                    {{ macros.wizz() }}
+                </div>            
+
+                <div class="col-xs-12">
+                    <div class="widget-box">
+                        <div class="widget-title">
+                            <span class="icon">
+                                <i class="icon-envelope"></i>
+                            </span>
+                            <h5>You have no account</h5>
+                        </div>
+                        <div class="widget-content nopadding">
+                            <div class="alert alert-info">If you have no account in our system. Just provide us with your email address and you will get a token to download the file</div>
+                             <div class="form-group">
+                                    <label class="control-label">{{ form_label(form.emailAddress) }} :</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.emailAddress, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                </div> 
+                            <div class="form-actions">
+                                <input type="submit" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </div>           
+            {{ form_end(form) }}
+        </div>
+
+        <div class="col-lg-6">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-key"></i>
+                    </span>
+                    <h5>You have an europe account</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <div class="alert alert-info">If you have an europe account. Fill free to enter your credentials to get the file</div>
+                    <form class="form-horizontal"  action="{{ url('_swissinside_login') }}?redirectTo={{redirectTo}}" method="post" autocomplete="off">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+
+                            <div class="form-group">
+                                <label for="" class="control-label hover">User</label>
+                                <div class="controls">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-addon"><i class="icon-user"></i></span>
+                                        <input class="form-control" type="text" id="username" name="_username" placeholder="Username" autocomplete="off" />
+                                    </div>
+                                    <span class="help-block text-left">Use your Europe credentials (like for the crew portal)</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="control-label hover">Password</label>
+                                <div class="controls">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-addon"><i class="icon-lock"></i></span>
+                                        <input class="form-control" type="password" id="password"  name="_password" placeholder="Password" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        <div class="form-actions">
+                            <input type="submit" class="btn btn-primary btn-default" value="Login" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+   
+{% endblock container %}

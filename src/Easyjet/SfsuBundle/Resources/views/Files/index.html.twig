@@ -1,0 +1,161 @@
+{% extends "@EasyjetSfsu/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+
+{% block specificJs %}{{ parent() }}
+
+{% set viewUrl = url('sfsu_files_show', {"files" : "0"} ) %}
+
+<script>
+    $(function() {
+        var createdFrom = $("#createdFrom").val();
+        var createdTo = $("#createdTo").val();
+
+        $('#logs-list').on('preXhr.dt', function ( e, settings, data ) {
+            data.createdFrom = createdFrom;
+            data.createdTo = createdTo;
+
+            return data;
+        });    
+
+        swissinside.simpleDataTable($("#logs-list"), {
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "{{ url('sfsu_files_search') }}",
+            "aoColumns" : [
+                null, // Uploader
+                null, // Filename
+                null, // Creation date
+                null, // Nb downloads
+                null, // Active
+                {"bSortable": false}, // Id
+                
+            ],
+            "aaSorting" : [[2, "desc"]],
+            "fnRowCallback" : function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                // Generate buttons  
+                
+                $("td:eq(5)", nRow).html(
+                    '<a class="btn btn-default" href="{{ viewUrl }}'+ aData[5] + '"><i class="icon-eye-open"></i> View file</a>'
+                ); 
+
+                var badge = aData[4].toLowerCase();
+                switch (badge) {
+                    case "0" :
+                        badge = '<span class="badge">Removed</span>';
+                        break;
+                    default :
+                        badge = '<span class="badge badge-success">Active until ' + aData[4] + '</span>';
+                        break;
+                }
+
+                $("td:eq(4)", nRow).html(
+                    badge
+                ); 
+
+                var $th = $(this).find("tr:first th");
+                $("td", nRow).each(function(id, field) {
+                    if($th.eq(id).hasClass("hidden-xs")) $(this).addClass('hidden-xs');
+                });
+                
+                
+            }
+        });  
+
+
+
+    });  
+    
+</script>
+{% endblock specificJs %}
+
+
+
+{% block container %}
+
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Archived files.</h1>
+        <div id="description_help">Here you can find your uploaded file and share them with your contacts. Click the  "Add a new file" button to upload a new file.</div>
+    </div>
+
+    <!-- Search form -->
+    <form method="get" action="" class="form-horizontal">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-search"></i>
+                        </span>
+                        <h5>Search form</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+
+                        <div class="form-group">
+                            <label class="control-label" for="createdFrom">From</label>
+                            <div class="controls">
+                                <input type="text" id="createdFrom" name="createdFrom" value="{{ createdFrom }}" class="form-control" data-enable-datepicker="true">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="createdTo">To</label>
+                            <div class="controls">
+                                <input type="text" id="createdTo" name="createdTo" value="{{ createdTo }}" class="form-control" data-enable-datepicker="true">
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary"><i class="icon-search"></i> Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>           
+        </div>
+
+    </form>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="{{ url('sfsu_files_new') }}" class="btn btn-primary pull-right"><i class="icon-plus"></i> Add file(s)</a>
+        </div>
+    </div>
+
+    <!-- Results to show -->
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>        
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Logs history</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="logs-list">
+                        <thead>
+                            <tr>
+                                <th>Uploader</th>
+                                <th>File name</th>
+                                <th>Upload date</th>
+                                <th>Hits</th>
+                                <th>Status</th>
+                                <th style="width:20%;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+
+
+{% endblock container %}

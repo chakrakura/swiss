@@ -1,0 +1,22 @@
+<?php //App%255CEasyjet%255CWorkingSheetBundle%255CController%255CWorkingSheetUpdateHolidaysController%2523updateHolidaysAction
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (\Symfony\Component\VarExporter\Internal\Registry::$prototypes['Symfony\\Component\\Routing\\Annotation\\Route'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Routing\\Annotation\\Route')),
+    ],
+    null,
+    [
+        'Symfony\\Component\\Routing\\Annotation\\Route' => [
+            'path' => [
+                '/working-sheet/update-holidays',
+            ],
+            'name' => [
+                'working_sheet_holidays_update',
+            ],
+        ],
+    ],
+    [
+        $o[0],
+    ],
+    []
+); }];

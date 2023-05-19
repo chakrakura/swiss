@@ -1,0 +1,32 @@
+#swissinside-header * {
+    color: #fff;
+}
+#swissinside-header i {
+    display:block;
+    font-size: 30px;
+}
+
+#swissinside-header .logo-swissinside {
+    margin-top: 20px;
+    padding-top: 0px;
+    position: static;
+    display: block;
+}
+
+#swissinside-header {
+    /*min-height: 200px;*/
+}
+
+#swissinside-header ul, #swissinside-header li {
+    list-style: none;
+    text-align: center;
+}
+
+#external-apps {
+    float: right;
+}
+
+#external-apps li{
+    float: left;
+    margin: 10px;
+}

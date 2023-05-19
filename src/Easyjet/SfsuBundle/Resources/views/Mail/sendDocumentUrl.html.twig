@@ -1,0 +1,12 @@
+{% extends "@EasyjetSwissinsideCore/Mail/structure.html.twig" %}
+{% block content %}
+
+    <p>{% autoescape false %}{{ content }}{% endautoescape %}</p>
+
+    <p>Click the following link to download the file<br>
+        <a href="{{ sfsu_public_swissinside_prefix }}{{ path('sfsu_download_link', {'accessKey': file.accessKey }) }}">Download "{{ file.originalFilename }}"
+        </a>
+    </p>
+
+
+{% endblock %}   

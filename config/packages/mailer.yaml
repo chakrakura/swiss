@@ -1,0 +1,7 @@
+framework:
+    mailer:
+        dsn: '%env(MAILER_DSN)%'
+        envelope:
+            sender: 'swissinside@easyjet.com'
+        headers:
+            From: 'swissinside <swissinside@easyjet.com>'

@@ -1,0 +1,10 @@
+DROP TRIGGER `user_zero_to_null_insert`;
+DELIMITER ;;
+CREATE TRIGGER `user_zero_to_null_insert` BEFORE INSERT ON `users` FOR EACH ROW
+BEGIN 
+  SET NEW.canton = NULLIF( NEW.canton, 0 ) ;
+  SET NEW.pays = NULLIF( NEW.pays, 0 ) ;
+  SET NEW.alt_canton = NULLIF( NEW.alt_canton, 0 ) ;
+  SET NEW.alt_pays = NULLIF( NEW.alt_pays, 0 ) ;
+END;;
+DELIMITER ;

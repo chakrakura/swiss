@@ -1,0 +1,7 @@
+parameters:
+    ldap_server: '%env(ldap_server)%'
+    ldap_bind: '%env(ldap_bind)%'
+    ldap_find_by_emp_id: '%env(ldap_find_by_emp_id)%'
+    ldap_root: '%env(ldap_root)%'
+    ldap_ad_user: '%env(ldap_ad_user)%'
+    ldap_ad_password: '%env(ldap_ad_password)%'

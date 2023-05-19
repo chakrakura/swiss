@@ -1,0 +1,35 @@
+{% extends "EasyjetSwissinsideCoreBundle:Base:swissinsideStructure.html.twig" %}
+
+{% block sidebar %}{% endblock sidebar %}
+
+{% block header%}
+    {{ parent() }}
+    <meta http-equiv="refresh" content="10;URL='{{ wikiUrl }}'" />
+{% endblock %}
+
+{% block container %}
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">&nbsp;</h1>
+
+    </div>
+
+    <div class="row">
+    <div class="col-lg-offset-4 col-lg-4">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon">
+                    <i class="icon-bell"></i>
+                </span>
+                <h5>Access to wiki</h5>
+            </div>
+            <div class="widget-content">
+                <p>For security reason, the Wiki is not reachable from outside anymore. You will be redirected within 10 seconds. Click the following link if you are not redirected : <a href="{{ wikiUrl }}">{{ wikiUrl }}</a>. Then go on the inside.</p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+{% endblock container %}

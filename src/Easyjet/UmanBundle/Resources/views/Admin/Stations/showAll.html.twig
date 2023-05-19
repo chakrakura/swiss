@@ -1,0 +1,112 @@
+{% extends '@EasyjetUman/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}Stations{% endblock %}
+
+{% block specificJs %}
+{{ parent() }}
+<script>
+   var url = '{{ url('uman_admin_station_edit', {"id" : ":id"}) }}';
+    $(function() {
+        $("#stations-list").dataTable( {
+            "bJQueryUI": true,
+            "sPaginationType": "full_numbers",
+            "sDom": '<""l>t<"F"fpr>',
+            "bProcessing": false,
+            "sAjaxSource": "{{ url('uman_admin_stations_all_search') }}",
+            "columnDefs": [ {"targets": 'no-sort',"orderable": false} ],
+
+            "fnRowCallback" : function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                $("td:eq(1)", nRow).html(
+                    '<a href= ' + url.replace(":id", aData[1]) + ' class="btn btn-primary"><i class="icon-edit"></i> Edit</a>  <a  class="btn btn-danger stationID" data-station-id='+aData[1]+' data-toggle="modal" data-target="#stationsModal"><i class="icon-remove"></i> Remove</a>'
+                );
+            },
+         
+        } );
+    });
+    
+    $(document).on("click", ".stationID", function () {
+        var id = $(this).data('station-id');
+        $('#station-id').val(id);
+    });
+</script>
+{% endblock specificJs %}
+        
+
+
+{% block container %}
+
+<!-- Modal -->
+<div id="stationsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirm</h4>
+      </div>
+      <form action="{{ url('uman_admin_station_remove') }}" method="post">
+          <input type="hidden" name="station-id" id="station-id">
+          <div class="modal-body">
+            <p>Are you sure that you want to remove this station?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+            <button type="submit" class="btn btn-success">Yes</button>
+          </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+<!-- End Modal -->  
+    	
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">Stations</h1>         
+        <div id="description_help">Manage the Stations list.</div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a class="btn btn-primary" href="{{ url('uman_admin_station_add') }}" ><i class="icon-plus"></i> Add a station</a>
+        </div>
+    </div>
+        
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Stations list</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="stations-list">
+                        <thead>
+                        <tr>
+                        <th>Stations</th>
+                        <th class="no-sort" style="width:300px">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+
+
+   
+{% endblock container %}

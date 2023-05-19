@@ -1,0 +1,57 @@
+{% extends '@EasyjetWorkingSheet/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block container -%}
+    <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">List of users</h1>  
+            <div id="description_help">Here you can edit the users and setup their occupation rate and their bases in order to calculate their working ratio. You can also setup their line manager</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                {{ macros.wizz() }}
+            </div>
+        </div>
+            
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>List of users</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="call-types-list">
+                        <thead>
+                            <tr>
+                                <th>Employee number</th>
+                                <th>First name</th>
+                                <th>Last name</th>
+                                <th>Occupation rate</th>
+                                <th>Line manager</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for entity in entities %}
+                            <tr>
+                                <td>{{ entity.logUser }}</td>
+                                <td>{{ entity.prenomUser }}</td>
+                                <td>{{ entity.nomUser }}</td>
+                                <td>{{ entity.occupation }}%</td>
+                                
+                                <td>{{ entity.lineManager ? entity.lineManager : "-" }}</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{ path('working_sheet_users_edit', { 'id': entity.id }) }}">edit</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

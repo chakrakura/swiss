@@ -1,0 +1,279 @@
+{% extends '@EasyjetOtp/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %} Edit a disruption claim {% endblock %}
+
+{% block specificJs %}
+	{{ parent() }}
+<script language="javascript">
+    $(document).ready(function() {
+        // you may need to change this code if you are not using Bootstrap Datepicker
+        $('.js-datepicker').datepicker({
+            autoclose:true
+        });
+    });
+    window.onload = function(e) { 
+		var check = function(stateField) {
+			if (stateField.value == "2") {
+				messageField.style.display = "block";
+			} else {
+				messageField.style.display = "none";
+			}
+		}
+		var stateField = document.getElementById('select_etat');
+		if (stateField != null) {
+			var messageField = document.getElementById('refuse_reason_block');
+			if (messageField != null) {
+				stateField.onchange = function() {
+					check(stateField);
+				}
+				
+			}
+
+			check(stateField);
+		}
+	}
+</script>
+
+{% endblock specificJs %}
+
+
+{% block container %}
+
+	<div id="content">
+		<div id="content-header">
+			<h1 id="titre_help">Disruption claim</h1>
+			<div id="description_help">Enter your roster information below and click Submit. The system will automatically check if your request is correct. Ultimately, an administrator must validate your claim.</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-12">
+				{{ macros.wizz() }}
+			</div>
+		</div>
+
+		{% if alertMultiple %}
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="alert alert-warning">
+						<button class="close" data-dismiss="alert">×</button>
+						<strong>Warning</strong>
+						This user has
+						{{ alertMultiple }}
+						disruptions for this date
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
+        {{ form_start(form, {'attr': {'class': 'form-horizontal'} }) }}
+		{{ form_errors(form) }}
+
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="widget-box">
+						<div class="widget-title">
+							<span class="icon">
+								<i class="icon-edit"></i>
+							</span>
+							<h5>Request</h5>
+						</div>
+						<div class="widget-content nopadding">
+
+							<div class="row">
+								<div class="col-xs-12 information-row">
+									<div class="widget-box">
+										<div class="widget-title">
+
+											<h5>1. Initial roster duty (zoulou time)</h5>
+										</div>
+										<div class="row">
+											<div class="col-xs-1">
+												<div class="form-group">
+													<div class="controls">Date</div>
+												</div>
+											</div>
+
+											<div class="col-xs-4">
+												<div class="form-group">
+													<div class="controls">
+													 	<input  readonly name="initial_start_date" type="text" id="initial_start_date" value = "{{ otpDisruption.initialStart | date('d/m/Y') }}">
+														(dd/mm/YYYY)
+													</div>
+												</div>
+											</div>
+
+											<div class="col-xs-2">
+												<div class="form-group">
+													<div class="controls">From - to</div>
+												</div>
+											</div>
+											<div class="col-xs-5">
+												<div class="form-group">
+													<div class="controls">
+													
+														<input readonly  name="initial_start_time" type="text" id="initial_start_time" value="{{ otpDisruption.initialStart | date('H:i') }}" size="7" maxlength="5">
+														-
+														<input readonly  name="initial_end_time" type="text" id="initial_end_time" value="{{ otpDisruption.initialEnd | date('H:i') }}" size="7" maxlength="5">
+														(HH:mm)
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+								</div>
+
+								<div class="row">
+									<div class="col-xs-12 information-row">
+										<div class="widget-box">
+											<div class="widget-title">
+
+												<h5>2. Notification of change (zoulou time)</h5>
+											</div>
+											<div class="row">
+												<div class="col-xs-1">
+													<div class="form-group">
+														<div class="controls">Date</div>
+													</div>
+												</div>
+												<div class="col-xs-4">
+													<div class="form-group">
+														<div class="controls">
+															<input readonly name="date_of_change" type="text" id="date_of_change" value="{{ otpDisruption.dateOfChange | date('d/m/Y') }}">
+															(dd/mm/YYYY)
+														</div>
+													</div>
+												</div>
+
+												<div class="col-xs-2">
+													<div class="form-group">
+														<div class="controls">Time</div>
+													</div>
+												</div>
+												<div class="col-xs-5">
+													<div class="form-group">
+														<div class="controls">
+															<input  readonly name="time_of_change" type="text" id="time_of_change" value="{{ otpDisruption.dateOfChange | date('H:i') }}" size="7" maxlength="5">
+														</div>
+													</div>
+												</div>
+
+											</div>
+										</div>
+
+									</div>
+
+									<div class="row">
+										<div class="col-xs-12 information-row">
+											<div class="widget-box">
+												<div class="widget-title">
+
+													<h5>3. New rostered duty at sign-on (zoulou time)</h5>
+												</div>
+												<div class="row">
+													<div class="col-xs-1">
+														<div class="form-group">
+															<div class="controls">Date</div>
+														</div>
+													</div>
+													<div class="col-xs-4">
+														<div class="form-group">
+															<div class="controls">
+																<input readonly data-provide="datepicker" data-date-format="dd/mm/yyyy"  name="new_start_date" type="text" id="new_start_date" value="{{ otpDisruption.newStart | date('d/m/Y') }}">
+																(dd/mm/YYYY)
+															</div>
+														</div>
+													</div>
+
+													<div class="col-xs-2">
+														<div class="form-group">
+															<div class="controls">
+																From - to
+															</div>
+														</div>
+													</div>
+													<div class="col-xs-5">
+														<div class="form-group">
+															<div class="controls">
+																<input readonly name="new_start_time" type="text" id="new_start_time" value="{{ otpDisruption.newStart | date('H:i') }}" size="7" maxlength="5">
+																-
+																<input readonly name="new_end_time" type="text" id="new_end_time" value="{{ otpDisruption.newEnd | date('H:i') }}" size="7" maxlength="5">
+																(HH:mm)
+															</div>
+														</div>
+													</div>
+
+												</div>
+											</div>
+
+										</div>
+                                        {% if isAdmin %}
+										<div class="row">
+										 	<div class="col-xs-12 information-row">
+												<div class="widget-box">
+													<div class="widget-title">
+
+														<h5>3. Administration pannel</h5>
+													</div>
+													<div class="row">
+														<div class="col-xs-12">
+															<div class="form-group">
+																<label class="control-label">Status</label>
+																<div class="controls">
+																	<select  name="etat" id="select_etat">
+																		<option {{ otpDisruption.state == "0" ? 'selected="selected"' : '' }} value="0">In progress ...</option>
+																		<option {{ otpDisruption.state == "1" ? 'selected="selected"' : '' }} value="1">Accepted</option>
+																		<option {{ otpDisruption.state == "2" ? 'selected="selected"' : '' }} value="2">Refused</option>
+																	</select>
+																</div>
+															</div>
+
+															<div class="form-group" id="refuse_reason_block">
+																<label class="control-label">Refuse reason</label>
+																<div class="controls">
+																   <textarea id="refuse_reason" class="form-control" name="refuse_reason">{{ otpDisruption.refuseReason}}</textarea> 
+																</div>
+															</div>
+														</div>
+
+													</div>
+											</div>
+                                          
+                                            {% else %}
+                                            <div class="row">
+                                                <div class="col-xs-12 information-row">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Status :</label>
+                                                        <div class="controls">
+                                                            {{ statusString }} {% if refuseReason %}<br><strong>Refuse reason:</strong> {{ refuseReason }} {% endif %}
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+											</div>
+										    {% endif  %}
+											{% if isAdmin %} 
+												<div class="form-actions">
+													<button type="submit" class="btn btn-primary">
+														<i class="icon-edit"></i>
+														Send disruption claim</button>
+												</div>
+                                            {% endif  %}
+										{% if isAdmin %}	
+										</div>
+                                        {% endif  %}
+									
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		{{ form_end(form) }}
+	</div>
+
+{% endblock container %}

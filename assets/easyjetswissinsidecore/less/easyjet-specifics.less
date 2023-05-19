@@ -1,0 +1,194 @@
+@import "variables.less";
+@import "unicorn-variables.less";
+
+@import "easyjet-mixins.less";
+@import "easyjet-fonts.less";
+@import "easyjet-header.less";
+
+@import "easyjet-overwrite.less";
+@import "easyjet-apps-menu.less";
+
+@import "easyjet-my-profile.less"; 
+
+@import "easyjet-unicorn-fixes.less";
+@import "easyjet-group.less";
+
+
+/* This is a fix for the chrome bug which is not displaying the custom font correctly in some cases */
+body
+{
+    -webkit-animation-duration: 0.1s;
+	-webkit-animation-name: fontfix;
+	-webkit-animation-iteration-count: 1;
+	-webkit-animation-timing-function: linear;
+	-webkit-animation-delay: 0.1s;
+}
+
+@-webkit-keyframes fontfix{
+	from{ 	opacity: 1; }
+	to{	opacity: 1; }
+}
+/* end of the fix */
+
+
+#description_help {
+    margin-left: 20px;
+    color: #777;
+    .EasyjetRoundedHeadlineBook;
+}
+
+#titre_help {
+    margin-left: 20px;
+    .EasyjetRoundedHeadlineBook;
+}
+
+
+#logo {
+    .EasyjetRoundedDemi;
+    font-size: 30px;
+    text-align: center;
+    color: #fff;
+}
+
+#loginbox {
+    height: 190px !important;
+}
+
+
+#sidebar .badge {
+    float: right;
+    margin-right: 5px;
+}
+
+.separation_menu {
+    border-top: 1px dotted #aaa;
+}
+
+li.active .separation_menu {
+    border-top: 1px dotted #111;
+}
+
+#sidebar ul.niv-2, #sidebar ul  ul.niv-2 {
+    padding-left: 10px;
+}
+
+#sidebar ul li.active ul.niv-2, #sidebar ul li.active ul.niv-3 {
+    background-color: #2f2d31 !important;
+}
+
+
+
+#sidebar .niv-1 .niv-1-arrow {
+    font-size: 10px;
+    margin-right: 5px;
+}
+
+
+#sidebar ul.niv-3 {
+    display: block;
+}
+
+#sidebar ul.niv-3,#sidebar ul.niv-3 li {
+    list-style: none;
+    border:none;
+    box-shadow: none;
+}
+
+
+#sidebar ul.niv-3 li a {
+    padding: 0px 0 10px 25px;
+}
+
+#sidebar ul.niv-3 li {
+    margin-left: 5px;
+    color: #666;
+    font-size: 11px;
+}
+
+.accordion.ui-accordion .ui-accordion-header a h5 a {
+    display: inline-block;
+    color: #cc4400;
+}
+
+#task-accordion  .widget-content a {
+    color: #cc4400;
+}
+
+#task-accordion i.down {
+    -webkit-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+    -webkit-transition: 0.3s ease-in-out;
+    transition: 0.3s ease-in-out;
+}
+
+#task-accordion input[type=checkbox] {
+    margin-left: 10px;
+}
+
+#task-accordion .task-disabled h5 {
+    color: #999;
+}
+
+#task-accordion .task-disabled .widget-title {
+    background-image: url(../img/stripe.png);
+    background-repeat: repeat;
+}
+
+#task-accordion .task-disabled .widget-title:hover {
+    background-position: 0 0;
+}
+
+.login-error-message, .widget-msg {
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+@media (max-width: @screen-phone) {
+    .form-horizontal .control-label + .controls {
+        margin-left: 0;
+    }
+}
+
+div.general-actions-bar {
+    background-color: #ededed;
+    padding: 20px 0px;
+}
+
+.widget-box .value {
+    padding-top: 10px;
+    display: block;
+}
+
+.my-tasks-tooltip {
+    display: none;
+    background-color: #FBF2E6;
+    border: 1px solid #FFCC00;
+    min-height: 50px;
+    min-width: 250px;
+    margin: 0;
+    padding: 5px;
+}
+
+.ui-formwizard-content > p {
+    margin: 10px;
+    text-align: center;
+}
+
+p.phone-call-number {    
+    color: #ff6600;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.help-inline-inalterable , .help-block-inalterable {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #999999;
+}
+
+.ui-formwizard input[type=text], .ui-formwizard textarea, .ui-formwizard select {
+    width: 100%;
+}
+

@@ -1,0 +1,201 @@
+{% extends "@EasyjetFdtr/Base/structure.html.twig" %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block specificJs %}{{ parent() }}
+
+<script>
+    
+    
+    $(function() {
+        var user = $("#fdtrUser").val();
+        
+        $('#fdtr-user-list').on('preXhr.dt', function ( e, settings, data ) {
+            data.selectedUser = user;
+            return data;
+        });
+
+        swissinside.simpleDataTable($("#fdtr-user-list"), {
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "{{ url('fdtr_admin_list_search') }}",
+            "aoColumns" : [
+                null, // Empno
+                null, // First name
+                null, // Last name
+                null, // allowDtimeRequest
+                null, // dtimeUserBlock
+               {"bSortable": false} // Id,
+                
+            ],
+            "aaSorting" : [[0, "desc"]],
+            "fnRowCallback" : function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+              
+            var allowDtimeRequestValue = aData[3];
+                switch (allowDtimeRequestValue) {
+                    case 1 :
+                        allowDtimeRequestValue = '<span class="badge badge-success">YES</span>';
+                        break;
+                    case 0 :
+                        allowDtimeRequestValue = '<span class="badge badge-danger">NO</span>';
+                        break;
+                    default :
+                        allowDtimeRequestValue = '<span class="badge badge-info">' + aData[3] + '</span>';
+                        break;
+                }
+
+                $("td:eq(3)", nRow).html(allowDtimeRequestValue ); 
+                
+                var dtimeUserBlock = aData[4];
+                switch (dtimeUserBlock) {
+                    case 1 :
+                        dtimeUserBlock = '<span class="badge badge-danger">YES</span>';
+                        break;
+                    case 0 :
+                        dtimeUserBlock = '<span class="badge badge-success">NO</span>';
+                        break;
+                    default :
+                        dtimeUserBlock = '<span class="badge badge-info">' + aData[4] + '</span>';
+                        break;
+                }
+                
+                $("td:eq(4)", nRow).html(dtimeUserBlock ); 
+                
+                $("td:eq(5)", nRow).html(
+                            ' <a data-toggle="modal" data-id-user='+aData[5]+'#'+aData[3]+'#'+aData[4]+' class="allowDtimeAccessID"><button type="button" class="btn btn-primary btn-small" id="allow-dtime" data-toggle="modal" data-target="#allowDtimeModel" ><i class="icon-time"></i> Access Window</button></a>'
+                        );
+                
+                
+                var $th = $(this).find("tr:first th");
+                $("td", nRow).each(function(id, field) {
+                    if($th.eq(id).hasClass("hidden-xs")) $(this).addClass('hidden-xs');
+                });
+
+
+            }
+        });
+    });
+
+    $(document).on("click", ".allowDtimeAccessID", function () {
+    var id_access = $(this).data('id-user');
+    var arr_var = id_access.split("#");
+    $('#id-user').val(arr_var[0]);
+    $('input[name=allow_dtime_request][value='+arr_var[1]+']').prop('checked', 'checked');
+    $('input[name=dtime_user_block][value='+arr_var[2]+']').prop('checked', 'checked');
+    });
+ 
+</script>
+
+
+{% endblock specificJs %}
+{% block container -%}
+    
+<!-- Allow Dtime model -->
+<form action="{{ url('fdtr_allow_dtime') }}" method="PUT">
+    <input type="hidden" name="id-user" id="id-user">
+    <div id="allowDtimeModel" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title"><div id="modelID">User Rights</div></h4>
+          </div>
+          <div class="modal-body">
+            <p>Allow Dtime</p>
+            <input type="radio" name="allow_dtime_request" value="1" >YES
+            <input type="radio" name="allow_dtime_request" value="0" >NO
+            <p>&nbsp;</p>
+            <p>Block User</p>
+            <input type="radio" name="dtime_user_block" value="1">YES
+            <input type="radio" name="dtime_user_block" value="0">NO
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <input type="submit"  class="btn btn-success" value="Save"/>
+          </div>
+        </div>
+
+      </div>
+    </div>
+</form>
+<!-- End Allow Dtime model -->
+
+
+    <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">List of users</h1>  
+            <div id="description_help">Here you can edit the users and setup their dtime access. You can also block/unblock the user.</div>
+        </div>
+        
+        
+        <!-- Search form -->
+    <form method="get" action="" class="form-horizontal">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-search"></i>
+                        </span>
+                        <h5>Search form</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                    
+                            <div class="form-group">
+                                <label class="control-label" for="fdtrUser">User</label>
+                                <div class="controls">
+                                    <input type="text" id="fdtrUser" name="fdtrUser" value="{{ fdtrUser }}" class="form-control">
+                                </div>
+                            </div>
+                         
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary"><i class="icon-search"></i> Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+        
+        
+       <!-- Results to show --> 
+
+        <div class="row">
+            <div class="col-xs-12">
+                {{ macros.wizz() }}
+            </div>
+        </div>
+            
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>List of users</h5>
+                </div>
+               
+               <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="fdtr-user-list">
+                        <thead>
+                            <tr>
+                                <th>Employee number</th>
+                                <th>First name</th>
+                                <th>Last name</th>
+                                <th>Dtime Access</th>
+                                <th>User Block</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+                   
+            </div>
+        </div>
+    </div>
+{% endblock %}

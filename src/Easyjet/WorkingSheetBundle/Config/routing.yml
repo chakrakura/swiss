@@ -1,0 +1,4 @@
+fdtr:
+  resource: "@EasyjetWorkingSheetBundle/Controller/"
+  type:     annotation
+  prefix:   /working-sheet/

@@ -1,0 +1,17 @@
+  security.authentication.switchuser_listener:
+        class: App\Easyjet\SwissinsideCoreBundle\Listener\SwitchUserListener
+        public: false
+        abstract: true
+        tags:
+            - { name: monolog.logger, channel: security}
+        arguments: 
+        - '@security.token_storage'
+        - null
+        - '@security.user_checker'
+        - null
+        - '@security.access.decision_manager'
+        - '@logger'
+        - '_switch_user'
+        - 'ROLE_ALLOWED_TO_SWITCH' 
+        - '@event_dispatcher'
+        - '@security.role_hierarchy'

@@ -1,0 +1,44 @@
+{% extends '@EasyjetWorkingSheet/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block container -%}
+
+    <div id="content">
+        <div id="content-header">
+            <h1 id="titre_help">New WorkingSheetUsers</h1>
+            <div id="description_help">Here you are able to create a new WorkingSheetUsers. Just fill the form in order to create your entry.</div>
+        </div>
+        
+        <div class="row">
+
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-th"></i>
+                        </span>
+                        <h5>Your WorkingSheetUsers</h5>
+                    </div>
+                    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+                    <div class="widget-content nopadding">
+
+                        {{ form_widget(form, {'attr': {'class': 'form-horizontal'}} ) }}
+
+                        <div class="form-actions">
+                            <input id="submit-button" type="submit" class="btn btn-primary" />
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('working_sheet_users') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
+{% endblock %}

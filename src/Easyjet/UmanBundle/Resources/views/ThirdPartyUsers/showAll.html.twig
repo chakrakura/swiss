@@ -1,0 +1,110 @@
+{% extends '@EasyjetUman/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}List of third party users{% endblock %}
+
+{% block specificJs %}
+
+{{ parent() }}
+
+<script>
+
+    $(function() {
+        $("#third-party-users-list").dataTable( {
+            "bJQueryUI": true,
+            "sPaginationType": "full_numbers",
+            "sDom": '<""l>t<"F"fpr>',
+            "bProcessing": true,
+            "bServerSide": false,
+            "columnDefs": [ { "targets": 'no-sort', "orderable": false } ]
+        });
+        
+    });
+
+    $(document).on("click", "#delete-third-party-user", function () {
+        var id = $(this).data('user-id');
+        $('#delete-user-id').val(id);
+    });
+   
+</script>
+
+{% endblock specificJs %}
+
+{% block container %}
+
+<!-- Modal -->
+<div id="thirdPartyUserModel" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirm</h4>
+      </div>
+      <form action="{{ url('uman_third_party_users_delete') }}" method="PUT">
+        <input type = "hidden" name="userId" id="delete-user-id"> 
+          <div class="modal-body">
+            <p>Do you really wan to delete this third party ?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+            <button type="submit" class="btn btn-success">Yes</button>
+          </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+<!-- End Modal -->  
+
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">List of Third party users</h1>
+        <div id="description_help">Manage the users third party.</div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Users third party list</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="third-party-users-list">
+                        <thead>
+                            <tr>
+                                <th>Login</th>
+                                <th>First name</th>
+                                <th>Last name</th>
+                                <th class="no-sort">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for person in thirdPartyUsers %}
+                                <tr>
+                                    <td>{{ person.log_user }}</td>
+                                    <td>{{ person.prenom_user }}</td>
+                                    <td>{{ person.nom_user }}</td>
+                                    <td><a class="btn btn-primary" href="{{ url('uman_third_party_users_edit', {"user": person.id_user}) }}"><i class="icon-edit"> Edit</i></a> <a class="btn btn-danger" id="delete-third-party-user" data-toggle="modal" data-user-id = "{{ person.id_user }}" data-target="#thirdPartyUserModel" ><i class="icon-remove"> Delete</i></a></td>
+                                </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock container %}

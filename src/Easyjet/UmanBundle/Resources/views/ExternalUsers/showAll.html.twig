@@ -1,0 +1,76 @@
+{% extends '@EasyjetUman/Base/structure.html.twig' %}
+{% import "@EasyjetSwissinsideCore/Base/macros.html.twig" as macros %}
+
+{% block title %}List of external users{% endblock %}
+
+{% block specificJs %}
+{{ parent() }}
+
+<script>
+    $(function() {
+        $("#external-users-list").dataTable( {
+            "bJQueryUI": true,
+            "sPaginationType": "full_numbers",
+            "sDom": '<""l>t<"F"fpr>',
+            "bProcessing": true,
+            "bServerSide": false,
+            "columnDefs": [ { "targets": 'no-sort', "orderable": false } ]
+        });
+    });
+</script>
+
+{% endblock specificJs %}
+
+{% block container %}
+
+<div id="content">
+    <div id="content-header">
+        <h1 id="titre_help">List of external users</h1>
+        <div id="description_help">Here is the list of people who connected to swissinside with their AD account and don't have a swissinside account. You can edit them in order to set them as swiss employees</div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            {{ macros.wizz() }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-th"></i>
+                    </span>
+                    <h5>Employees</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table width="100%" class="table table-bordered table-striped table-hover data-table" id="external-users-list">
+                        <thead>
+                            <tr>
+                                <th>Employee Id</th>
+                                <th>First name</th>
+                                <th>Last name</th>
+                                <th class="no-sort">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        
+                            {% for person in externalUsers %}
+                                <tr>
+                                    <td>{{ person.log_user }}</td>
+                                    <td>{{ person.prenom_user }}</td>
+                                    <td>{{ person.nom_user }}</td>
+                                    <td><a class="btn btn-primary" href="{{ url('uman_external_users_edit', {"user": person.id_user}) }}"><i class="icon-edit"> Edit</i></a></td>
+                                </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock container %}
